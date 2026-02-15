@@ -63,24 +63,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                         }
                         setIsUrduAdmin(hasAccess);
                     } else {
-                        // FOR INITIAL SETUP ONLY: Create user with admin role and Urdu access
-                        console.log("Urdu - No user document found. Creating admin profile for:", firebaseUser.email);
-                        try {
-                            const newUserData = {
-                                email: firebaseUser.email,
-                                role: 'admin' as const,
-                                appAccess: ['ur', 'en'],
-                                languagePreference: 'ur',
-                                createdAt: serverTimestamp()
-                            };
-                            await setDoc(doc(db, "users", firebaseUser.uid), newUserData);
-                            console.log("Urdu - Admin user created successfully");
-                            setUserData(newUserData as any);
-                            setIsUrduAdmin(true);
-                        } catch (e) {
-                            console.error("Urdu - Error creating user:", e);
-                            setIsUrduAdmin(false);
-                        }
+                        console.warn("Urdu - No user profile found in Firestore for UID:", firebaseUser.uid);
+                        setUserData(null);
+                        setIsUrduAdmin(false);
                     }
                 } catch (error) {
                     console.error("Urdu - Error fetching user data:", error);

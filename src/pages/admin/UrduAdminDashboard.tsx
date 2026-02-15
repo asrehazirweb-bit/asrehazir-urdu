@@ -5,6 +5,8 @@ import { useAuth } from '../../context/AuthContext';
 import { auth } from '../../lib/firebase';
 import { newsService } from '../../services/newsService';
 import type { UrduPost } from '../../services/newsService';
+import ConfirmationModal from '../../components/admin/ConfirmationModal';
+import Toast from '../../components/ui/Toast';
 
 
 const UrduAdminDashboard: React.FC = () => {
@@ -12,6 +14,14 @@ const UrduAdminDashboard: React.FC = () => {
     const navigate = useNavigate();
     const [posts, setPosts] = useState<UrduPost[]>([]);
     const [loading, setLoading] = useState(true);
+
+    // New state for modal and toast
+    const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; id: string | null }>({
+        isOpen: false,
+        id: null
+    });
+    const [isDeleting, setIsDeleting] = useState(false);
+    const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
     useEffect(() => {
         const unsubscribe = newsService.subscribeToPosts((fetchedPosts) => {
@@ -21,14 +31,33 @@ const UrduAdminDashboard: React.FC = () => {
         return () => unsubscribe();
     }, []);
 
-    const handleDelete = async (postId: string) => {
-        if (window.confirm('کیا آپ واقعی اس خبر کو حذف کرنا چاہتے ہیں؟')) {
-            await newsService.deletePost(postId);
+    const handleDeleteClick = (postId: string) => {
+        setDeleteModal({ isOpen: true, id: postId });
+    };
+
+    const confirmDelete = async () => {
+        if (!deleteModal.id) return;
+        setIsDeleting(true);
+        try {
+            await newsService.deletePost(deleteModal.id);
+            setToast({ message: 'خبر کامیابی سے حذف کر دی گئی۔', type: 'success' });
+            setDeleteModal({ isOpen: false, id: null });
+        } catch (error) {
+            console.error("Error deleting post:", error);
+            setToast({ message: 'خبر حذف کرنے میں غلطی پیش آئی۔', type: 'error' });
+        } finally {
+            setIsDeleting(false);
         }
     };
 
     const handleToggleStatus = async (postId: string, currentStatus: 'published' | 'draft') => {
-        await newsService.toggleStatus(postId, currentStatus);
+        try {
+            await newsService.toggleStatus(postId, currentStatus);
+            setToast({ message: `خبر کی حیثیت تبدیل کر دی گئی: ${currentStatus === 'published' ? 'ڈرافٹ' : 'شائع شدہ'}`, type: 'success' });
+        } catch (error) {
+            console.error("Error toggling status:", error);
+            setToast({ message: 'حیثیت تبدیل کرنے میں ناکامی۔', type: 'error' });
+        }
     };
 
     const handleLogout = () => {
@@ -117,7 +146,7 @@ const UrduAdminDashboard: React.FC = () => {
                                             <Edit2 size={18} />
                                         </button>
                                         <button
-                                            onClick={() => handleDelete(post.id!)}
+                                            onClick={() => handleDeleteClick(post.id!)}
                                             className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
                                             title="حذف کریں"
                                         >
@@ -177,6 +206,26 @@ const UrduAdminDashboard: React.FC = () => {
                 </div>
             </div>
 
+            {/* Confirmation Modal */}
+            <ConfirmationModal
+                isOpen={deleteModal.isOpen}
+                onClose={() => setDeleteModal({ ...deleteModal, isOpen: false })}
+                onConfirm={confirmDelete}
+                title="خبر حذف کریں"
+                message="کیا آپ واقعی اس خبر کو حذف کرنا چاہتے ہیں؟"
+                confirmText="حذف کریں"
+                cancelText="منسوخ کریں"
+                isLoading={isDeleting}
+            />
+
+            {/* Toast Notification */}
+            {toast && (
+                <Toast
+                    message={toast.message}
+                    type={toast.type}
+                    onClose={() => setToast(null)}
+                />
+            )}
         </div>
     );
 };

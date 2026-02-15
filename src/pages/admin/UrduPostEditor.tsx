@@ -6,6 +6,7 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '../../lib/firebase';
 import { newsService } from '../../services/newsService';
 import type { UrduPost } from '../../services/newsService';
+import Toast from '../../components/ui/Toast';
 
 const UrduPostEditor: React.FC = () => {
     const { id } = useParams();
@@ -17,11 +18,12 @@ const UrduPostEditor: React.FC = () => {
     const [existingImageUrl, setExistingImageUrl] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [initialLoading, setInitialLoading] = useState(!!id);
+    const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
     useEffect(() => {
         if (id) {
             const fetchPost = async () => {
-                const postDoc = await getDoc(doc(db, 'content/ur/posts', id));
+                const postDoc = await getDoc(doc(db, 'news', id));
                 if (postDoc.exists()) {
                     const data = postDoc.data() as UrduPost;
                     setTitle(data.title);
@@ -64,17 +66,21 @@ const UrduPostEditor: React.FC = () => {
 
             if (id) {
                 await newsService.updatePost(id, { title, content, imageUrl: finalImageUrl });
-                alert('خبر کامیابی کے ساتھ اپ ڈیٹ کر دی گئی ہے۔');
+                setToast({ message: 'خبر کامیابی کے ساتھ اپ ڈیٹ کر دی گئی ہے۔', type: 'success' });
             } else {
                 await newsService.addPost(title, content, finalImageUrl);
-                alert('نئی خبر کامیابی کے ساتھ شامل کر دی گئی ہے۔');
+                setToast({ message: 'نئی خبر کامیابی کے ساتھ شامل کر دی گئی ہے۔', type: 'success' });
             }
-            navigate('/admin');
+
+            // Wait a bit before navigating
+            setTimeout(() => {
+                navigate('/admin');
+            }, 2000);
+
         } catch (error) {
             console.error("Save error:", error);
-            alert('خرابی پیش آگئی، براہ کرم دوبارہ کوشش کریں۔');
-        } finally {
-            setLoading(false);
+            setToast({ message: 'خرابی پیش آگئی، براہ کرم دوبارہ کوشش کریں۔', type: 'error' });
+            setLoading(false); // Only stop loading on error, on success we wait for nav
         }
     };
 
@@ -184,6 +190,15 @@ const UrduPostEditor: React.FC = () => {
                     </form>
                 </div>
             </div>
+
+            {/* Toast Notification */}
+            {toast && (
+                <Toast
+                    message={toast.message}
+                    type={toast.type}
+                    onClose={() => setToast(null)}
+                />
+            )}
         </div>
     );
 };

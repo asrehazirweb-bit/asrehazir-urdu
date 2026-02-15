@@ -15,29 +15,9 @@ interface SidebarProps {
 }
 
 export function Sidebar({ offbeatItems = [], topStories = [] }: SidebarProps) {
-    // Ensure exactly 4 offbeat items
-    const displayOffbeat = [...offbeatItems];
-    const MOCK_OFFBEAT = {
-        id: 0,
-        title: "Offbeat News Headline Placeholder",
-        time: "1 hour ago"
-    };
-    while (displayOffbeat.length < 4) {
-        displayOffbeat.push({ ...MOCK_OFFBEAT, id: 9990 + displayOffbeat.length });
-    }
-    const gridOffbeat = displayOffbeat.slice(0, 4);
-
-    // Increase Top Stories to 8 items to match height of Hero + Latest News
-    let displayTop = [...topStories];
-    if (displayTop.length > 0) {
-        while (displayTop.length < 8) {
-            displayTop = [...displayTop, ...topStories.map((item, idx) => ({
-                ...item,
-                id: typeof item.id === 'number' ? item.id + 1000 + displayTop.length + idx : `${item.id}-${displayTop.length}-${idx}`
-            }))];
-        }
-    }
-    const finalTop = displayTop.slice(0, 8);
+    // Use provided items without auto-duplication
+    const gridOffbeat = offbeatItems.slice(0, 4);
+    const finalTop = topStories.slice(0, 8);
 
     return (
         <div className="flex flex-col gap-8 w-full h-full relative">

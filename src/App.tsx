@@ -8,9 +8,12 @@ import LoginPage from './pages/LoginPage';
 import ArticleDetail from './pages/ArticleDetail';
 import ScrollToTop from './components/ScrollToTop';
 
-// Minimal Urdu Admin Components
+// Urdu Admin Components
+import AdminLayout from './components/admin/AdminLayout';
 import UrduAdminDashboard from './pages/admin/UrduAdminDashboard';
 import UrduPostEditor from './pages/admin/UrduPostEditor';
+import AddNews from './pages/admin/AddNews';
+import ManageNews from './pages/admin/ManageNews';
 
 function App() {
   return (
@@ -42,26 +45,17 @@ function App() {
           path="/admin"
           element={
             <AdminGuard>
-              <UrduAdminDashboard />
+              <AdminLayout />
             </AdminGuard>
           }
-        />
-        <Route
-          path="/admin/editor"
-          element={
-            <AdminGuard>
-              <UrduPostEditor />
-            </AdminGuard>
-          }
-        />
-        <Route
-          path="/admin/editor/:id"
-          element={
-            <AdminGuard>
-              <UrduPostEditor />
-            </AdminGuard>
-          }
-        />
+        >
+          <Route index element={<ManageNews />} />
+          <Route path="add-news" element={<AddNews />} />
+          <Route path="manage" element={<ManageNews />} />
+          <Route path="dashboard" element={<UrduAdminDashboard />} />
+          <Route path="editor" element={<UrduPostEditor />} />
+          <Route path="editor/:id" element={<UrduPostEditor />} />
+        </Route>
 
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />

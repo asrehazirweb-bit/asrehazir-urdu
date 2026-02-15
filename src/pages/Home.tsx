@@ -30,7 +30,8 @@ export function Home() {
         excerpt: heroNews[0].content.substring(0, 200) + '...'
     } : null;
 
-    const heroTopStories = heroNews.slice(1).map(item => ({
+    // Use news from index 6 to 14 for the sidebar top stories
+    const heroTopStories = news.slice(6, 14).map(item => ({
         id: item.id,
         title: item.title,
         category: item.category,
@@ -45,7 +46,12 @@ export function Home() {
         excerpt: item.content.substring(0, 120) + '...'
     }));
 
-    const telanganaNews = news.filter(n => n.category === 'Deccan News' || n.category === 'Hyderabad' || n.category === 'Telangana');
+    const telanganaNews = news.filter(n =>
+        n.category === 'Deccan News' ||
+        n.category === 'دکن نیوز' ||
+        n.category === 'Hyderabad' ||
+        n.category === 'Telangana'
+    );
     const telanganaFeature = telanganaNews[0] ? {
         id: telanganaNews[0].id,
         title: telanganaNews[0].title,
@@ -62,7 +68,11 @@ export function Home() {
         image: item.imageUrl
     }));
 
-    const indiaNews = news.filter(n => n.category === 'National News' || n.category === 'India');
+    const indiaNews = news.filter(n =>
+        n.category === 'National News' ||
+        n.category === 'قومی خبریں' ||
+        n.category === 'India'
+    );
     const indiaFeature = indiaNews[0] ? {
         id: indiaNews[0].id,
         title: indiaNews[0].title,
@@ -78,14 +88,24 @@ export function Home() {
         image: item.imageUrl
     }));
 
-    const techNews = news.filter(n => n.category === 'Articles & Essays' || n.category === 'Business' || n.category === 'Technology').slice(0, 4).map(item => ({
+    const techNews = news.filter(n =>
+        n.category === 'Articles & Essays' ||
+        n.category === 'مضامین اور مقالہ جات' ||
+        n.category === 'Business' ||
+        n.category === 'Technology'
+    ).slice(0, 4).map(item => ({
         id: item.id,
         title: item.title,
         time: formatTime(item.createdAt),
         image: item.imageUrl
     }));
 
-    const entertainmentNews = news.filter(n => n.category === 'Sports & Entertainment' || n.category === 'Entertainment' || n.category === 'Sports').slice(0, 4).map(item => ({
+    const entertainmentNews = news.filter(n =>
+        n.category === 'Sports & Entertainment' ||
+        n.category === 'کھیل اور تفریح' ||
+        n.category === 'Entertainment' ||
+        n.category === 'Sports'
+    ).slice(0, 4).map(item => ({
         id: item.id,
         title: item.title,
         time: formatTime(item.createdAt),
@@ -99,13 +119,17 @@ export function Home() {
         image: item.imageUrl
     }));
 
-    const offbeatItems = news.slice(16, 18).map(item => ({
+    const offbeatItems = news.slice(16, 20).map(item => ({
         id: item.id,
         time: formatTime(item.createdAt),
         title: item.title
     }));
 
-    const worldNews = news.filter(n => n.category === 'World News' || n.category === 'International').slice(0, 2).map(item => ({
+    const worldNews = news.filter(n =>
+        n.category === 'World News' ||
+        n.category === 'عالمی خبریں' ||
+        n.category === 'International'
+    ).slice(0, 2).map(item => ({
         id: item.id,
         title: item.title,
         category: item.category,

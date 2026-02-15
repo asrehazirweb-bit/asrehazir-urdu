@@ -4,6 +4,7 @@ import { doc, updateDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { X, Save, Image as ImageIcon, Layout, Type, FileText, Tag, Loader2 } from 'lucide-react';
 import { type NewsArticle } from '../../hooks/useNews';
+import Toast from '../../components/ui/Toast';
 
 interface EditNewsModalProps {
     article: NewsArticle;
@@ -28,6 +29,7 @@ const EditNewsModal: React.FC<EditNewsModalProps> = ({ article, onClose, onSucce
     const [image, setImage] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(article.imageUrl);
     const [loading, setLoading] = useState(false);
+    const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
     const handleCategoryChange = (val: string) => {
         setCategory(val);
@@ -63,7 +65,7 @@ const EditNewsModal: React.FC<EditNewsModalProps> = ({ article, onClose, onSucce
                     imageUrl = await getDownloadURL(storageRef);
                 } catch (storageErr) {
                     console.error("Storage error during edit:", storageErr);
-                    alert("Image upload failed. Updating other content only.");
+                    setToast({ message: "Image upload failed. Updating other content only.", type: 'error' });
                 }
             }
 
@@ -80,7 +82,7 @@ const EditNewsModal: React.FC<EditNewsModalProps> = ({ article, onClose, onSucce
             onSuccess();
         } catch (error) {
             console.error('Error updating document: ', error);
-            alert('Error updating article.');
+            setToast({ message: 'Error updating article.', type: 'error' });
         } finally {
             setLoading(false);
         }
@@ -137,7 +139,7 @@ const EditNewsModal: React.FC<EditNewsModalProps> = ({ article, onClose, onSucce
                             <select
                                 value={category}
                                 onChange={(e) => handleCategoryChange(e.target.value)}
-                                className="w-full p-4 rounded-2xl border border-gray-100 dark:border-zinc-800 bg-gray-50 dark:bg-zinc-800/50 focus:ring-4 focus:ring-red-500/10 outline-none transition-all dark:text-white appearance-none cursor-pointer font-bold text-sm"
+                                className="w-full px-5 py-3 rounded-2xl border border-gray-100 dark:border-zinc-800 bg-gray-50 dark:bg-zinc-800/50 focus:ring-4 focus:ring-red-500/10 outline-none transition-all dark:text-white cursor-pointer font-bold text-sm min-h-[3.5rem]"
                             >
                                 {CATEGORIES.map(cat => <option key={cat.name} value={cat.name}>{cat.name}</option>)}
                             </select>
@@ -149,7 +151,7 @@ const EditNewsModal: React.FC<EditNewsModalProps> = ({ article, onClose, onSucce
                             <select
                                 value={subCategory}
                                 onChange={(e) => setSubCategory(e.target.value)}
-                                className="w-full p-4 rounded-2xl border border-gray-100 dark:border-zinc-800 bg-gray-50 dark:bg-zinc-800/50 focus:ring-4 focus:ring-red-500/10 outline-none transition-all dark:text-white appearance-none cursor-pointer font-bold text-sm"
+                                className="w-full px-5 py-3 rounded-2xl border border-gray-100 dark:border-zinc-800 bg-gray-50 dark:bg-zinc-800/50 focus:ring-4 focus:ring-red-500/10 outline-none transition-all dark:text-white cursor-pointer font-bold text-sm min-h-[3.5rem]"
                             >
                                 {currentSubCategories.map(sub => <option key={sub} value={sub}>{sub}</option>)}
                             </select>
@@ -218,8 +220,18 @@ const EditNewsModal: React.FC<EditNewsModalProps> = ({ article, onClose, onSucce
                         )}
                     </button>
                 </div>
+
             </div>
-        </div>
+            {
+                toast && (
+                    <Toast
+                        message={toast.message}
+                        type={toast.type}
+                        onClose={() => setToast(null)}
+                    />
+                )
+            }
+        </div >
     );
 };
 

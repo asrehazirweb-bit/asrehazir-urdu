@@ -10,7 +10,14 @@
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     line-height: 2.4;
+    /* Better for Nastaliq readability in text blocks */
     /* Better for Nastaliq readability */
+  }
+
+  input,
+  select,
+  textarea {
+    line-height: normal !important;
   }
 
   h1,

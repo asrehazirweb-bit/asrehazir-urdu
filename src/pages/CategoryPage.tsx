@@ -16,22 +16,22 @@ export function CategoryPage({ category, title }: CategoryPageProps) {
     // Legacy mapping logic
     const filteredNews = allNews.filter(item => {
         if (category === 'Deccan News') {
-            return item.category === 'Deccan News' || item.category === 'Hyderabad' || item.category === 'Telangana';
+            return item.category === 'Deccan News' || item.category === 'دکن نیوز' || item.category === 'Hyderabad' || item.category === 'Telangana';
         }
         if (category === 'National News') {
-            return item.category === 'National News' || item.category === 'India';
+            return item.category === 'National News' || item.category === 'قومی خبریں' || item.category === 'India';
         }
         if (category === 'World News') {
-            return item.category === 'World News' || item.category === 'International' || item.category === 'Middle East';
+            return item.category === 'World News' || item.category === 'عالمی خبریں' || item.category === 'International' || item.category === 'Middle East';
         }
         if (category === 'Articles & Essays') {
-            return item.category === 'Articles & Essays' || item.category === 'Business';
+            return item.category === 'Articles & Essays' || item.category === 'مضامین اور مقالہ جات' || item.category === 'Business';
         }
         if (category === 'Sports & Entertainment') {
-            return item.category === 'Sports & Entertainment' || item.category === 'Entertainment' || item.category === 'Sports';
+            return item.category === 'Sports & Entertainment' || item.category === 'کھیل اور تفریح' || item.category === 'Entertainment' || item.category === 'Sports';
         }
         if (category === 'Crime & Accidents') {
-            return item.category === 'Crime & Accidents' || item.category === 'Crime';
+            return item.category === 'Crime & Accidents' || item.category === 'جرائم اور حادثات' || item.category === 'Crime';
         }
         return item.category === category;
     });

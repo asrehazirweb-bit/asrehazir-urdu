@@ -22,8 +22,8 @@ export interface UrduPost {
     updatedAt: Timestamp;
 }
 
-// Urdu posts collection path: /content/ur/posts
-const URDU_POSTS_PATH = 'content/ur/posts';
+// Urdu posts collection path: news (matching Home page and useNews hook)
+const URDU_POSTS_PATH = 'news';
 const postsCollection = collection(db, URDU_POSTS_PATH);
 
 export const newsService = {
@@ -44,8 +44,11 @@ export const newsService = {
         return await addDoc(postsCollection, {
             title,
             content,
+            category: 'Deccan News', // Default category for Urdu posts
+            subCategory: 'Top Stories',
             imageUrl: imageUrl || '',
             status: 'published',
+            author: 'عصرِ حاضر ڈیسک',
             createdAt: serverTimestamp(),
             updatedAt: serverTimestamp(),
         });

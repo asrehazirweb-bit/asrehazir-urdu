@@ -7,7 +7,7 @@ interface AdminGuardProps {
 }
 
 export const AdminGuard: React.FC<AdminGuardProps> = ({ children }) => {
-    const { isAdmin, loading } = useAuth();
+    const { isUrduAdmin, loading } = useAuth();
 
     if (loading) {
         return (
@@ -17,7 +17,7 @@ export const AdminGuard: React.FC<AdminGuardProps> = ({ children }) => {
         );
     }
 
-    if (!isAdmin) {
+    if (!isUrduAdmin) {
         return <Navigate to="/login" replace />;
     }
 

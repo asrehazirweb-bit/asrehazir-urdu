@@ -65,22 +65,22 @@ const UrduAdminDashboard: React.FC = () => {
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700 text-right" dir="rtl">
             {/* 1. WELCOME BANNER (Integrated) */}
             <div className="relative overflow-hidden bg-white dark:bg-zinc-900 p-8 md:p-12 rounded-[2rem] border border-gray-100 dark:border-zinc-800 shadow-sm">
-                <div className="relative z-10 max-w-2xl mr-0 ml-auto">
+                <div className="relative z-10 lg:max-w-2xl mr-0 ml-auto">
                     <div className="flex flex-row-reverse items-center gap-2 mb-4">
-                        <span className="px-3 py-1 bg-red-600 text-[12px] font-bold text-white uppercase tracking-widest rounded-full">اردو نیوز ہب فعال ہے</span>
+                        <span className="px-3 py-1 bg-red-600 text-[10px] font-bold text-white uppercase tracking-widest rounded-full">اردو نیوز ہب فعال ہے</span>
                         <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.5)]"></div>
                     </div>
-                    <h1 className="text-4xl md:text-5xl lg:text-7xl font-serif font-black text-gray-900 dark:text-white leading-none mb-4">
+                    <h1 className="text-3xl md:text-5xl lg:text-7xl font-serif font-black text-gray-900 dark:text-white leading-none mb-4 tracking-tighter">
                         خوش آمدید، <span className="text-red-600 italic">{userData?.role === 'admin' ? 'ایڈمن' : 'ایڈیٹر'}!</span>
                     </h1>
-                    <p className="text-gray-500 dark:text-gray-400 text-lg md:text-xl font-sans leading-relaxed">
+                    <p className="text-gray-500 dark:text-gray-400 text-sm md:text-xl font-sans leading-relaxed">
                         عصرِ حاضر کے <span className="text-black dark:text-white font-bold underline decoration-red-600 decoration-4 underline-offset-8">اردو مینیجمنٹ ڈیسک</span> میں آپ کا استقبال ہے۔ یہاں سے آپ اپنی تمام اردو خبریں کنٹرول کر سکتے ہیں۔
                     </p>
 
                     <div className="mt-10 flex flex-row-reverse flex-wrap gap-4">
                         <button
                             onClick={() => navigate('/admin/add-news')}
-                            className="bg-red-600 hover:bg-black text-white px-10 py-4 rounded-xl font-bold text-sm transition-all flex flex-row-reverse items-center gap-3 shadow-lg shadow-red-600/20 group"
+                            className="w-full sm:w-auto bg-red-600 hover:bg-black text-white px-10 py-4 rounded-xl font-bold text-sm transition-all flex flex-row-reverse items-center justify-center gap-3 shadow-lg shadow-red-600/20 group"
                         >
                             نئی خبر شامل کریں <Plus size={16} className="group-hover:rotate-90 transition-transform" />
                         </button>
@@ -94,36 +94,36 @@ const UrduAdminDashboard: React.FC = () => {
             {/* Dashboard Grid */}
             <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
                 {/* Main Content: News List */}
-                <div className="lg:col-span-8 bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
-                    <div className="p-8 border-b border-gray-50 bg-gray-50/50 flex justify-between items-center">
-                        <h2 className="text-xl font-bold text-gray-800">حالیہ خبریں ({posts.length})</h2>
+                <div className="lg:col-span-8 bg-white dark:bg-zinc-900 rounded-3xl border border-gray-100 dark:border-zinc-800 shadow-sm overflow-hidden">
+                    <div className="p-6 md:p-8 border-b border-gray-50 dark:border-zinc-800 bg-gray-50/50 dark:bg-zinc-900/50 flex flex-col sm:flex-row justify-between items-center gap-4">
+                        <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">حالیہ خبریں ({posts.length})</h2>
                         <button
-                            className="text-xs font-black text-red-600 uppercase tracking-widest hover:underline"
+                            className="text-[10px] font-black text-red-600 uppercase tracking-widest hover:underline"
                             onClick={() => navigate('/admin/editor')}
                         >
                             دستیاب تمام خبریں دیکھیں
                         </button>
                     </div>
 
-                    <div className="divide-y divide-gray-50">
+                    <div className="divide-y divide-gray-50 dark:divide-zinc-800">
                         {loading ? (
                             <div className="p-20 text-center text-gray-400">لوڈ ہو رہا ہے...</div>
                         ) : posts.length > 0 ? (
                             posts.map((post) => (
-                                <div key={post.id} className="p-6 flex items-center justify-between hover:bg-gray-50/50 transition-colors group">
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-16 h-16 rounded-2xl bg-gray-50 flex-shrink-0 overflow-hidden border border-gray-100">
+                                <div key={post.id} className="p-4 md:p-6 flex flex-col sm:flex-row items-center justify-between hover:bg-gray-50/50 dark:hover:bg-zinc-800/20 transition-colors group gap-4">
+                                    <div className="flex items-center gap-4 w-full">
+                                        <div className="w-12 h-12 md:w-16 md:h-16 rounded-2xl bg-gray-50 dark:bg-zinc-800 flex-shrink-0 overflow-hidden border border-gray-100 dark:border-zinc-700">
                                             {post.imageUrl ? (
                                                 <img src={post.imageUrl} alt="" className="w-full h-full object-cover" />
                                             ) : (
                                                 <div className="w-full h-full flex items-center justify-center text-gray-200 uppercase font-black text-[10px]">No Img</div>
                                             )}
                                         </div>
-                                        <div className="space-y-1">
-                                            <h3 className="text-lg font-bold text-gray-900 group-hover:text-red-600 transition-colors">
+                                        <div className="space-y-1 overflow-hidden">
+                                            <h3 className="text-sm md:text-lg font-bold text-gray-900 dark:text-gray-100 group-hover:text-red-600 transition-colors truncate">
                                                 {post.title}
                                             </h3>
-                                            <div className="flex items-center gap-4 text-sm text-gray-400">
+                                            <div className="flex items-center gap-4 text-[10px] md:text-sm text-gray-400">
                                                 <span>{post.updatedAt?.toDate().toLocaleTimeString('ur-PK')}</span>
                                                 <span className={`px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-widest ${post.status === 'published' ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-500'}`}>
                                                     {post.status === 'published' ? 'شائع شدہ' : 'ڈرافٹ'}
@@ -131,24 +131,24 @@ const UrduAdminDashboard: React.FC = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="flex items-center gap-2">
+                                    <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
                                         <button
                                             onClick={() => handleToggleStatus(post.id!, post.status)}
-                                            className={`p-2 rounded-lg transition-colors ${post.status === 'published' ? 'text-green-600 bg-green-50' : 'text-gray-400 bg-gray-100'}`}
+                                            className={`p-2 rounded-lg transition-colors ${post.status === 'published' ? 'text-green-600 bg-green-50 dark:bg-green-600/10' : 'text-gray-400 bg-gray-100 dark:bg-zinc-800'}`}
                                             title={post.status === 'published' ? 'غیر شائع کریں' : 'شائع کریں'}
                                         >
                                             {post.status === 'published' ? <Eye size={18} /> : <EyeOff size={18} />}
                                         </button>
                                         <button
                                             onClick={() => navigate(`/admin/editor/${post.id}`)}
-                                            className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
+                                            className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-600/10 rounded-lg transition-all"
                                             title="ترمیم کریں"
                                         >
                                             <Edit2 size={18} />
                                         </button>
                                         <button
                                             onClick={() => handleDeleteClick(post.id!)}
-                                            className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                                            className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-600/10 rounded-lg transition-all"
                                             title="حذف کریں"
                                         >
                                             <Trash2 size={18} />

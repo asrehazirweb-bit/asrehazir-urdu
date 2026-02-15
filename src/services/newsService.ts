@@ -16,6 +16,9 @@ export interface UrduPost {
     id?: string;
     title: string;
     content: string;
+    category: string;
+    subCategory?: string;
+    author: string;
     imageUrl?: string;
     status: 'published' | 'draft';
     createdAt: Timestamp;

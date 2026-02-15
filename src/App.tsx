@@ -49,12 +49,12 @@ function App() {
             </AdminGuard>
           }
         >
-          <Route index element={<ManageNews />} />
+          <Route index element={<UrduAdminDashboard />} />
           <Route path="add-news" element={<AddNews />} />
           <Route path="manage" element={<ManageNews />} />
-          <Route path="dashboard" element={<UrduAdminDashboard />} />
           <Route path="editor" element={<UrduPostEditor />} />
           <Route path="editor/:id" element={<UrduPostEditor />} />
+          <Route path="settings" element={<div className="p-8 text-right font-serif">کنفیگریشن ماڈیول جلد آ رہا ہے...</div>} />
         </Route>
 
         {/* Fallback */}

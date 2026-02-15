@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Edit2, Trash2, Eye, EyeOff, LogOut } from 'lucide-react';
+import { Plus, Edit2, Trash2, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import { auth } from '../../lib/firebase';
 import { newsService } from '../../services/newsService';
 import type { UrduPost } from '../../services/newsService';
 import ConfirmationModal from '../../components/admin/ConfirmationModal';
@@ -60,34 +59,36 @@ const UrduAdminDashboard: React.FC = () => {
         }
     };
 
-    const handleLogout = () => {
-        auth.signOut();
-        navigate('/login');
-    };
+
 
     return (
-        <div className="min-h-screen bg-[#fdfdfb] p-6 lg:p-12 font-urdu" dir="rtl">
-            {/* Header */}
-            <div className="max-w-5xl mx-auto flex justify-between items-center mb-12">
-                <div>
-                    <h1 className="text-4xl font-black text-gray-900 mb-2">اردو نیوز ہب</h1>
-                    <p className="text-gray-500">خوش آمدید، {userData?.role === 'admin' ? 'ایڈمن' : 'ایڈیٹر'}</p>
+        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700 text-right" dir="rtl">
+            {/* 1. WELCOME BANNER (Integrated) */}
+            <div className="relative overflow-hidden bg-white dark:bg-zinc-900 p-8 md:p-12 rounded-[2rem] border border-gray-100 dark:border-zinc-800 shadow-sm">
+                <div className="relative z-10 max-w-2xl mr-0 ml-auto">
+                    <div className="flex flex-row-reverse items-center gap-2 mb-4">
+                        <span className="px-3 py-1 bg-red-600 text-[12px] font-bold text-white uppercase tracking-widest rounded-full">اردو نیوز ہب فعال ہے</span>
+                        <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.5)]"></div>
+                    </div>
+                    <h1 className="text-4xl md:text-5xl lg:text-7xl font-serif font-black text-gray-900 dark:text-white leading-none mb-4">
+                        خوش آمدید، <span className="text-red-600 italic">{userData?.role === 'admin' ? 'ایڈمن' : 'ایڈیٹر'}!</span>
+                    </h1>
+                    <p className="text-gray-500 dark:text-gray-400 text-lg md:text-xl font-sans leading-relaxed">
+                        عصرِ حاضر کے <span className="text-black dark:text-white font-bold underline decoration-red-600 decoration-4 underline-offset-8">اردو مینیجمنٹ ڈیسک</span> میں آپ کا استقبال ہے۔ یہاں سے آپ اپنی تمام اردو خبریں کنٹرول کر سکتے ہیں۔
+                    </p>
+
+                    <div className="mt-10 flex flex-row-reverse flex-wrap gap-4">
+                        <button
+                            onClick={() => navigate('/admin/add-news')}
+                            className="bg-red-600 hover:bg-black text-white px-10 py-4 rounded-xl font-bold text-sm transition-all flex flex-row-reverse items-center gap-3 shadow-lg shadow-red-600/20 group"
+                        >
+                            نئی خبر شامل کریں <Plus size={16} className="group-hover:rotate-90 transition-transform" />
+                        </button>
+                    </div>
                 </div>
-                <div className="flex gap-4">
-                    <button
-                        onClick={() => navigate('/admin/editor')}
-                        className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-6 py-2.5 rounded-full font-bold transition-all shadow-lg shadow-red-600/20"
-                    >
-                        <Plus size={18} /> نئی خبر شامل کریں
-                    </button>
-                    <button
-                        onClick={handleLogout}
-                        className="p-2.5 text-gray-400 hover:text-red-600 transition-colors"
-                        title="لاگ آؤٹ"
-                    >
-                        <LogOut size={20} />
-                    </button>
-                </div>
+
+                {/* Decorative elements */}
+                <div className="absolute top-0 left-0 w-96 h-96 bg-red-600/5 rounded-full -ml-32 -mt-32 blur-[100px]"></div>
             </div>
 
             {/* Dashboard Grid */}

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { db, auth } from '../../lib/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import { uploadImage, uploadVideo } from '../../lib/cloudinary';
-import { Image as ImageIcon, Video as VideoIcon, Send, Layout, Type, FileText, Tag, Eye, EyeOff, Trash2, Sparkles, CheckCircle2 } from 'lucide-react';
+import { uploadImage } from '../../lib/cloudinary';
+import { Image as ImageIcon, Send, Layout, Type, FileText, Tag, Eye, EyeOff, Trash2, Sparkles, CheckCircle2 } from 'lucide-react';
 import ConfirmationModal from '../../components/admin/ConfirmationModal';
 import Toast from '../../components/ui/Toast';
 
@@ -22,8 +22,6 @@ const AddNews: React.FC = () => {
     const [subCategory, setSubCategory] = useState('عالمی');
     const [image, setImage] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
-    const [video, setVideo] = useState<File | null>(null);
-    const [videoPreview, setVideoPreview] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [showPreview, setShowPreview] = useState(false);
     const [successMessage, setSuccessMessage] = useState(false);
@@ -63,8 +61,6 @@ const AddNews: React.FC = () => {
         setContent('');
         setImage(null);
         setImagePreview(null);
-        setVideo(null);
-        setVideoPreview(null);
         localStorage.removeItem('asre-hazir-urdu-draft');
         setIsClearModalOpen(false);
         setToast({ message: 'ڈرافٹ ختم کر دیا گیا', type: 'success' });
@@ -92,16 +88,7 @@ const AddNews: React.FC = () => {
         }
     };
 
-    const handleVideoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files ? e.target.files[0] : null;
-        setVideo(file);
-        if (file) {
-            const url = URL.createObjectURL(file);
-            setVideoPreview(url);
-        } else {
-            setVideoPreview(null);
-        }
-    };
+
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -118,23 +105,12 @@ const AddNews: React.FC = () => {
                 }
             }
 
-            let videoUrl = '';
-            if (video) {
-                try {
-                    videoUrl = await uploadVideo(video, 'urdu');
-                } catch (vidErr: any) {
-                    console.error("Video upload error:", vidErr);
-                    setToast({ message: `ویڈیو اپ لوڈ کرنے میں دشواری: ${vidErr.message || 'نامعلوم غلطی'}`, type: 'error' });
-                }
-            }
-
             await addDoc(collection(db, 'news'), {
                 title,
                 content,
                 category,
                 subCategory,
                 imageUrl: imageUrl || 'https://via.placeholder.com/800x400?text=Asre+Hazir+Urdu+News',
-                videoUrl: videoUrl || null,
                 createdAt: serverTimestamp(),
                 author: auth.currentUser?.displayName || 'عصرِ حاضر ڈیسک',
                 authorId: auth.currentUser?.uid,
@@ -146,8 +122,6 @@ const AddNews: React.FC = () => {
             setContent('');
             setImage(null);
             setImagePreview(null);
-            setVideo(null);
-            setVideoPreview(null);
             localStorage.removeItem('asre-hazir-urdu-draft');
 
             setTimeout(() => setSuccessMessage(false), 5000);
@@ -297,37 +271,14 @@ const AddNews: React.FC = () => {
                                 </div>
                             </div>
 
-                            {/* Video Upload */}
-                            <div className="space-y-4">
-                                <label className="flex flex-row-reverse items-center gap-2 text-sm font-bold text-gray-400">
-                                    <VideoIcon className="w-4 h-4 text-red-600" /> خبر کی ویڈیو
-                                </label>
-                                <div className={`relative border-2 border-dashed rounded-[2rem] p-6 transition-all duration-500 ${videoPreview ? 'border-red-600 bg-red-50/5' : 'border-gray-200 dark:border-zinc-800 hover:border-red-600'}`}>
-                                    {videoPreview ? (
-                                        <div className="relative aspect-video rounded-2xl overflow-hidden shadow-2xl bg-black">
-                                            <video src={videoPreview} controls className="w-full h-full object-contain" />
-                                            <button type="button" onClick={() => { setVideo(null); setVideoPreview(null); }} className="absolute top-4 left-4 bg-black/80 backdrop-blur-md text-white px-6 py-2 rounded-xl text-xs font-bold z-10">ویڈیو تبدیل کریں</button>
-                                        </div>
-                                    ) : (
-                                        <label className="flex flex-col items-center justify-center min-h-[16rem] cursor-pointer">
-                                            <VideoIcon className="w-16 h-16 text-gray-300 mb-4" />
-                                            <span className="text-gray-900 dark:text-white font-bold text-lg">خبر کے لیے ویڈیو منتخب کریں</span>
-                                            <input type="file" onChange={handleVideoChange} className="hidden" accept="video/*" />
-                                        </label>
-                                    )}
-                                </div>
-                            </div>
+
 
                             {/* Preview Section */}
                             {showPreview && (
                                 <div className="mt-12 p-8 md:p-12 bg-gray-50 dark:bg-white/5 rounded-[3rem] border-2 border-red-600/10 text-right">
                                     <h2 className="text-3xl md:text-5xl font-serif font-black text-gray-900 dark:text-white leading-tight mb-8 underline decoration-red-600 decoration-4">{title || 'سرخی یہاں نظر آئے گی'}</h2>
                                     {imagePreview && <img src={imagePreview} className="w-full aspect-video object-cover rounded-3xl shadow-xl mb-8" />}
-                                    {videoPreview && (
-                                        <div className="mb-8 rounded-3xl overflow-hidden shadow-xl bg-black">
-                                            <video src={videoPreview} controls className="w-full max-h-[500px] object-contain" />
-                                        </div>
-                                    )}
+
                                     <div className="prose prose-2xl dark:prose-invert text-right w-full">
                                         {content.split('\n').map((p, i) => <p key={i} className="text-gray-700 dark:text-zinc-400 text-2xl leading-relaxed">{p}</p>)}
                                     </div>

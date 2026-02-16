@@ -103,13 +103,18 @@ export function Sidebar({ offbeatItems = [], topStories = [] }: SidebarProps) {
                     <h3 className="text-secondary dark:text-gray-200 font-serif font-bold text-lg mb-6 border-b border-gray-100 dark:border-white/10 pb-2">مزید جانیے</h3>
                     <ul className="flex flex-col gap-4">
                         {[
-                            'بھارت کی تازہ ترین خبریں',
-                            'حیدرآباد ٹریول گائیڈ',
-                            'تلنگانہ ٹور پیکیجز'
+                            { name: 'بھارت کی تازہ ترین خبریں', path: '/national' },
+                            { name: 'حیدرآباد ٹریول گائیڈ', path: '/deccan' },
+                            { name: 'تلنگانہ ٹور پیکیجز', path: '/deccan' },
+                            { name: 'عالمی خبروں کی رپورٹ', path: '/world' },
+                            { name: 'کھیل اور فلمی دنیا', path: '/sports-entertainment' },
+                            { name: 'جرائم کی تازہ ترین رپورٹ', path: '/crime-accidents' }
                         ].map((item, idx) => (
-                            <li key={idx} className="flex flex-row-reverse items-center justify-between group cursor-pointer">
-                                <span className="text-sm font-sans text-gray-600 dark:text-gray-400 group-hover:text-accent transition-colors">{item}</span>
-                                <ChevronRight size={16} className="text-gray-400 group-hover:text-accent transition-colors rotate-180" />
+                            <li key={idx}>
+                                <Link to={item.path} className="flex flex-row-reverse items-center justify-between group cursor-pointer">
+                                    <span className="text-sm font-sans text-gray-600 dark:text-gray-400 group-hover:text-red-700 transition-colors">{item.name}</span>
+                                    <ChevronRight size={16} className="text-gray-400 group-hover:text-red-700 transition-colors rotate-180" />
+                                </Link>
                             </li>
                         ))}
                     </ul>

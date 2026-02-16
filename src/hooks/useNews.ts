@@ -66,12 +66,19 @@ export const useNews = (category?: string, maxItems: number = 20, subCategory?: 
             }
 
             const unsubscribe = onSnapshot(q, (snapshot) => {
-                const fetchedNews = snapshot.docs.map(doc => ({
-                    id: doc.id,
-                    ...doc.data()
-                })) as NewsArticle[];
+                const fetchedNews = snapshot.docs
+                    .map(doc => ({
+                        id: doc.id,
+                        ...doc.data()
+                    })) as NewsArticle[];
 
-                setNews(fetchedNews);
+                // Filter out legacy video documents or items without valid images
+                const imageOnlyNews = fetchedNews.filter(item => {
+                    const data = item as any;
+                    return data.type !== 'video' && item.imageUrl && item.imageUrl !== '' && !item.imageUrl.includes('placeholder');
+                });
+
+                setNews(imageOnlyNews);
                 setLoading(false);
             }, (err) => {
                 console.error("Error fetching news:", err);
@@ -85,7 +92,7 @@ export const useNews = (category?: string, maxItems: number = 20, subCategory?: 
             setError(err.message);
             setLoading(false);
         }
-    }, [category, maxItems]);
+    }, [category, maxItems, subCategory]);
 
     return { news, loading, error, formatTime };
 };

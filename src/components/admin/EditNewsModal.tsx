@@ -179,14 +179,14 @@ const EditNewsModal: React.FC<EditNewsModalProps> = ({ article, onClose, onSucce
                         </label>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {imagePreview && (
-                                <div className="relative aspect-video rounded-3xl overflow-hidden shadow-xl border border-gray-100 dark:border-zinc-700">
-                                    <img src={imagePreview} alt="Current" className="w-full h-full object-cover" />
-                                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                                <div className="relative rounded-3xl overflow-hidden shadow-xl border border-gray-100 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-800/50">
+                                    <img src={imagePreview} alt="Current" className="w-full h-auto max-h-[400px] object-contain mx-auto block" />
+                                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity pointer-events-none">
                                         <span className="text-[12px] font-black text-white uppercase tracking-widest">موجودہ تصویر</span>
                                     </div>
                                 </div>
                             )}
-                            <label className="flex flex-col items-center justify-center border-2 border-dashed border-gray-200 dark:border-zinc-800 rounded-3xl cursor-pointer hover:border-red-500 transition-all aspect-video group">
+                            <label className="flex flex-col items-center justify-center border-2 border-dashed border-gray-200 dark:border-zinc-800 rounded-3xl cursor-pointer hover:border-red-500 transition-all min-h-[200px] group">
                                 <ImageIcon size={24} className="text-gray-300 mb-2 group-hover:scale-110 transition-transform" />
                                 <span className="text-xs font-bold text-gray-400">تصویر تبدیل کریں</span>
                                 <input type="file" onChange={handleImageChange} className="hidden" accept="image/*" />

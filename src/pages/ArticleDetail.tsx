@@ -164,13 +164,13 @@ const ArticleDetail: React.FC = () => {
 
             {/* Featured Image */}
             <div className="max-w-6xl mx-auto px-0 md:px-4 mb-12">
-                <div className="relative aspect-[21/9] md:rounded-3xl overflow-hidden shadow-2xl">
+                <div className="relative md:rounded-3xl overflow-hidden shadow-2xl bg-gray-100 dark:bg-zinc-900">
                     <img
                         src={article.imageUrl}
                         alt={article.title}
-                        className="w-full h-full object-cover"
+                        className="w-full h-auto max-h-[700px] object-contain mx-auto block"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent pointer-events-none"></div>
                 </div>
                 {article.subCategory && (
                     <div className="mt-4 px-4 md:px-0 text-right">

@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Facebook, Twitter, Youtube, ChevronRight } from 'lucide-react';
+import { AdBlock } from './AdBlock';
 
 interface NewsItem {
     id: number | string;
@@ -33,8 +34,12 @@ export function Sidebar({ offbeatItems = [], topStories = [] }: SidebarProps) {
                         {finalTop.map((story, idx) => (
                             <Link key={`${story.id}-${idx}`} to={`/news/${story.id}`} className="p-3 border-b border-gray-100 dark:border-white/5 last:border-0 hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer flex gap-3 group transition-colors block">
                                 {story.image && (
-                                    <div className="w-[60px] h-[60px] bg-gray-200 dark:bg-white/10 flex-shrink-0 relative overflow-hidden rounded-sm">
-                                        <img src={story.image} alt={story.title} className="w-full h-full object-cover" />
+                                    <div className="w-24 h-20 flex-shrink-0 bg-gray-100 dark:bg-white/5 relative overflow-hidden">
+                                        <img
+                                            src={story.image || "/api/placeholder/100/100"}
+                                            alt={story.title}
+                                            className="w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-90"
+                                        />
                                     </div>
                                 )}
                                 <div className="flex flex-col justify-center w-full">
@@ -46,9 +51,11 @@ export function Sidebar({ offbeatItems = [], topStories = [] }: SidebarProps) {
                             </Link>
                         ))}
                     </div>
-                    <button className="w-full py-2 bg-[#004d99]/10 text-[#004d99] text-xs font-bold uppercase tracking-widest hover:bg-[#004d99]/20 transition-colors">
-                        سب دیکھیں
-                    </button>
+                    <Link to="/world">
+                        <button className="w-full py-2 bg-[#004d99]/10 text-[#004d99] text-xs font-bold uppercase tracking-widest hover:bg-[#004d99]/20 transition-colors">
+                            سب دیکھیں
+                        </button>
+                    </Link>
                 </div>
             )}
 
@@ -77,27 +84,25 @@ export function Sidebar({ offbeatItems = [], topStories = [] }: SidebarProps) {
                 </div>
 
                 {/* 2. SOCIAL STATS CARD */}
-                <div className="flex w-full h-[100px]">
-                    <div className="flex-1 bg-[#4267B2] text-white flex flex-col items-center justify-center cursor-pointer hover:opacity-90 transition-opacity">
-                        <Facebook size={24} className="mb-2" />
-                        <span className="font-bold text-sm">1.4M</span>
-                        <span className="text-[10px] uppercase opacity-80">Fans</span>
+                <div className="flex w-full h-auto min-h-[80px] overflow-hidden rounded-2xl">
+                    <div className="flex-1 bg-[#FF0000] text-white p-4 flex flex-col items-center justify-center cursor-pointer hover:opacity-90 transition-opacity">
+                        <Youtube size={20} className="mb-1" />
+                        <span className="font-bold text-xs">1.9M</span>
+                        <span className="text-[8px] uppercase opacity-80">Subscribers</span>
                     </div>
-                    <div className="flex-1 bg-[#000000] text-white flex flex-col items-center justify-center cursor-pointer hover:opacity-90 transition-opacity">
-                        <Twitter size={24} className="mb-2" />
-                        <span className="font-bold text-sm">40.4K</span>
-                        <span className="text-[10px] uppercase opacity-80">Followers</span>
+                    <div className="flex-1 bg-[#000000] text-white p-4 flex flex-col items-center justify-center cursor-pointer hover:opacity-90 transition-opacity border-x border-white/10">
+                        <Twitter size={20} className="mb-1" />
+                        <span className="font-bold text-xs">40.4K</span>
+                        <span className="text-[8px] uppercase opacity-80">Followers</span>
                     </div>
-                    <div className="flex-1 bg-[#FF0000] text-white flex flex-col items-center justify-center cursor-pointer hover:opacity-90 transition-opacity">
-                        <Youtube size={24} className="mb-2" />
-                        <span className="font-bold text-sm">1.9M</span>
-                        <span className="text-[10px] uppercase opacity-80">Subscribers</span>
+                    <div className="flex-1 bg-[#4267B2] text-white p-4 flex flex-col items-center justify-center cursor-pointer hover:opacity-90 transition-opacity">
+                        <Facebook size={20} className="mb-1" />
+                        <span className="font-bold text-xs">1.4M</span>
+                        <span className="text-[8px] uppercase opacity-80">Fans</span>
                     </div>
                 </div>
 
-                <div className="text-center -mt-4">
-                    <span className="text-[10px] text-gray-300 uppercase tracking-widest">اشتہار</span>
-                </div>
+                <AdBlock placement="sidebar" className="h-[250px] !my-0" label="سائیڈ بار اشتہار" />
 
                 <div className="border border-gray-100 dark:border-white/10 bg-white dark:bg-white/5 p-6 text-right">
                     <h3 className="text-secondary dark:text-gray-200 font-serif font-bold text-lg mb-6 border-b border-gray-100 dark:border-white/10 pb-2">مزید جانیے</h3>

@@ -57,7 +57,7 @@ export function VideoSection({ items }: { items: NewsItem[] }) {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {items.map((item) => (
-                    <div key={item.id} className="group cursor-pointer text-right">
+                    <Link key={item.id} to={`/news/${item.id}`} className="group cursor-pointer text-right block">
                         <div className="relative overflow-hidden mb-3 aspect-video bg-gray-800 border border-gray-700">
                             <img
                                 src={item.image}
@@ -73,7 +73,7 @@ export function VideoSection({ items }: { items: NewsItem[] }) {
                         <h3 className="font-serif font-bold text-base leading-snug group-hover:text-accent transition-colors text-gray-100">
                             {item.title}
                         </h3>
-                    </div>
+                    </Link>
                 ))}
             </div>
         </div>

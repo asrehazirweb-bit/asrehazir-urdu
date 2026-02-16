@@ -1,7 +1,7 @@
 import React from 'react';
 import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import { auth } from '../../lib/firebase';
-import { LayoutDashboard, FileText, PlusSquare, LogOut, Home, Settings, ShieldCheck, Zap, Menu, X } from 'lucide-react';
+import { LayoutDashboard, FileText, PlusSquare, LogOut, Home, ShieldCheck, Zap, Menu, X, Megaphone } from 'lucide-react';
 
 import ConfirmationModal from './ConfirmationModal';
 import { useState } from 'react';
@@ -28,6 +28,7 @@ const AdminLayout: React.FC = () => {
         { path: '/admin', label: 'ڈیش بورڈ', icon: <LayoutDashboard size={18} /> },
         { path: '/admin/add-news', label: 'نیوز ڈیسک', icon: <PlusSquare size={18} /> },
         { path: '/admin/manage', label: 'آرکائیو', icon: <FileText size={18} /> },
+        { path: '/admin/ads', label: 'اشتہارات', icon: <Megaphone size={18} /> },
     ];
 
     return (
@@ -103,15 +104,8 @@ const AdminLayout: React.FC = () => {
                                 <Home size={18} className="group-hover:text-red-600 transition-colors" />
                                 <span className="text-sm font-bold tracking-tight">مین پورٹل</span>
                             </Link>
-                            <Link
-                                to="/admin/settings"
-                                onClick={() => setIsMobileSidebarOpen(false)}
-                                className={`flex flex-row-reverse items-center space-x-reverse space-x-3 px-4 py-3.5 rounded-2xl transition-all group ${isActive('/admin/settings') ? 'bg-red-600 text-white shadow-lg' : 'text-gray-500 hover:bg-gray-50 dark:hover:bg-zinc-800 hover:text-gray-900 dark:hover:text-white'}`}
-                            >
-                                <Settings size={18} className={isActive('/admin/settings') ? 'text-white' : 'group-hover:text-red-600'} />
-                                <span className="text-sm font-bold tracking-tight">پورٹل کنفیگریشن</span>
-                            </Link>
                         </nav>
+
                     </div>
                 </div>
 

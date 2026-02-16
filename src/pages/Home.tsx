@@ -68,51 +68,8 @@ export function Home() {
         image: item.imageUrl
     }));
 
-    const indiaNews = news.filter(n =>
-        n.category === 'National News' ||
-        n.category === 'قومی خبریں' ||
-        n.category === 'India'
-    );
-    const indiaFeature = indiaNews[0] ? {
-        id: indiaNews[0].id,
-        title: indiaNews[0].title,
-        image: indiaNews[0].imageUrl,
-        time: formatTime(indiaNews[0].createdAt),
-        excerpt: indiaNews[0].content.substring(0, 150) + '...'
-    } : null;
-
-    const indiaList = indiaNews.slice(1, 5).map(item => ({
-        id: item.id,
-        title: item.title,
-        time: formatTime(item.createdAt),
-        image: item.imageUrl
-    }));
-
-    const techNews = news.filter(n =>
-        n.category === 'Articles & Essays' ||
-        n.category === 'مضامین اور مقالہ جات' ||
-        n.category === 'Business' ||
-        n.category === 'Technology'
-    ).slice(0, 4).map(item => ({
-        id: item.id,
-        title: item.title,
-        time: formatTime(item.createdAt),
-        image: item.imageUrl
-    }));
-
-    const entertainmentNews = news.filter(n =>
-        n.category === 'Sports & Entertainment' ||
-        n.category === 'کھیل اور تفریح' ||
-        n.category === 'Entertainment' ||
-        n.category === 'Sports'
-    ).slice(0, 4).map(item => ({
-        id: item.id,
-        title: item.title,
-        time: formatTime(item.createdAt),
-        image: item.imageUrl
-    }));
-
     const regionalItems = news.slice(10, 16).map(item => ({
+
         id: item.id,
         time: formatTime(item.createdAt),
         title: item.title,
@@ -173,19 +130,22 @@ export function Home() {
                     <RegionalAndOffbeatSection regionalItems={regionalItems} />
 
                     {/* 4. India / Stats */}
-                    {indiaFeature && (
-                        <CategoryFeatureSection
-                            category="قومی خبریں"
-                            tabs={['قومی', 'عالمی', 'علاقائی']}
-                            featuredItem={indiaFeature}
-                            listItems={indiaList}
-                        />
-                    )}
+                    <CategoryFeatureSection
+                        tabs={['قومی', 'عالمی', 'علاقائی']}
+                        allNews={news}
+                        formatTime={formatTime}
+                    />
 
                     {/* 5. Articles & Essays */}
                     <CategoryGridSection
                         category="مضامین اور مقالہ جات"
-                        items={techNews.length > 0 ? techNews : []}
+                        items={news.filter(n =>
+                            n.category === 'Articles & Essays' ||
+                            n.category === 'مضامین اور مقالہ جات' ||
+                            n.category === 'Business' ||
+                            n.category === 'Technology'
+                        )}
+                        formatTime={formatTime}
                     />
 
                 </div>
@@ -197,7 +157,13 @@ export function Home() {
                 <div className="w-full mx-auto px-4">
                     <CategoryGridSection
                         category="کھیل اور تفریح"
-                        items={entertainmentNews}
+                        items={news.filter(n =>
+                            n.category === 'Sports & Entertainment' ||
+                            n.category === 'کھیل اور تفریح' ||
+                            n.category === 'Entertainment' ||
+                            n.category === 'Sports'
+                        )}
+                        formatTime={formatTime}
                     />
                 </div>
             </div>
@@ -211,7 +177,16 @@ export function Home() {
                 </div>
             )}
 
-            <VideoSection items={[]} />
+            <VideoSection items={news.filter(n =>
+                n.section === 'Must Watch' ||
+                n.section === 'لازمی دیکھیں'
+            ).slice(0, 3).map(item => ({
+                id: item.id,
+                title: item.title,
+                category: item.category,
+                image: item.imageUrl || '',
+                time: formatTime(item.createdAt)
+            }))} />
         </div>
     );
 }

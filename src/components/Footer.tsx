@@ -1,5 +1,5 @@
-
 import { Link } from 'react-router-dom';
+import { Facebook, Twitter, Instagram } from 'lucide-react';
 
 export function Footer() {
     return (
@@ -51,13 +51,12 @@ export function Footer() {
                 </div>
 
                 <div className="col-span-1 border-t border-gray-700 pt-6 md:pt-0 md:border-t-0">
-                    <h3 className="font-sans font-bold uppercase tracking-wider text-accent mb-6 text-sm">سبسکرائب</h3>
-                    <p className="text-sm text-gray-400 mb-4">تازہ ترین خبریں روزانہ اپنے ان باکس میں حاصل کریں۔</p>
-                    <div className="flex flex-col gap-2">
-                        <input type="email" placeholder="آپ کا ای میل ایڈریس" className="bg-gray-800 border-none text-white text-sm p-3 focus:outline-none focus:ring-1 focus:ring-accent" />
-                        <button className="bg-accent text-white font-bold text-sm uppercase p-3 hover:bg-white hover:text-accent transition-colors">
-                            سبسکرائب
-                        </button>
+                    <h3 className="font-sans font-bold uppercase tracking-wider text-accent mb-6 text-sm">ہمارے ساتھ جڑیں</h3>
+                    <p className="text-sm text-gray-400 mb-4">تازہ ترین اپڈیٹس اور بریکنگ نیوز کے لیے ہمارے ساتھ جڑے رہیں۔</p>
+                    <div className="flex flex-row-reverse gap-4">
+                        <a href="#" className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-accent transition-colors"><Facebook size={18} /></a>
+                        <a href="#" className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-accent transition-colors"><Twitter size={18} /></a>
+                        <a href="#" className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-accent transition-colors"><Instagram size={18} /></a>
                     </div>
                 </div>
             </div>

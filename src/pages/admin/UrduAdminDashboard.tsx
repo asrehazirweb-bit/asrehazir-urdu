@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Plus, Edit2, Trash2, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { newsService } from '../../services/newsService';
@@ -82,7 +82,7 @@ const UrduAdminDashboard: React.FC = () => {
                             onClick={() => navigate('/admin/add-news')}
                             className="w-full sm:w-auto bg-red-600 hover:bg-black text-white px-10 py-4 rounded-xl font-bold text-sm transition-all flex flex-row-reverse items-center justify-center gap-3 shadow-lg shadow-red-600/20 group"
                         >
-                            نئی خبر شامل کریں <Plus size={16} className="group-hover:rotate-90 transition-transform" />
+                            براڈکاسٹ نیوز ڈیسک <Plus size={16} className="group-hover:rotate-90 transition-transform" />
                         </button>
                     </div>
                 </div>
@@ -111,7 +111,7 @@ const UrduAdminDashboard: React.FC = () => {
                         ) : posts.length > 0 ? (
                             posts.map((post) => (
                                 <div key={post.id} className="p-4 md:p-6 flex flex-col sm:flex-row items-center justify-between hover:bg-gray-50/50 dark:hover:bg-zinc-800/20 transition-colors group gap-4">
-                                    <div className="flex items-center gap-4 w-full">
+                                    <Link to={`/news/${post.id}`} className="flex items-center gap-4 w-full">
                                         <div className="w-12 h-12 md:w-16 md:h-16 rounded-2xl bg-gray-50 dark:bg-zinc-800 flex-shrink-0 overflow-hidden border border-gray-100 dark:border-zinc-700">
                                             {post.imageUrl ? (
                                                 <img src={post.imageUrl} alt="" className="w-full h-full object-cover" />
@@ -130,7 +130,7 @@ const UrduAdminDashboard: React.FC = () => {
                                                 </span>
                                             </div>
                                         </div>
-                                    </div>
+                                    </Link>
                                     <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
                                         <button
                                             onClick={() => handleToggleStatus(post.id!, post.status)}

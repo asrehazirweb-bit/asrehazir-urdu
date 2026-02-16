@@ -2,10 +2,10 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Layout } from './Layout';
 import { Home } from './pages/Home';
 import { CategoryPage } from './pages/CategoryPage';
-import { ContactPage, AboutPage, AdvertisementsPage } from './pages/StaticPages';
-import { AdminGuard } from './components/auth/AdminGuard';
+import { ContactPage, AboutPage, AdvertisementsPage, GuestColumnsPage, PrivacyPolicyPage, TermsOfUsePage } from './pages/StaticPages';
 import LoginPage from './pages/LoginPage';
 import ArticleDetail from './pages/ArticleDetail';
+import { SearchPage } from './pages/SearchPage';
 import ScrollToTop from './components/ScrollToTop';
 
 // Urdu Admin Components
@@ -14,6 +14,7 @@ import UrduAdminDashboard from './pages/admin/UrduAdminDashboard';
 import UrduPostEditor from './pages/admin/UrduPostEditor';
 import AddNews from './pages/admin/AddNews';
 import ManageNews from './pages/admin/ManageNews';
+import AdsManagement from './pages/admin/AdsManagement';
 
 function App() {
   return (
@@ -35,23 +36,27 @@ function App() {
         <Route element={<Layout><AdvertisementsPage /></Layout>} path="/advertisements" />
         <Route element={<Layout><ContactPage /></Layout>} path="/contact" />
         <Route element={<Layout><AboutPage /></Layout>} path="/about-us" />
+        <Route element={<Layout><GuestColumnsPage /></Layout>} path="/guest-columns" />
+        <Route element={<Layout><PrivacyPolicyPage /></Layout>} path="/privacy-policy" />
+        <Route element={<Layout><TermsOfUsePage /></Layout>} path="/terms-of-use" />
 
         {/* Utility Routes */}
         <Route element={<Layout><LoginPage /></Layout>} path="/login" />
         <Route element={<Layout><ArticleDetail /></Layout>} path="/news/:id" />
+        <Route element={<Layout><SearchPage /></Layout>} path="/search" />
+
 
         {/* Dedicated Urdu Admin Section */}
         <Route
           path="/admin"
           element={
-            <AdminGuard>
-              <AdminLayout />
-            </AdminGuard>
+            <AdminLayout />
           }
         >
           <Route index element={<UrduAdminDashboard />} />
           <Route path="add-news" element={<AddNews />} />
           <Route path="manage" element={<ManageNews />} />
+          <Route path="ads" element={<AdsManagement />} />
           <Route path="editor" element={<UrduPostEditor />} />
           <Route path="editor/:id" element={<UrduPostEditor />} />
           <Route path="settings" element={<div className="p-8 text-right font-serif">کنفیگریشن ماڈیول جلد آ رہا ہے...</div>} />

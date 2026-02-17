@@ -5,6 +5,19 @@ import { doc, getDoc, collection, query, where, limit, getDocs } from 'firebase/
 import { Calendar, Share2, Facebook, Twitter, Link2, ArrowLeft, Clock } from 'lucide-react';
 import type { NewsArticle } from '../hooks/useNews';
 import Toast from '../components/ui/Toast';
+import DOMPurify from 'dompurify';
+
+const getCategoryPath = (category: string) => {
+    const cat = category.toLowerCase();
+    // Support both English and Urdu category names for routing
+    if (cat.includes('world') || cat.includes('international') || cat.includes('عالمی')) return '/world';
+    if (cat.includes('national') || cat.includes('india') || cat.includes('قومی')) return '/national';
+    if (cat.includes('deccan') || cat.includes('hyderabad') || cat.includes('telangana') || cat.includes('دکن')) return '/deccan';
+    if (cat.includes('essays') || cat.includes('article') || cat.includes('business') || cat.includes('مضامین')) return '/articles-essays';
+    if (cat.includes('sports') || cat.includes('entertainment') || cat.includes('کھیل')) return '/sports-entertainment';
+    if (cat.includes('crime') || cat.includes('accident') || cat.includes('جرائم')) return '/crime-accidents';
+    return '/';
+};
 
 const ArticleDetail: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -125,7 +138,7 @@ const ArticleDetail: React.FC = () => {
                 <div className="flex flex-row-reverse items-center gap-2 text-[12px] font-black text-red-600 mb-6">
                     <Link to="/" className="hover:text-black dark:hover:text-white transition-colors">ہوم</Link>
                     <span>/</span>
-                    <Link to={`/${article.category.toLowerCase()}`} className="hover:text-black dark:hover:text-white transition-colors">{article.category}</Link>
+                    <Link to={getCategoryPath(article.category)} className="hover:text-black dark:hover:text-white transition-colors">{article.category}</Link>
                     <span>/</span>
                     <span className="text-gray-400 truncate max-w-[150px]">{article.subCategory || 'تازہ ترین'}</span>
                 </div>
@@ -186,11 +199,10 @@ const ArticleDetail: React.FC = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
                     <div className="lg:col-span-12">
                         <div className="prose prose-lg dark:prose-invert max-w-none text-right">
-                            {article.content.split('\n').filter(p => p.trim() !== '').map((para, index) => (
-                                <p key={index} className={`text-gray-800 dark:text-gray-200 leading-[2.2] mb-6 text-2xl md:text-2xl ${article.contentFont || 'font-serif'}`}>
-                                    {para}
-                                </p>
-                            ))}
+                            <div
+                                className={`article-content text-gray-800 dark:text-gray-200 leading-[2.2] mb-6 text-2xl md:text-2xl ${article.contentFont || 'font-serif'}`}
+                                dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(article.content) }}
+                            />
                         </div>
 
                         {/* Article Footer */}
@@ -223,7 +235,7 @@ const ArticleDetail: React.FC = () => {
                         <h2 className="text-2xl font-serif font-black text-gray-900 dark:text-white italic underline decoration-red-600 decoration-4 underline-offset-8">
                             {article.category} سے مزید خبریں
                         </h2>
-                        <Link to={`/${article.category.toLowerCase()}`} className="text-xs font-black text-red-600 hover:text-black dark:hover:text-white transition-colors">
+                        <Link to={getCategoryPath(article.category)} className="text-xs font-black text-red-600 hover:text-black dark:hover:text-white transition-colors">
                             تمام کہانیاں دیکھیں
                         </Link>
                     </div>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { db } from '../../lib/firebase';
 import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc, serverTimestamp, query, orderBy } from 'firebase/firestore';
 import { uploadImage } from '../../lib/cloudinary';
-import { Image as ImageIcon, Plus, Trash2, ExternalLink, Layout, ToggleLeft, ToggleRight, Loader2, Megaphone } from 'lucide-react';
+import { Image as ImageIcon, Plus, Trash2, ExternalLink, Layout, ToggleLeft, ToggleRight, Loader2, Megaphone, PenTool } from 'lucide-react';
 import Toast from '../../components/ui/Toast';
 
 interface Ad {
@@ -30,6 +30,7 @@ const AdsManagement: React.FC = () => {
     const [image, setImage] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+    const [editingAd, setEditingAd] = useState<Ad | null>(null);
 
     useEffect(() => {
         fetchAds();
@@ -48,6 +49,24 @@ const AdsManagement: React.FC = () => {
         }
     };
 
+    const handleEditClick = (ad: Ad) => {
+        setEditingAd(ad);
+        setLink(ad.link);
+        setPlacement(ad.placement);
+        setImagePreview(ad.imageUrl);
+        // We don't set the image file because it's already on Cloudinary
+        // Scroll to form
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    const cancelEdit = () => {
+        setEditingAd(null);
+        setLink('');
+        setPlacement('sidebar');
+        setImage(null);
+        setImagePreview(null);
+    };
+
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files ? e.target.files[0] : null;
         setImage(file);
@@ -60,31 +79,52 @@ const AdsManagement: React.FC = () => {
         }
     };
 
-    const handleAddAd = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!image || !link) {
-            setToast({ message: 'تصویر اور لنک ضروری ہیں', type: 'error' });
+        if (!link) {
+            setToast({ message: 'لنک ضروری ہے', type: 'error' });
+            return;
+        }
+
+        if (!editingAd && !image) {
+            setToast({ message: 'نئے اشتہار کے لئے تصویر ضروری ہے', type: 'error' });
             return;
         }
 
         setUploading(true);
         try {
-            const imageUrl = await uploadImage(image, 'ads');
-            await addDoc(collection(db, 'ads'), {
-                imageUrl,
-                link,
-                placement,
-                active: true,
-                createdAt: serverTimestamp()
-            });
-            setToast({ message: 'اشتہار کامیابی سے شامل کر لیا گیا!', type: 'success' });
-            setLink('');
-            setImage(null);
-            setImagePreview(null);
+            let imageUrl = editingAd ? editingAd.imageUrl : '';
+
+            // Only upload new image if one was selected
+            if (image) {
+                imageUrl = await uploadImage(image, 'ads');
+            }
+
+            if (editingAd) {
+                // Update existing
+                await updateDoc(doc(db, 'ads', editingAd.id), {
+                    imageUrl,
+                    link,
+                    placement,
+                });
+                setToast({ message: 'اشتہار کامیابی سے اپ ڈیٹ ہو گیا!', type: 'success' });
+            } else {
+                // Add new
+                await addDoc(collection(db, 'ads'), {
+                    imageUrl,
+                    link,
+                    placement,
+                    active: true,
+                    createdAt: serverTimestamp()
+                });
+                setToast({ message: 'اشتہار کامیابی سے شامل کر لیا گیا!', type: 'success' });
+            }
+
+            cancelEdit();
             fetchAds();
         } catch (error) {
-            console.error("Error adding ad:", error);
-            setToast({ message: 'اشتہار شامل کرنے میں غلطی ہوئی', type: 'error' });
+            console.error("Error saving ad:", error);
+            setToast({ message: 'محفوظ کرنے میں غلطی ہوئی', type: 'error' });
         } finally {
             setUploading(false);
         }
@@ -105,6 +145,7 @@ const AdsManagement: React.FC = () => {
         try {
             await deleteDoc(doc(db, 'ads', adId));
             setAds(ads.filter(ad => ad.id !== adId));
+            if (editingAd?.id === adId) cancelEdit();
             setToast({ message: 'اشتہار حذف کر دیا گیا', type: 'success' });
         } catch (error) {
             setToast({ message: 'حذف کرنے میں غلطی ہوئی', type: 'error' });
@@ -128,7 +169,21 @@ const AdsManagement: React.FC = () => {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
                 {/* Ad Creation Form */}
                 <div className="lg:col-span-12">
-                    <form onSubmit={handleAddAd} className="bg-white dark:bg-zinc-900 p-8 md:p-12 rounded-[3rem] shadow-xl border border-gray-100 dark:border-zinc-800 space-y-8">
+                    <form onSubmit={handleSubmit} className="bg-white dark:bg-zinc-900 p-8 md:p-12 rounded-[3rem] shadow-xl border border-gray-100 dark:border-zinc-800 space-y-8">
+                        <div className="flex flex-row-reverse items-center justify-between">
+                            <h2 className="text-2xl font-black uppercase tracking-tight text-zinc-900 dark:text-white">
+                                {editingAd ? 'اشتہار تبدیل کریں' : 'نیا اشتہار'}
+                            </h2>
+                            {editingAd && (
+                                <button
+                                    type="button"
+                                    onClick={cancelEdit}
+                                    className="text-[10px] font-black uppercase tracking-widest text-red-600 hover:text-black transition-colors"
+                                >
+                                    تبدیلی منسوخ کریں
+                                </button>
+                            )}
+                        </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div className="space-y-6">
                                 <div className="space-y-4">
@@ -193,8 +248,8 @@ const AdsManagement: React.FC = () => {
                             disabled={uploading}
                             className="w-full bg-red-600 hover:bg-black text-white py-6 rounded-[2rem] font-black uppercase tracking-[0.3em] shadow-2xl shadow-red-600/20 transition-all flex flex-row-reverse items-center justify-center gap-3 active:scale-[0.98]"
                         >
-                            {uploading ? <Loader2 size={24} className="animate-spin" /> : <Plus size={24} />}
-                            {uploading ? 'اپ لوڈ ہو رہا ہے...' : 'اشتہار شامل کریں'}
+                            {uploading ? <Loader2 size={24} className="animate-spin" /> : editingAd ? <Layout size={24} /> : <Plus size={24} />}
+                            {uploading ? 'اپ لوڈ ہو رہا ہے...' : editingAd ? 'اشتہار اپ ڈیٹ کریں' : 'اشتہار لگائیں'}
                         </button>
                     </form>
                 </div>
@@ -217,14 +272,23 @@ const AdsManagement: React.FC = () => {
                                     </div>
                                     <div className="absolute bottom-4 left-4 flex gap-2">
                                         <button
+                                            onClick={() => handleEditClick(ad)}
+                                            className="p-2 bg-white/80 backdrop-blur-md text-zinc-900 rounded-xl hover:bg-white transition-all"
+                                            title="اشتہار تبدیل کریں"
+                                        >
+                                            <PenTool size={20} />
+                                        </button>
+                                        <button
                                             onClick={() => toggleAdStatus(ad.id, ad.active)}
                                             className={`p-2 rounded-xl backdrop-blur-md transition-all ${ad.active ? 'bg-green-500/80 text-white' : 'bg-gray-500/80 text-white'}`}
+                                            title={ad.active ? "روکیں" : "شروع کریں"}
                                         >
                                             {ad.active ? <ToggleRight size={20} /> : <ToggleLeft size={20} />}
                                         </button>
                                         <button
                                             onClick={() => deleteAd(ad.id)}
                                             className="p-2 bg-red-600/80 backdrop-blur-md text-white rounded-xl hover:bg-red-600 transition-all"
+                                            title="حذف کریں"
                                         >
                                             <Trash2 size={20} />
                                         </button>

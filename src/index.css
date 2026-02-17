@@ -135,3 +135,112 @@
     animation: ticker 30s linear infinite;
   }
 }
+
+/* Quill Dark Mode & Premium Styling */
+.dark .ql-toolbar {
+  @apply bg-zinc-800 border-zinc-700 !important;
+}
+
+.dark .ql-container {
+  @apply border-zinc-700 !important;
+}
+
+.dark .ql-editor {
+  @apply text-zinc-200 !important;
+}
+
+.dark .ql-stroke {
+  stroke: #a1a1aa !important;
+}
+
+.dark .ql-fill {
+  fill: #a1a1aa !important;
+}
+
+.dark .ql-picker {
+  color: #a1a1aa !important;
+}
+
+.dark .ql-picker-options {
+  @apply bg-zinc-800 border-zinc-700 !important;
+}
+
+.ql-editor,
+.article-content {
+  @apply text-lg leading-relaxed;
+}
+
+.ql-editor {
+  @apply min-h-[300px];
+}
+
+.quill-wrapper .ql-toolbar {
+  @apply rounded-t-3xl border-gray-100 dark:border-zinc-800 !important;
+}
+
+.quill-wrapper .ql-container {
+  @apply rounded-b-3xl border-gray-100 dark:border-zinc-800 !important;
+}
+
+/* RTL Support for Quill */
+.ql-rtl .ql-editor {
+  text-align: right;
+  direction: rtl;
+}
+
+.ql-editor.ql-blank::before {
+  left: auto !important;
+  right: 15px !important;
+}
+
+/* Explicit News Content Formatting */
+.article-content b,
+.article-content strong,
+.ql-editor b,
+.ql-editor strong {
+  @apply font-bold !important;
+}
+
+.article-content i,
+.article-content em,
+.ql-editor i,
+.ql-editor em {
+  @apply italic !important;
+}
+
+.article-content u,
+.ql-editor u {
+  @apply underline !important;
+}
+
+.article-content ul,
+.ql-editor ul {
+  list-style-type: disc !important;
+  @apply pr-8 my-4 !important;
+}
+
+.article-content ol,
+.ql-editor ol {
+  list-style-type: decimal !important;
+  @apply pr-8 my-4 !important;
+}
+
+.article-content a,
+.ql-editor a {
+  @apply text-red-600 underline hover:text-black dark:hover:text-white transition-colors !important;
+}
+
+.article-content h1,
+.ql-editor h1 {
+  @apply text-4xl font-black mb-4 leading-normal !important;
+}
+
+.article-content h2,
+.ql-editor h2 {
+  @apply text-3xl font-bold mb-3 leading-normal !important;
+}
+
+.article-content h3,
+.ql-editor h3 {
+  @apply text-2xl font-bold mb-2 leading-normal !important;
+}

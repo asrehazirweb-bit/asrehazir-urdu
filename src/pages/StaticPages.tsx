@@ -92,12 +92,12 @@ export function ContactPage() {
                                 ہمارے قارئین کے حلقے میں شامل ہوں۔ بریکنگ نیوز الرٹس براہ راست اپنے ان باکس یا واٹس ایپ پر کسی اور سے پہلے حاصل کریں۔
                             </p>
                             <div className="flex flex-col gap-4">
-                                <button className="w-full py-4 rounded-2xl bg-white text-black font-black uppercase text-sm hover:bg-red-600 hover:text-white transition-all shadow-xl">
-                                    نیوز لیٹر کو سبسکرائب کریں
-                                </button>
-                                <button className="w-full py-4 rounded-2xl border border-white/10 hover:border-red-600 font-black uppercase text-sm transition-all">
-                                    واٹس ایپ براڈکاسٹ
-                                </button>
+                                <a
+                                    href="mailto:asrehazir.web@gmail.com"
+                                    className="w-full py-4 rounded-2xl bg-white text-black font-black uppercase text-sm hover:bg-red-600 hover:text-white transition-all shadow-xl text-center flex flex-row-reverse items-center justify-center gap-2"
+                                >
+                                    <Mail size={18} /> ادارتی ڈیسک سے رابطہ کریں
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -356,7 +356,7 @@ export function PrivacyPolicyPage() {
                                 </li>
                             ))}
                         </ul>
-                    </section> section
+                    </section>
 
                     <section className="space-y-4">
                         <h3 className="text-3xl font-black text-zinc-900 dark:text-white uppercase tracking-tight flex items-center gap-3">

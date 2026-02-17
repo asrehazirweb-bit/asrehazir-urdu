@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowRight, Save, X, Info, Image as ImageIcon, Trash2, FileText } from 'lucide-react';
+import ReactQuill from 'react-quill-new';
+import 'react-quill-new/dist/quill.snow.css';
 import { doc, getDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '../../lib/firebase';
@@ -238,18 +240,27 @@ const UrduPostEditor: React.FC = () => {
                         </div>
 
                         {/* Content */}
-                        <div className="space-y-2">
+                        <div className="space-y-4">
                             <label className="text-sm font-black text-gray-400 flex items-center gap-2">
                                 <Info size={14} className="text-red-600" /> خبر کی تفصیل
                             </label>
-                            <textarea
-                                value={content}
-                                onChange={(e) => setContent(e.target.value)}
-                                rows={12}
-                                className={`w-full p-8 bg-gray-50/50 rounded-3xl border border-gray-50 focus:border-red-600 focus:bg-white outline-none transition-all text-xl leading-relaxed resize-none ${contentFont}`}
-                                placeholder="..."
-                                required
-                            />
+                            <div className={`quill-wrapper ql-rtl ${contentFont}`} dir="rtl">
+                                <ReactQuill
+                                    theme="snow"
+                                    value={content}
+                                    onChange={setContent}
+                                    modules={{
+                                        toolbar: [
+                                            [{ 'header': [1, 2, 3, false] }],
+                                            ['bold', 'italic', 'underline', 'strike'],
+                                            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                                            ['link', 'clean'],
+                                        ],
+                                    }}
+                                    className="bg-gray-50/50 rounded-3xl overflow-hidden border border-gray-100"
+                                    placeholder="تفصیل یہاں لکھیں..."
+                                />
+                            </div>
                         </div>
                     </form>
                 </div>

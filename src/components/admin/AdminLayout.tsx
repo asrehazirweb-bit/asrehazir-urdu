@@ -32,9 +32,9 @@ const AdminLayout: React.FC = () => {
     ];
 
     return (
-        <div className="flex h-screen bg-[#f8f9fa] dark:bg-zinc-950 transition-colors duration-500 font-serif overflow-hidden" dir="rtl">
+        <div className="flex flex-row-reverse h-screen bg-[#f8f9fa] dark:bg-zinc-950 transition-colors duration-500 font-serif overflow-hidden">
             {/* Mobile Header */}
-            <div className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-white dark:bg-zinc-900 border-b border-gray-100 dark:border-zinc-800 flex items-center justify-between px-6 z-30">
+            <div className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-white dark:bg-zinc-900 border-b border-gray-100 dark:border-zinc-800 flex items-center justify-between px-6 z-30" dir="rtl">
                 <div className="flex items-center gap-3">
                     <div className="w-8 h-8 bg-red-600 rounded-xl flex items-center justify-center shadow-lg shadow-red-600/20">
                         <ShieldCheck className="text-white" size={18} />
@@ -55,7 +55,7 @@ const AdminLayout: React.FC = () => {
                 lg:translate-x-0 lg:static lg:inset-0
                 ${isMobileSidebarOpen ? 'translate-x-0' : 'translate-x-full'}
             `}>
-                <div className="p-8 border-b border-gray-50 dark:border-zinc-800 flex items-center justify-between">
+                <div className="p-8 border-b border-gray-50 dark:border-zinc-800 flex items-center justify-between" dir="rtl">
                     <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-red-600 rounded-xl flex items-center justify-center shadow-lg shadow-red-600/20">
                             <ShieldCheck className="text-white" size={24} />
@@ -70,7 +70,7 @@ const AdminLayout: React.FC = () => {
                     </button>
                 </div>
 
-                <div className="flex-1 overflow-y-auto px-4 py-8 space-y-8 text-right">
+                <div className="flex-1 overflow-y-auto px-4 py-8 space-y-8" dir="rtl">
                     <div>
                         <p className="px-4 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-4">آپریشنز</p>
                         <nav className="space-y-1.5 font-serif">
@@ -109,7 +109,7 @@ const AdminLayout: React.FC = () => {
                     </div>
                 </div>
 
-                <div className="p-6 border-t border-gray-50 dark:border-zinc-800 bg-gray-50/50 dark:bg-zinc-900/50">
+                <div className="p-6 border-t border-gray-50 dark:border-zinc-800 bg-gray-50/50 dark:bg-zinc-900/50" dir="rtl">
                     <div className="bg-white dark:bg-zinc-800 p-4 rounded-2xl border border-gray-100 dark:border-zinc-700 shadow-sm mb-4">
                         <div className="flex flex-row-reverse items-center gap-3">
                             <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-red-600 to-red-800 flex items-center justify-center text-white font-black text-xs">
@@ -146,7 +146,7 @@ const AdminLayout: React.FC = () => {
                 <div className="max-w-6xl mx-auto">
                     {/* Breadcrumbs / Top Bar Placeholder */}
                     <div className="flex items-center justify-between mb-8 pb-6 border-b border-gray-200/50 dark:border-zinc-800/50">
-                        <div className="flex items-center gap-2 text-[10px] uppercase font-black tracking-[0.2em] text-gray-400">
+                        <div className="flex items-center gap-2 text-[10px] uppercase font-black tracking-[0.2em] text-gray-400" dir="rtl">
                             <span className="text-gray-900 dark:text-white italic">{location.pathname.split('/').pop()?.replace('-', ' ') || 'ڈیش بورڈ'}</span>
                             <span className="text-red-600">/</span>
                             <span>ایڈمن</span>

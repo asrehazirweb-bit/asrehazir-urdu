@@ -130,7 +130,7 @@ const ArticleDetail: React.FC = () => {
                     <span className="text-gray-400 truncate max-w-[150px]">{article.subCategory || 'تازہ ترین'}</span>
                 </div>
 
-                <h1 className="text-3xl md:text-5xl lg:text-6xl font-serif font-black text-gray-900 dark:text-white leading-[1.3] mb-8 tracking-tight">
+                <h1 className={`text-3xl md:text-5xl lg:text-6xl font-black text-gray-900 dark:text-white leading-[1.3] mb-8 tracking-tight ${article.titleFont || 'font-serif'}`}>
                     {article.title}
                 </h1>
 
@@ -187,7 +187,7 @@ const ArticleDetail: React.FC = () => {
                     <div className="lg:col-span-12">
                         <div className="prose prose-lg dark:prose-invert max-w-none text-right">
                             {article.content.split('\n').filter(p => p.trim() !== '').map((para, index) => (
-                                <p key={index} className="text-gray-800 dark:text-gray-200 font-serif leading-[2.2] mb-6 text-lg md:text-xl">
+                                <p key={index} className={`text-gray-800 dark:text-gray-200 leading-[2.2] mb-6 text-2xl md:text-2xl ${article.contentFont || 'font-serif'}`}>
                                     {para}
                                 </p>
                             ))}

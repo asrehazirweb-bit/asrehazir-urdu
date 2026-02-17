@@ -23,6 +23,8 @@ export interface UrduPost {
     status: 'published' | 'draft';
     createdAt: Timestamp;
     updatedAt: Timestamp;
+    titleFont?: string;
+    contentFont?: string;
 }
 
 // Urdu posts collection path: news (matching Home page and useNews hook)
@@ -50,6 +52,23 @@ export const newsService = {
             category: 'Deccan News', // Default category for Urdu posts
             subCategory: 'Top Stories',
             imageUrl: imageUrl || '',
+            status: 'published',
+            author: 'عصرِ حاضر ڈیسک',
+            createdAt: serverTimestamp(),
+            updatedAt: serverTimestamp(),
+        });
+    },
+
+    // 2b. Add New Urdu Post with Fonts
+    addPostWithFonts: async (title: string, content: string, imageUrl: string, titleFont: string, contentFont: string) => {
+        return await addDoc(postsCollection, {
+            title,
+            content,
+            category: 'Deccan News',
+            subCategory: 'Top Stories',
+            imageUrl,
+            titleFont,
+            contentFont,
             status: 'published',
             author: 'عصرِ حاضر ڈیسک',
             createdAt: serverTimestamp(),

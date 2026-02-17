@@ -27,6 +27,8 @@ export function Header() {
         { label: 'مضامین اور مقالہ جات', path: '/articles-essays' },
         { label: 'کھیل اور تفریح', path: '/sports-entertainment' },
         { label: 'جرائم اور حادثات', path: '/crime-accidents' },
+        { label: 'ہمارے بارے میں', path: '/about-us' },
+        { label: 'رابطہ کریں', path: '/contact' },
     ];
 
     // Lock background scroll when menu is open

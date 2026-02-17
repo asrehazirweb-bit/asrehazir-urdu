@@ -7,12 +7,38 @@ import ConfirmationModal from '../../components/admin/ConfirmationModal';
 import Toast from '../../components/ui/Toast';
 
 const CATEGORIES = [
-    { name: 'عالمی خبریں', subCategories: ['عالمی', 'مشرقِ وسطی', 'بین الاقوامی', 'سفارت کاری'] },
-    { name: 'قومی خبریں', subCategories: ['قومی', 'سیاست', 'حکمرانی', 'ریاستیں'] },
-    { name: 'دکن نیوز', subCategories: ['حیدرآباد', 'تلنگانہ', 'آندھرا پردیش', 'جنوبی ہند'] },
-    { name: 'مضامین اور مقالہ جات', subCategories: ['اداریہ', 'تجزیہ', 'رائے', 'خصوصی رپورٹ'] },
-    { name: 'کھیل اور تفریح', subCategories: ['کرکٹ', 'سنیما', 'لوک فن', 'لائف اسٹائل'] },
+    { name: 'عالمی خبریں', subCategories: ['ٹاپ اسٹوریز', 'مشرق وسطیٰ', 'بین الاقوامی', 'سفارت کاری'] },
+    { name: 'قومی خبریں', subCategories: ['ٹاپ اسٹوریز', 'سیاست', 'گورننس', 'ریاستیں'] },
+    { name: 'دکن نیوز', subCategories: ['حیدرآباد', 'تلنگانہ', 'آندھرا پردیش', 'جنوبی بھارت'] },
+    { name: 'مضامین اور مقالہ جات', subCategories: ['ادارتی', 'تجزیہ', 'رائے', 'خصوصی رپورٹس'] },
+    { name: 'کھیل اور تفریح', subCategories: ['کرکٹ', 'سنیما', 'OTT', 'لائف اسٹائل'] },
     { name: 'جرائم اور حادثات', subCategories: ['مقامی جرائم', 'تحقیقات', 'سیکیورٹی', 'حادثات'] }
+];
+
+const FONTS_TITLE = [
+    { id: 'font-noto-urdu', name: 'Nasta`liq (Standard)' },
+    { id: 'font-amiri', name: 'Amiri (Classical)' },
+    { id: 'font-reem-kufi', name: 'Reem Kufi (Artistic)' },
+    { id: 'font-scheherazade', name: 'Scheherazade (Traditional)' },
+    { id: 'font-tajawal', name: 'Tajawal (Modern)' },
+    { id: 'font-aref-ruqaa', name: 'Aref Ruqaa (Calligraphic)' },
+    { id: 'font-changa', name: 'Changa (Bold)' },
+    { id: 'font-lateef', name: 'Lateef (Soft)' },
+    { id: 'font-harmattan', name: 'Harmattan (Clean)' },
+    { id: 'font-markazi-text', name: 'Markazi (Balanced)' }
+];
+
+const FONTS_CONTENT = [
+    { id: 'font-noto-urdu', name: 'Nasta`liq' },
+    { id: 'font-markazi-text', name: 'Markazi Text' },
+    { id: 'font-harmattan', name: 'Harmattan' },
+    { id: 'font-lateef', name: 'Lateef' },
+    { id: 'font-scheherazade', name: 'Scheherazade' },
+    { id: 'font-tajawal', name: 'Tajawal' },
+    { id: 'font-amiri', name: 'Amiri' },
+    { id: 'font-reem-kufi', name: 'Reem Kufi' },
+    { id: 'font-noto-sans-arabic', name: 'Noto Sans Arabic' },
+    { id: 'font-serif', name: 'Default Serif' }
 ];
 
 const AddNews: React.FC = () => {
@@ -25,6 +51,8 @@ const AddNews: React.FC = () => {
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [successMessage, setSuccessMessage] = useState(false);
+    const [titleFont, setTitleFont] = useState('font-noto-urdu');
+    const [contentFont, setContentFont] = useState('font-noto-urdu');
 
     // New state for modal and toast
     const [isClearModalOpen, setIsClearModalOpen] = useState(false);
@@ -34,12 +62,14 @@ const AddNews: React.FC = () => {
     useEffect(() => {
         const draft = localStorage.getItem('asre-hazir-urdu-draft');
         if (draft) {
-            const { title: dTitle, content: dContent, category: dCategory, subCategory: dSubCategory, section: dSection } = JSON.parse(draft);
+            const { title: dTitle, content: dContent, category: dCategory, subCategory: dSubCategory, section: dSection, titleFont: dTitleFont, contentFont: dContentFont } = JSON.parse(draft);
             setTitle(dTitle || '');
             setContent(dContent || '');
             setCategory(dCategory || 'عالمی خبریں');
-            setSubCategory(dSubCategory || 'عالمی');
-            setSection(dSection || 'خبرِ خاص');
+            setSubCategory(dSubCategory || 'ٹاپ اسٹوریز');
+            setSection(dSection || 'ٹاپ اسٹوریز');
+            setTitleFont(dTitleFont || 'font-noto-urdu');
+            setContentFont(dContentFont || 'font-noto-urdu');
         }
     }, []);
 
@@ -47,11 +77,11 @@ const AddNews: React.FC = () => {
     useEffect(() => {
         const timer = setTimeout(() => {
             if (title || content) {
-                localStorage.setItem('asre-hazir-urdu-draft', JSON.stringify({ title, content, category, subCategory, section }));
+                localStorage.setItem('asre-hazir-urdu-draft', JSON.stringify({ title, content, category, subCategory, section, titleFont, contentFont }));
             }
         }, 2000);
         return () => clearTimeout(timer);
-    }, [title, content, category, subCategory, section]);
+    }, [title, content, category, subCategory, section, titleFont, contentFont]);
 
     const handleClearDraftClick = () => {
         setIsClearModalOpen(true);
@@ -115,9 +145,11 @@ const AddNews: React.FC = () => {
                 section,
                 category,
                 subCategory,
-                imageUrl: imageUrl || 'https://via.placeholder.com/800x400?text=Asre+Hazir+Urdu+News',
+                titleFont,
+                contentFont,
+                imageUrl: imageUrl,  // Single image field
                 createdAt: serverTimestamp(),
-                author: auth.currentUser?.displayName || 'عصرِ حاضر ڈیسک',
+                author: auth.currentUser?.displayName || 'عصر حاضر ڈیسک',
                 authorId: auth.currentUser?.uid,
                 status: 'published'
             });
@@ -189,17 +221,45 @@ const AddNews: React.FC = () => {
                         <form onSubmit={handleSubmit} className="p-8 md:p-12 space-y-12">
                             {/* Headline */}
                             <div className="space-y-4">
-                                <label className="flex flex-row-reverse items-center gap-2 text-sm font-bold text-gray-400">
-                                    <Type className="w-4 h-4 text-red-600" /> خبر کی سرخی
+                                <label className="flex items-center gap-2 text-[12px] font-black uppercase tracking-[0.2em] text-gray-400">
+                                    <Type className="w-3.5 h-3.5 text-red-600" /> مضمون کی سرخی
                                 </label>
                                 <input
                                     type="text"
                                     value={title}
                                     onChange={(e) => setTitle(e.target.value)}
-                                    className="w-full text-3xl md:text-5xl font-serif font-black border-b-2 border-gray-100 dark:border-zinc-800 bg-transparent py-6 focus:border-red-600 outline-none transition-all dark:text-white text-right"
-                                    placeholder="سرخی یہاں لکھیں..."
+                                    className={`w-full text-3xl md:text-5xl font-black border-b-2 border-gray-100 dark:border-zinc-800 bg-transparent py-4 focus:border-red-600 outline-none transition-all dark:text-white ${titleFont}`}
+                                    placeholder="سرخی درج کریں..."
                                     required
                                 />
+                            </div>
+
+                            {/* Font Strategy Selection */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 bg-zinc-50 dark:bg-zinc-800/30 p-8 rounded-3xl border border-gray-100 dark:border-zinc-800">
+                                <div className="space-y-4">
+                                    <label className="flex items-center gap-2 text-[12px] font-black uppercase tracking-[0.2em] text-gray-400">
+                                        <Sparkles className="w-3.5 h-3.5 text-red-600" /> سرخی کا فونٹ
+                                    </label>
+                                    <select
+                                        value={titleFont}
+                                        onChange={(e) => setTitleFont(e.target.value)}
+                                        className="w-full p-4 rounded-xl border border-gray-100 dark:border-zinc-800 bg-white dark:bg-zinc-800 focus:ring-4 focus:ring-red-600/10 outline-none transition-all dark:text-white font-bold text-xs h-14"
+                                    >
+                                        {FONTS_TITLE.map(f => <option key={f.id} value={f.id} className={f.id}>{f.name}</option>)}
+                                    </select>
+                                </div>
+                                <div className="space-y-4">
+                                    <label className="flex items-center gap-2 text-[12px] font-black uppercase tracking-[0.2em] text-gray-400">
+                                        <FileText className="w-3.5 h-3.5 text-red-600" /> مواد کا فونٹ
+                                    </label>
+                                    <select
+                                        value={contentFont}
+                                        onChange={(e) => setContentFont(e.target.value)}
+                                        className="w-full p-4 rounded-xl border border-gray-100 dark:border-zinc-800 bg-white dark:bg-zinc-800 focus:ring-4 focus:ring-red-600/10 outline-none transition-all dark:text-white font-bold text-xs h-14"
+                                    >
+                                        {FONTS_CONTENT.map(f => <option key={f.id} value={f.id} className={f.id}>{f.name}</option>)}
+                                    </select>
+                                </div>
                             </div>
 
                             {/* Placement Strategy */}
@@ -295,15 +355,15 @@ const AddNews: React.FC = () => {
 
                             {/* Body */}
                             <div className="space-y-4">
-                                <label className="flex flex-row-reverse items-center gap-2 text-sm font-bold text-gray-400">
-                                    <FileText className="w-4 h-4 text-red-600" /> خبر کی تفصیل
+                                <label className="flex items-center gap-2 text-[12px] font-black uppercase tracking-[0.2em] text-gray-400">
+                                    <FileText className="w-3.5 h-3.5 text-red-600" /> کہانی کی تفصیل
                                 </label>
                                 <textarea
                                     value={content}
                                     onChange={(e) => setContent(e.target.value)}
                                     rows={10}
-                                    className="w-full p-8 rounded-3xl border border-gray-100 dark:border-zinc-800 bg-gray-50 dark:bg-zinc-800/50 focus:ring-4 focus:ring-red-600/10 outline-none transition-all dark:text-white font-sans leading-relaxed text-2xl text-right"
-                                    placeholder="خبر کی مکمل تفصیل یہاں لکھیں..."
+                                    className={`w-full p-8 rounded-3xl border border-gray-100 dark:border-zinc-800 bg-gray-50 dark:bg-zinc-800/50 focus:ring-4 focus:ring-red-600/10 outline-none transition-all dark:text-white leading-relaxed text-2xl ${contentFont}`}
+                                    placeholder="تفصیل یہاں لکھیں..."
                                     required
                                 />
                             </div>

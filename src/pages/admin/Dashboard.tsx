@@ -2,9 +2,11 @@ import React from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { FileText, Users, Eye, TrendingUp, Clock, BarChart3, ChevronRight, Zap } from 'lucide-react';
 import { useNews } from '../../hooks/useNews';
+import { useNavigate, Link } from 'react-router-dom';
 
 const AdminDashboard: React.FC = () => {
     const { user } = useAuth();
+    const navigate = useNavigate();
     const { news, loading, formatTime } = useNews('All', 5);
     const { news: allNews } = useNews('All', 1000);
 
@@ -41,10 +43,16 @@ const AdminDashboard: React.FC = () => {
                     </p>
 
                     <div className="mt-10 flex flex-wrap gap-4">
-                        <button className="bg-red-600 hover:bg-black text-white px-10 py-4 rounded-xl font-bold text-sm transition-all flex items-center gap-3 shadow-lg shadow-red-600/20 group">
+                        <button
+                            onClick={() => navigate('/admin/add-news')}
+                            className="bg-red-600 hover:bg-black text-white px-10 py-4 rounded-xl font-bold text-sm transition-all flex items-center gap-3 shadow-lg shadow-red-600/20 group"
+                        >
                             <Zap size={16} className="group-hover:animate-bounce" /> نئی خبر شائع کریں
                         </button>
-                        <button className="bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white px-10 py-4 rounded-xl font-bold text-sm transition-all hover:bg-zinc-200 dark:hover:bg-zinc-700">
+                        <button
+                            onClick={() => window.open('/', '_blank')}
+                            className="bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white px-10 py-4 rounded-xl font-bold text-sm transition-all hover:bg-zinc-200 dark:hover:bg-zinc-700"
+                        >
                             لائیو پورٹل دیکھیں
                         </button>
                     </div>
@@ -82,7 +90,10 @@ const AdminDashboard: React.FC = () => {
                             <h2 className="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tight">حالیہ سرگرمیاں</h2>
                             <p className="text-[12px] text-gray-400 font-bold mt-1">نیوزروم ڈیسک سے براہ راست</p>
                         </div>
-                        <button className="text-sm font-bold text-red-600 hover:text-black dark:hover:text-white transition-colors flex items-center gap-2">
+                        <button
+                            onClick={() => navigate('/admin/manage')}
+                            className="text-sm font-bold text-red-600 hover:text-black dark:hover:text-white transition-colors flex items-center gap-2"
+                        >
                             <ChevronRight size={16} className="rotate-180" /> مکمل تفصیلات
                         </button>
                     </div>
@@ -119,8 +130,16 @@ const AdminDashboard: React.FC = () => {
                                     </div>
                                     <div className="hidden sm:block">
                                         <div className="flex items-center gap-4">
-                                            <span className="text-[12px] font-bold text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">ایڈٹ کریں</span>
-                                            <div className="w-10 h-10 rounded-full border border-gray-100 dark:border-zinc-800 flex items-center justify-center text-gray-400 group-hover:text-red-600 group-hover:border-red-600 transition-all cursor-pointer">
+                                            <Link
+                                                to={`/admin/editor/${item.id}`}
+                                                className="text-[12px] font-bold text-gray-400 hover:text-red-600 transition-all"
+                                            >
+                                                ایڈٹ کریں
+                                            </Link>
+                                            <div
+                                                onClick={() => window.open(`/news/${item.id}`, '_blank')}
+                                                className="w-10 h-10 rounded-full border border-gray-100 dark:border-zinc-800 flex items-center justify-center text-gray-400 group-hover:text-red-600 group-hover:border-red-600 transition-all cursor-pointer"
+                                            >
                                                 <ChevronRight size={18} className="rotate-180" />
                                             </div>
                                         </div>
@@ -160,7 +179,10 @@ const AdminDashboard: React.FC = () => {
                                 )) : <div className="text-sm text-zinc-500 text-center py-4">کوئی ڈیٹا دستیاب نہیں ہے</div>}
                             </div>
 
-                            <button className="w-full mt-8 py-4 rounded-xl border border-zinc-800 text-[12px] font-bold hover:bg-white hover:text-black transition-all">
+                            <button
+                                onClick={() => navigate('/admin/manage')}
+                                className="w-full mt-8 py-4 rounded-xl border border-zinc-800 text-[12px] font-bold hover:bg-white hover:text-black transition-all"
+                            >
                                 تفصیلی تجزیہ دیکھیں
                             </button>
                         </div>

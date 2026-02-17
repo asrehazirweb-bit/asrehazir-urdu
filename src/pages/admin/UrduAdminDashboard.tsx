@@ -82,7 +82,13 @@ const UrduAdminDashboard: React.FC = () => {
                             onClick={() => navigate('/admin/add-news')}
                             className="w-full sm:w-auto bg-red-600 hover:bg-black text-white px-10 py-4 rounded-xl font-bold text-sm transition-all flex flex-row-reverse items-center justify-center gap-3 shadow-lg shadow-red-600/20 group"
                         >
-                            براڈکاسٹ نیوز ڈیسک <Plus size={16} className="group-hover:rotate-90 transition-transform" />
+                            نئی خبر شائع کریں <Plus size={16} className="group-hover:rotate-90 transition-transform" />
+                        </button>
+                        <button
+                            onClick={() => window.open('/', '_blank')}
+                            className="w-full sm:w-auto bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white px-10 py-4 rounded-xl font-bold text-sm transition-all hover:bg-zinc-200 dark:hover:bg-zinc-700"
+                        >
+                            لائیو پورٹل دیکھیں
                         </button>
                     </div>
                 </div>

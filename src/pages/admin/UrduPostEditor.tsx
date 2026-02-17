@@ -1,12 +1,38 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowRight, Save, X, Info, Image as ImageIcon, Trash2 } from 'lucide-react';
+import { ArrowRight, Save, X, Info, Image as ImageIcon, Trash2, FileText } from 'lucide-react';
 import { doc, getDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '../../lib/firebase';
 import { newsService } from '../../services/newsService';
 import type { UrduPost } from '../../services/newsService';
 import Toast from '../../components/ui/Toast';
+
+const FONTS_TITLE = [
+    { id: 'font-noto-urdu', name: 'Nasta`liq (Standard)' },
+    { id: 'font-amiri', name: 'Amiri (Classical)' },
+    { id: 'font-reem-kufi', name: 'Reem Kufi (Artistic)' },
+    { id: 'font-scheherazade', name: 'Scheherazade (Traditional)' },
+    { id: 'font-tajawal', name: 'Tajawal (Modern)' },
+    { id: 'font-aref-ruqaa', name: 'Aref Ruqaa (Calligraphic)' },
+    { id: 'font-changa', name: 'Changa (Bold)' },
+    { id: 'font-lateef', name: 'Lateef (Soft)' },
+    { id: 'font-harmattan', name: 'Harmattan (Clean)' },
+    { id: 'font-markazi-text', name: 'Markazi (Balanced)' }
+];
+
+const FONTS_CONTENT = [
+    { id: 'font-noto-urdu', name: 'Nasta`liq' },
+    { id: 'font-markazi-text', name: 'Markazi Text' },
+    { id: 'font-harmattan', name: 'Harmattan' },
+    { id: 'font-lateef', name: 'Lateef' },
+    { id: 'font-scheherazade', name: 'Scheherazade' },
+    { id: 'font-tajawal', name: 'Tajawal' },
+    { id: 'font-amiri', name: 'Amiri' },
+    { id: 'font-reem-kufi', name: 'Reem Kufi' },
+    { id: 'font-noto-sans-arabic', name: 'Noto Sans Arabic' },
+    { id: 'font-serif', name: 'Default Serif' }
+];
 
 const UrduPostEditor: React.FC = () => {
     const { id } = useParams();
@@ -19,6 +45,8 @@ const UrduPostEditor: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [initialLoading, setInitialLoading] = useState(!!id);
     const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+    const [titleFont, setTitleFont] = useState('font-noto-urdu');
+    const [contentFont, setContentFont] = useState('font-noto-urdu');
 
     useEffect(() => {
         if (id) {
@@ -31,6 +59,8 @@ const UrduPostEditor: React.FC = () => {
                     if (data.imageUrl) {
                         setExistingImageUrl(data.imageUrl);
                     }
+                    if (data.titleFont) setTitleFont(data.titleFont);
+                    if (data.contentFont) setContentFont(data.contentFont);
                 }
                 setInitialLoading(false);
             };
@@ -65,10 +95,14 @@ const UrduPostEditor: React.FC = () => {
             }
 
             if (id) {
-                await newsService.updatePost(id, { title, content, imageUrl: finalImageUrl });
+                await newsService.updatePost(id, { title, content, imageUrl: finalImageUrl, titleFont, contentFont });
                 setToast({ message: 'خبر کامیابی کے ساتھ اپ ڈیٹ کر دی گئی ہے۔', type: 'success' });
             } else {
-                await newsService.addPost(title, content, finalImageUrl);
+                // Modified newsService.addPost to accept fonts if needed, or pass object
+                // Given the current service structure, we'll pass an object if updatePost allows, 
+                // but let's check addPost signature. It's title, content, imageUrl.
+                // I should update newsService.addPost too.
+                await newsService.addPostWithFonts(title, content, finalImageUrl, titleFont, contentFont);
                 setToast({ message: 'نئی خبر کامیابی کے ساتھ شامل کر دی گئی ہے۔', type: 'success' });
             }
 
@@ -158,19 +192,49 @@ const UrduPostEditor: React.FC = () => {
                             </div>
                         </div>
 
-                        {/* Title */}
-                        <div className="space-y-2">
-                            <label className="text-sm font-black text-gray-400 flex items-center gap-2">
-                                <Info size={14} className="text-red-600" /> خبر کی سرخی
-                            </label>
-                            <input
-                                type="text"
-                                value={title}
-                                onChange={(e) => setTitle(e.target.value)}
-                                className="w-full text-4xl font-bold border-b-2 border-gray-50 focus:border-red-600 bg-transparent py-4 outline-none transition-all placeholder:text-gray-100"
-                                placeholder="..."
-                                required
-                            />
+                        {/* Title & Font Selection */}
+                        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-end">
+                            <div className="md:col-span-8 space-y-2">
+                                <label className="text-sm font-black text-gray-400 flex items-center gap-2">
+                                    <Info size={14} className="text-red-600" /> خبر کی سرخی
+                                </label>
+                                <input
+                                    type="text"
+                                    value={title}
+                                    onChange={(e) => setTitle(e.target.value)}
+                                    className={`w-full text-4xl font-bold border-b-2 border-gray-50 focus:border-red-600 bg-transparent py-4 outline-none transition-all placeholder:text-gray-100 ${titleFont}`}
+                                    placeholder="..."
+                                    required
+                                />
+                            </div>
+                            <div className="md:col-span-4 space-y-2">
+                                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                                    <Save size={12} className="text-red-600" /> سرخی کا فونٹ
+                                </label>
+                                <select
+                                    value={titleFont}
+                                    onChange={(e) => setTitleFont(e.target.value)}
+                                    className="w-full p-4 rounded-2xl bg-gray-50/50 border border-gray-50 focus:border-red-600 outline-none text-xs font-bold"
+                                >
+                                    {FONTS_TITLE.map(f => <option key={f.id} value={f.id} className={f.id}>{f.name}</option>)}
+                                </select>
+                            </div>
+                        </div>
+
+                        {/* Content Font selection */}
+                        <div className="bg-zinc-50/50 p-6 rounded-3xl border border-gray-50">
+                            <div className="max-w-xs space-y-2">
+                                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                                    <FileText size={12} className="text-red-600" /> مواد کا فونٹ
+                                </label>
+                                <select
+                                    value={contentFont}
+                                    onChange={(e) => setContentFont(e.target.value)}
+                                    className="w-full p-3 rounded-xl bg-white border border-gray-100 focus:border-red-600 outline-none text-xs font-bold"
+                                >
+                                    {FONTS_CONTENT.map(f => <option key={f.id} value={f.id} className={f.id}>{f.name}</option>)}
+                                </select>
+                            </div>
                         </div>
 
                         {/* Content */}
@@ -182,7 +246,7 @@ const UrduPostEditor: React.FC = () => {
                                 value={content}
                                 onChange={(e) => setContent(e.target.value)}
                                 rows={12}
-                                className="w-full p-8 bg-gray-50/50 rounded-3xl border border-gray-50 focus:border-red-600 focus:bg-white outline-none transition-all text-xl leading-relaxed resize-none"
+                                className={`w-full p-8 bg-gray-50/50 rounded-3xl border border-gray-50 focus:border-red-600 focus:bg-white outline-none transition-all text-xl leading-relaxed resize-none ${contentFont}`}
                                 placeholder="..."
                                 required
                             />

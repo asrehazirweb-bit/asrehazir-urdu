@@ -27,7 +27,9 @@ export function Home() {
         category: heroNews[0].category,
         image: heroNews[0].imageUrl,
         time: formatTime(heroNews[0].createdAt),
-        excerpt: heroNews[0].content.substring(0, 200) + '...'
+        excerpt: heroNews[0].content.substring(0, 200) + '...',
+        titleFont: heroNews[0].titleFont,
+        contentFont: heroNews[0].contentFont
     } : null;
 
     // Use news from index 6 to 14 for the sidebar top stories
@@ -36,14 +38,16 @@ export function Home() {
         title: item.title,
         category: item.category,
         image: item.imageUrl,
-        time: formatTime(item.createdAt)
+        time: formatTime(item.createdAt),
+        titleFont: (item as any).titleFont
     }));
 
     const latestNewsItems = news.slice(0, 10).map(item => ({
         id: item.id,
         location: item.category,
         title: item.title,
-        excerpt: item.content.substring(0, 120) + '...'
+        excerpt: item.content.substring(0, 120) + '...',
+        titleFont: (item as any).titleFont
     }));
 
     const telanganaNews = news.filter(n =>
@@ -58,28 +62,31 @@ export function Home() {
         image: telanganaNews[0].imageUrl,
         category: telanganaNews[0].category,
         time: formatTime(telanganaNews[0].createdAt),
-        excerpt: telanganaNews[0].content.substring(0, 150) + '...'
+        excerpt: telanganaNews[0].content.substring(0, 150) + '...',
+        titleFont: (telanganaNews[0] as any).titleFont
     } : null;
 
     const telanganaList = telanganaNews.slice(1, 7).map(item => ({
         id: item.id,
         title: item.title,
         time: formatTime(item.createdAt),
-        image: item.imageUrl
+        image: item.imageUrl,
+        titleFont: (item as any).titleFont
     }));
 
     const regionalItems = news.slice(10, 16).map(item => ({
-
         id: item.id,
         time: formatTime(item.createdAt),
         title: item.title,
-        image: item.imageUrl
+        image: item.imageUrl,
+        titleFont: (item as any).titleFont
     }));
 
     const offbeatItems = news.slice(16, 20).map(item => ({
         id: item.id,
         time: formatTime(item.createdAt),
-        title: item.title
+        title: item.title,
+        titleFont: (item as any).titleFont
     }));
 
     const worldNews = news.filter(n =>
@@ -91,7 +98,8 @@ export function Home() {
         title: item.title,
         category: item.category,
         image: item.imageUrl,
-        time: formatTime(item.createdAt)
+        time: formatTime(item.createdAt),
+        titleFont: (item as any).titleFont
     }));
 
     return (

@@ -46,7 +46,7 @@ export function Footer() {
                         <li><Link to="/about-us" className="hover:text-white transition-colors">ہمارے بارے میں</Link></li>
                         <li><Link to="/contact" className="hover:text-white transition-colors">رابطہ کریں</Link></li>
                         <li><Link to="/advertisements" className="hover:text-white transition-colors">اشتہارات</Link></li>
-                        <li><a href="#" className="hover:text-white transition-colors">گیسٹ کالمز</a></li>
+                        <li><Link to="/guest-columns" className="hover:text-white transition-colors">گیسٹ کالمز</Link></li>
                     </ul>
                 </div>
 
@@ -63,9 +63,10 @@ export function Footer() {
 
             <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-500 font-sans uppercase tracking-wide">
                 <div className="flex gap-6">
-                    <a href="#" className="hover:text-white">پرائیویسی پالیسی</a>
-                    <a href="#" className="hover:text-white">استعمال کی شرائط</a>
-                    <a href="#" className="hover:text-white">ہم سے رابطہ کریں</a>
+                    <Link to="/about-us" className="hover:text-white transition-colors">ہمارے بارے میں</Link>
+                    <Link to="/contact" className="hover:text-white transition-colors">ہم سے رابطہ کریں</Link>
+                    <Link to="/privacy-policy" className="hover:text-white transition-colors">پرائیویسی پالیسی</Link>
+                    <Link to="/terms-of-use" className="hover:text-white transition-colors">استعمال کی شرائط</Link>
                 </div>
                 <div>
                     استحکام کے لیے ڈیزائن اور تیار کیا گیا۔

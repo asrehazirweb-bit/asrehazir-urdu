@@ -8,6 +8,8 @@ interface NewsItem {
     time: string;
     image?: string;
     category?: string;
+    titleFont?: string;
+    contentFont?: string;
 }
 
 interface SidebarProps {
@@ -43,7 +45,7 @@ export function Sidebar({ offbeatItems = [], topStories = [] }: SidebarProps) {
                                     </div>
                                 )}
                                 <div className="flex flex-col justify-center w-full">
-                                    <h4 className="font-serif font-bold text-xs leading-snug text-gray-800 dark:text-gray-200 line-clamp-2 group-hover:text-accent transition-colors">
+                                    <h4 className={`font-bold text-xs leading-snug text-gray-800 dark:text-gray-200 line-clamp-2 group-hover:text-accent transition-colors ${story.titleFont || 'font-serif'}`}>
                                         {story.title}
                                     </h4>
                                     <span className="text-[10px] text-gray-400 font-sans mt-1">{story.time}</span>
@@ -51,10 +53,11 @@ export function Sidebar({ offbeatItems = [], topStories = [] }: SidebarProps) {
                             </Link>
                         ))}
                     </div>
-                    <Link to="/world">
-                        <button className="w-full py-2 bg-[#004d99]/10 text-[#004d99] text-xs font-bold uppercase tracking-widest hover:bg-[#004d99]/20 transition-colors">
-                            سب دیکھیں
-                        </button>
+                    <Link
+                        to="/world"
+                        className="w-full py-4 bg-[#004d99]/10 text-[#004d99] text-xs font-black uppercase tracking-[0.2em] hover:bg-[#004d99]/20 transition-all text-center block"
+                    >
+                        سب دیکھیں
                     </Link>
                 </div>
             )}
@@ -75,7 +78,7 @@ export function Sidebar({ offbeatItems = [], topStories = [] }: SidebarProps) {
                             <Link key={`${item.id}-${idx}`} to={`/news/${item.id}`} className="p-4 border-b border-gray-100 dark:border-white/5 last:border-0 relative pr-8 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors cursor-pointer group block text-right">
                                 <div className="absolute right-4 top-6 w-1.5 h-1.5 rounded-full bg-gray-300 group-hover:bg-accent transition-colors"></div>
                                 <span className="text-[10px] text-gray-400 font-sans mb-1 block">{item.time}</span>
-                                <h3 className="font-serif font-bold text-sm leading-snug text-gray-800 dark:text-gray-200 line-clamp-2 group-hover:text-accent dark:group-hover:text-accent transition-colors">
+                                <h3 className={`font-bold text-sm leading-snug text-gray-800 dark:text-gray-200 line-clamp-2 group-hover:text-accent dark:group-hover:text-accent transition-colors ${item.titleFont || 'font-serif'}`}>
                                     {item.title}
                                 </h3>
                             </Link>

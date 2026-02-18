@@ -26,13 +26,13 @@ export function TelanganaSection({ featured, items }: TelanganaSectionProps) {
 
             <div className="flex flex-row-reverse items-center justify-between mb-6 border-b border-gray-200 dark:border-white/10 pb-2">
                 <div className="flex flex-row-reverse items-center gap-3">
-                    <div className="w-3 h-8 bg-accent"></div>
-                    <h2 className="text-2xl font-black tracking-tight text-secondary dark:text-gray-100 uppercase">
+                    <div className="w-2 md:w-3 h-6 md:h-8 bg-accent"></div>
+                    <h2 className="text-xl md:text-2xl font-black tracking-tight text-secondary dark:text-gray-100 uppercase">
                         دکن نیوز
                     </h2>
                 </div>
-                <Link to="/deccan" className="flex flex-row-reverse items-center gap-1 text-sm font-bold text-accent hover:text-secondary dark:hover:text-gray-200 transition-colors uppercase tracking-wide">
-                    دکن نیوز کی مزید خبریں <ChevronRight size={14} className="rotate-180" />
+                <Link to="/deccan" className="flex flex-row-reverse items-center gap-1 text-[10px] md:text-sm font-bold text-accent hover:text-secondary dark:hover:text-gray-200 transition-colors uppercase tracking-wide">
+                    مزید <span className="hidden sm:inline">دکن نیوز</span> <ChevronRight size={14} className="rotate-180" />
                 </Link>
             </div>
 

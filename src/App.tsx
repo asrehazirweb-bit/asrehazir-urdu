@@ -28,6 +28,8 @@ function App() {
         <Route element={<Layout><CategoryPage category="World News" title="عالمی خبریں" /></Layout>} path="/world" />
         <Route element={<Layout><CategoryPage category="National News" title="قومی خبریں" /></Layout>} path="/national" />
         <Route element={<Layout><CategoryPage category="Deccan News" title="دکن نیوز" /></Layout>} path="/deccan" />
+        <Route element={<Layout><CategoryPage category="تصویریں" title="تصویریں" /></Layout>} path="/photos" />
+        <Route element={<Layout><CategoryPage category="ویڈیوز" title="ویڈیوز" /></Layout>} path="/videos" />
         <Route element={<Layout><CategoryPage category="Articles & Essays" title="مضامین اور مقالہ جات" /></Layout>} path="/articles-essays" />
         <Route element={<Layout><CategoryPage category="Sports & Entertainment" title="کھیل اور تفریح" /></Layout>} path="/sports-entertainment" />
         <Route element={<Layout><CategoryPage category="Crime & Accidents" title="جرائم اور حادثات" /></Layout>} path="/crime-accidents" />

@@ -21,9 +21,12 @@ export function Header() {
     }, []);
 
     const menuItems = [
+        { label: 'صفحہ اول', path: '/' },
         { label: 'عالمی خبریں', path: '/world' },
         { label: 'قومی خبریں', path: '/national' },
         { label: 'دکن نیوز', path: '/deccan' },
+        { label: 'تصویریں', path: '/photos' },
+        { label: 'ویڈیوز', path: '/videos' },
         { label: 'مضامین اور مقالہ جات', path: '/articles-essays' },
         { label: 'کھیل اور تفریح', path: '/sports-entertainment' },
         { label: 'جرائم اور حادثات', path: '/crime-accidents' },
@@ -106,14 +109,14 @@ export function Header() {
                 )}
 
                 {/* Main Branding */}
-                <div className={`w-full mx-auto px-6 transition-all duration-300 ${isScrolled ? 'py-3' : 'py-6 md:py-10'}`}>
+                <div className={`w-full mx-auto px-6 transition-all duration-300 ${isScrolled ? 'py-2 md:py-3' : 'py-3.5 md:py-10'}`}>
                     <div className="flex flex-row-reverse justify-between items-center relative">
                         <button className="md:hidden p-2 -mr-2 text-gray-900 dark:text-white" onClick={() => setIsMenuOpen(!isMenuOpen)}>
                             <Menu size={24} />
                         </button>
 
                         <Link to="/" className="absolute left-1/2 -translate-x-1/2 md:static md:translate-x-0 group transition-transform duration-300 active:scale-95">
-                            <h1 className={`${isScrolled ? 'text-4xl md:text-5xl' : 'text-5xl md:text-8xl'} font-serif font-black tracking-tight leading-none text-gray-900 dark:text-white transition-all duration-300`}>
+                            <h1 className={`${isScrolled ? 'text-3xl md:text-5xl' : 'text-4xl sm:text-5xl md:text-8xl'} font-serif font-black tracking-tight leading-none text-gray-900 dark:text-white transition-all duration-300`}>
                                 عصر<span className="text-red-700 font-serif">حاضر</span>
                             </h1>
                         </Link>
@@ -134,8 +137,8 @@ export function Header() {
 
                 {/* Header Ad Slot */}
                 {!isScrolled && (
-                    <div className="w-full max-w-7xl mx-auto px-6 mb-4 hidden md:block">
-                        <AdBlock placement="header" className="h-24 !my-0" label="ہیڈر اشتہار" />
+                    <div className="w-full max-w-7xl mx-auto px-6 mb-4">
+                        <AdBlock placement="header" className="h-20 sm:h-24 !my-0" label="ہیڈر اشتہار" />
                     </div>
                 )}
 

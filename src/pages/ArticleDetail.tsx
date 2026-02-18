@@ -143,7 +143,7 @@ const ArticleDetail: React.FC = () => {
                     <span className="text-gray-400 truncate max-w-[150px]">{article.subCategory || 'تازہ ترین'}</span>
                 </div>
 
-                <h1 className={`text-3xl md:text-5xl lg:text-6xl font-black text-gray-900 dark:text-white leading-[1.3] mb-8 tracking-tight ${article.titleFont || 'font-serif'}`}>
+                <h1 className={`text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-black text-gray-900 dark:text-white leading-[1.35] mb-6 md:mb-8 tracking-tight ${article.titleFont || 'font-serif'}`}>
                     {article.title}
                 </h1>
 
@@ -185,13 +185,7 @@ const ArticleDetail: React.FC = () => {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent pointer-events-none"></div>
                 </div>
-                {article.subCategory && (
-                    <div className="mt-4 px-4 md:px-0 text-right">
-                        <span className="text-[12px] font-black uppercase tracking-widest text-gray-400 border-r-2 border-red-600 pr-3">
-                            تصویر: عصر حاضر آرکائیوز / {article.category} {article.subCategory}
-                        </span>
-                    </div>
-                )}
+
             </div>
 
             {/* Content Body */}
@@ -200,7 +194,7 @@ const ArticleDetail: React.FC = () => {
                     <div className="lg:col-span-12">
                         <div className="prose prose-lg dark:prose-invert max-w-none text-right">
                             <div
-                                className={`article-content text-gray-800 dark:text-gray-200 leading-[2.2] mb-6 text-2xl md:text-2xl ${article.contentFont || 'font-serif'}`}
+                                className={`article-content text-gray-800 dark:text-gray-200 leading-[2.2] mb-6 text-xl md:text-2xl ${article.contentFont || 'font-serif'}`}
                                 dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(article.content) }}
                             />
                         </div>

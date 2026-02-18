@@ -228,8 +228,8 @@ const AdsManagement: React.FC = () => {
                                 </label>
                                 <div className={`relative border-2 border-dashed rounded-[2rem] p-6 transition-all duration-500 h-[240px] flex flex-col items-center justify-center ${imagePreview ? 'border-red-600 bg-red-50/5' : 'border-gray-200 dark:border-zinc-800 hover:border-red-600'}`}>
                                     {imagePreview ? (
-                                        <div className="relative w-full h-full rounded-2xl overflow-hidden group">
-                                            <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                                        <div className="relative w-full h-full rounded-2xl overflow-hidden group bg-gray-50 dark:bg-zinc-950/50 flex items-center justify-center">
+                                            <img src={imagePreview} alt="Preview" className="max-w-full max-h-full object-contain" />
                                             <button type="button" onClick={() => { setImage(null); setImagePreview(null); }} className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white font-black uppercase tracking-widest text-[10px]">تصویر تبدیل کریں</button>
                                         </div>
                                     ) : (
@@ -265,8 +265,8 @@ const AdsManagement: React.FC = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {ads.map((ad) => (
                             <div key={ad.id} className="group bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800 rounded-[2rem] overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500">
-                                <div className="relative aspect-[4/3] overflow-hidden">
-                                    <img src={ad.imageUrl} alt="Ad" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                                <div className="relative aspect-[4/3] overflow-hidden bg-gray-50 dark:bg-zinc-950/50 flex items-center justify-center p-4">
+                                    <img src={ad.imageUrl} alt="Ad" className="max-w-full max-h-full object-contain group-hover:scale-105 transition-transform duration-700" />
                                     <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full text-[8px] font-black text-white uppercase tracking-widest">
                                         {ad.placement === 'header' ? 'ہیڈر' : ad.placement === 'sidebar' ? 'سائیڈ بار' : ad.placement === 'between_news' ? 'خبروں کے درمیان' : 'فوٹر'}
                                     </div>

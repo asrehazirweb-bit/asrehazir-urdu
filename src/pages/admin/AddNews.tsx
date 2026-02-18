@@ -14,7 +14,9 @@ const CATEGORIES = [
     { name: 'دکن نیوز', subCategories: ['حیدرآباد', 'تلنگانہ', 'آندھرا پردیش', 'جنوبی بھارت'] },
     { name: 'مضامین اور مقالہ جات', subCategories: ['ادارتی', 'تجزیہ', 'رائے', 'خصوصی رپورٹس'] },
     { name: 'کھیل اور تفریح', subCategories: ['کرکٹ', 'سنیما', 'OTT', 'لائف اسٹائل'] },
-    { name: 'جرائم اور حادثات', subCategories: ['مقامی جرائم', 'تحقیقات', 'سیکیورٹی', 'حادثات'] }
+    { name: 'جرائم اور حادثات', subCategories: ['مقامی جرائم', 'تحقیقات', 'سیکیورٹی', 'حادثات'] },
+    { name: 'تصویریں', subCategories: ['ٹاپ اسٹوریز', 'سیاست', 'کھیل', 'تفریح', 'تقریبات'] },
+    { name: 'ویڈیوز', subCategories: ['خبریں', 'تقریبات', 'انٹرویوز', 'وائرل'] }
 ];
 
 const FONTS_TITLE = [
@@ -55,6 +57,7 @@ const AddNews: React.FC = () => {
     const [successMessage, setSuccessMessage] = useState(false);
     const [titleFont, setTitleFont] = useState('font-noto-urdu');
     const [contentFont, setContentFont] = useState('font-noto-urdu');
+    const [videoUrl, setVideoUrl] = useState('');
 
     // New state for modal and toast
     const [isClearModalOpen, setIsClearModalOpen] = useState(false);
@@ -72,6 +75,7 @@ const AddNews: React.FC = () => {
             setSection(dSection || 'ٹاپ اسٹوریز');
             setTitleFont(dTitleFont || 'font-noto-urdu');
             setContentFont(dContentFont || 'font-noto-urdu');
+            setVideoUrl(JSON.parse(draft).videoUrl || '');
         }
     }, []);
 
@@ -79,11 +83,11 @@ const AddNews: React.FC = () => {
     useEffect(() => {
         const timer = setTimeout(() => {
             if (title || content) {
-                localStorage.setItem('asre-hazir-urdu-draft', JSON.stringify({ title, content, category, subCategory, section, titleFont, contentFont }));
+                localStorage.setItem('asre-hazir-urdu-draft', JSON.stringify({ title, content, category, subCategory, section, titleFont, contentFont, videoUrl }));
             }
         }, 2000);
         return () => clearTimeout(timer);
-    }, [title, content, category, subCategory, section, titleFont, contentFont]);
+    }, [title, content, category, subCategory, section, titleFont, contentFont, videoUrl]);
 
     const handleClearDraftClick = () => {
         setIsClearModalOpen(true);
@@ -97,6 +101,7 @@ const AddNews: React.FC = () => {
         setSection('خبرِ خاص');
         setCategory('عالمی خبریں');
         setSubCategory('عالمی');
+        setVideoUrl('');
         localStorage.removeItem('asre-hazir-urdu-draft');
         setIsClearModalOpen(false);
         setToast({ message: 'ڈرافٹ ختم کر دیا گیا', type: 'success' });
@@ -149,6 +154,7 @@ const AddNews: React.FC = () => {
                 subCategory,
                 titleFont,
                 contentFont,
+                videoUrl,
                 imageUrl: imageUrl,  // Single image field
                 createdAt: serverTimestamp(),
                 author: auth.currentUser?.displayName || 'عصر حاضر ڈیسک',
@@ -354,6 +360,24 @@ const AddNews: React.FC = () => {
                                     )}
                                 </div>
                             </div>
+
+                            {/* Video URL (Conditional) */}
+                            {category === 'ویڈیوز' && (
+                                <div className="space-y-4 animate-in slide-in-from-top duration-500">
+                                    <label className="flex flex-row-reverse items-center gap-2 text-sm font-bold text-gray-400">
+                                        <Tag className="w-4 h-4 text-red-600" /> بیرونی ویڈیو لنک (Twitter/YT/FB/Insta)
+                                    </label>
+                                    <input
+                                        type="url"
+                                        dir="ltr"
+                                        value={videoUrl}
+                                        onChange={(e) => setVideoUrl(e.target.value)}
+                                        className="w-full p-6 rounded-[2rem] border border-gray-100 dark:border-zinc-800 bg-gray-50 dark:bg-zinc-800/50 focus:ring-4 focus:ring-red-600/10 outline-none transition-all dark:text-white font-bold text-left"
+                                        placeholder="Paste video link here (e.g., https://twitter.com/...)"
+                                        required={category === 'ویڈیوز'}
+                                    />
+                                </div>
+                            )}
 
                             {/* Body */}
                             <div className="space-y-4">

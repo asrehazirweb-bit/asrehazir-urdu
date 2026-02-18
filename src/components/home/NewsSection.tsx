@@ -23,7 +23,7 @@ export function NewsSection({ title, items, variant = 'grid' }: NewsSectionProps
                 <div className="flex-grow mr-4 h-[1px] bg-gray-100 dark:bg-white/10"></div>
             </div>
 
-            <div className={variant === 'grid' ? "grid grid-cols-1 sm:grid-cols-2 gap-6" : "flex flex-col gap-6"}>
+            <div className={variant === 'grid' ? "grid grid-cols-1 md:grid-cols-2 gap-6" : "flex flex-col gap-6"}>
                 {items.map((item) => (
                     <Link key={item.id} to={`/news/${item.id}`} className="group cursor-pointer block text-right">
                         <div className="relative overflow-hidden mb-3 aspect-video bg-gray-200 dark:bg-white/5">

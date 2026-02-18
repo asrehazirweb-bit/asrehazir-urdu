@@ -128,6 +128,7 @@ export function Home() {
 
                     {/* 2. Latest News */}
                     <div className="mb-12">
+                        <AdBlock placement="between_news" className="h-24 md:hidden mb-12" label="بریکنگ نیوز اشتہار" />
                         <LatestNewsSection items={latestNewsItems} />
                     </div>
 
@@ -160,6 +161,8 @@ export function Home() {
                         )}
                         formatTime={formatTime}
                     />
+
+                    <AdBlock placement="between_news" className="h-32 md:hidden mb-12" label="خصوصی اشتہار" />
 
                 </div>
 

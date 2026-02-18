@@ -18,6 +18,11 @@ interface CategoryFeatureSectionProps {
     formatTime: (date: any) => string;
 }
 
+const stripHtml = (html: string) => {
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    return doc.body.textContent || "";
+};
+
 export function CategoryFeatureSection({ tabs, allNews, formatTime }: CategoryFeatureSectionProps) {
     const [activeTab, setActiveTab] = useState(tabs[0]);
 
@@ -55,14 +60,14 @@ export function CategoryFeatureSection({ tabs, allNews, formatTime }: CategoryFe
     return (
         <div className="w-full mb-12 text-right">
             {/* Header with Tabs */}
-            <div className="border-b border-gray-200 dark:border-white/10 flex flex-row-reverse items-center justify-between mb-6">
-                <div className="flex flex-row-reverse items-center gap-8">
+            <div className="border-b border-gray-200 dark:border-white/10 flex flex-row-reverse items-center justify-between mb-6 overflow-x-auto no-scrollbar scroll-smooth">
+                <div className="flex flex-row-reverse items-center gap-4 md:gap-8 min-w-max">
                     {tabs.map((tab) => (
                         <div
                             key={tab}
                             onClick={() => setActiveTab(tab)}
                             className={`
-                                py-2 border-b-2 font-sans text-sm font-bold tracking-wide cursor-pointer transition-all
+                                py-2 border-b-2 font-sans text-[12px] md:text-sm font-bold tracking-wide cursor-pointer transition-all whitespace-nowrap
                                 ${activeTab === tab ? 'border-red-700 text-secondary dark:text-gray-100' : 'border-transparent text-gray-500 hover:text-gray-800 dark:hover:text-gray-300'}
                             `}
                         >
@@ -88,11 +93,11 @@ export function CategoryFeatureSection({ tabs, allNews, formatTime }: CategoryFe
                                 </span>
                             </div>
                             <span className="text-[12px] text-gray-400 font-sans block mb-1">{formatTime(featuredItem.createdAt)}</span>
-                            <h3 className={`font-black text-lg md:text-xl leading-[1.4] text-gray-900 dark:text-gray-100 mb-2 group-hover:text-accent transition-colors ${featuredItem.titleFont || 'font-serif'}`}>
+                            <h3 className={`font-black text-lg md:text-xl leading-[1.4] md:leading-[1.5] text-gray-900 dark:text-gray-100 mb-2 group-hover:text-accent transition-colors ${featuredItem.titleFont || 'font-serif'}`}>
                                 {featuredItem.title}
                             </h3>
                             <p className="text-gray-500 dark:text-gray-400 font-sans text-xs leading-[1.8] line-clamp-2">
-                                {featuredItem.content.substring(0, 150)}...
+                                {stripHtml(featuredItem.content).substring(0, 150)}...
                             </p>
                         </Link>
                     )}

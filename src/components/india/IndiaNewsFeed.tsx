@@ -36,7 +36,7 @@ export function IndiaNewsFeed({ items }: IndiaNewsFeedProps) {
                 <h1 className="text-4xl md:text-5xl font-black text-secondary uppercase tracking-tight mb-4">
                     بھارت
                 </h1>
-                <p className="text-gray-600 dark:text-gray-400 font-sans text-base leading-relaxed max-w-3xl ml-auto">
+                <p className="text-gray-600 font-sans text-base leading-relaxed max-w-3xl ml-auto">
                     قومی معاملات، سیاست، پالیسی فیصلوں اور ملک کی صورت گری کرنے والی سماجی تبدیلیوں کی جامع کوریج۔ ملک بھر سے گہرائی سے رپورٹنگ کے ساتھ باخبر رہیں۔
                 </p>
             </div>
@@ -58,7 +58,7 @@ export function IndiaNewsFeed({ items }: IndiaNewsFeedProps) {
                                         />
                                         {isVideo && (
                                             <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/40 transition-all">
-                                                <div className="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center text-white shadow-xl scale-90 group-hover:scale-100 transition-transform">
+                                                <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white shadow-xl scale-90 group-hover:scale-100 transition-transform">
                                                     <ChevronLeft size={24} />
                                                 </div>
                                             </div>
@@ -76,15 +76,15 @@ export function IndiaNewsFeed({ items }: IndiaNewsFeedProps) {
                             <div className="flex-1 flex flex-col py-1">
                                 <div className="flex flex-row-reverse items-center gap-2 mb-2">
                                     {article.subCategory && (
-                                        <span className="bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-400 text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded">
+                                        <span className="bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded">
                                             {article.subCategory}
                                         </span>
                                     )}
                                 </div>
-                                <h2 className="text-xl font-bold leading-tight text-secondary dark:text-gray-100 mb-3 group-hover:text-accent transition-colors line-clamp-2">
+                                <h2 className="text-xl font-bold leading-tight text-secondary mb-3 group-hover:text-accent transition-colors line-clamp-2">
                                     {article.title}
                                 </h2>
-                                <p className="text-gray-600 dark:text-gray-400 font-sans text-sm leading-relaxed mb-3 line-clamp-3">
+                                <p className="text-gray-600 font-sans text-sm leading-relaxed mb-3 line-clamp-3">
                                     {article.excerpt}
                                 </p>
 

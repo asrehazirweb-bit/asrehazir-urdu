@@ -18,8 +18,8 @@ const Toast: React.FC<ToastProps> = ({ message, type, onClose }) => {
     return (
         <div
             className={`fixed bottom-4 left-4 z-[100] flex items-center gap-3 px-6 py-4 rounded-xl shadow-lg border animate-in slide-in-from-bottom-5 duration-300 font-sans ${type === 'success'
-                ? 'bg-white dark:bg-zinc-900 border-green-100 dark:border-green-900/30'
-                : 'bg-white dark:bg-zinc-900 border-red-100 dark:border-red-900/30'
+                ? 'bg-white border-green-100'
+                : 'bg-white border-red-100'
                 }`}
             dir="rtl"
         >
@@ -27,12 +27,12 @@ const Toast: React.FC<ToastProps> = ({ message, type, onClose }) => {
                 {type === 'success' ? <CheckCircle size={20} /> : <XCircle size={20} />}
             </div>
             <div>
-                <h4 className={`text-sm font-bold ${type === 'success' ? 'text-green-900 dark:text-green-400' : 'text-red-900 dark:text-red-400'}`}>
+                <h4 className={`text-sm font-bold ${type === 'success' ? 'text-green-900' : 'text-red-900'}`}>
                     {type === 'success' ? 'کامیاب' : 'خرابی'}
                 </h4>
-                <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">{message}</p>
+                <p className="text-xs text-gray-500 font-medium">{message}</p>
             </div>
-            <button onClick={onClose} className="mr-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+            <button onClick={onClose} className="mr-4 text-gray-400 hover:text-gray-600">
                 <X size={16} />
             </button>
         </div>

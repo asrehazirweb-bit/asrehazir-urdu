@@ -92,12 +92,12 @@ const EditNewsModal: React.FC<EditNewsModalProps> = ({ article, onClose, onSucce
 
     return (
         <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-300 text-right">
-            <div className="bg-white dark:bg-zinc-900 w-full max-w-5xl rounded-[2.5rem] shadow-2xl border border-white/10 overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="bg-white w-full max-w-5xl rounded-[2.5rem] shadow-2xl border border-white/10 overflow-hidden flex flex-col max-h-[90vh]">
 
                 {/* Modal Header */}
                 <div className="bg-zinc-900 p-8 text-white flex flex-row-reverse items-center justify-between border-b border-white/5">
                     <div className="flex flex-row-reverse items-center gap-4 text-right">
-                        <div className="p-3 bg-red-600 rounded-2xl shadow-lg shadow-red-600/20">
+                        <div className="p-3 bg-primary rounded-2xl shadow-lg shadow-primary/20">
                             <Save size={20} />
                         </div>
                         <div className="text-right">
@@ -107,7 +107,7 @@ const EditNewsModal: React.FC<EditNewsModalProps> = ({ article, onClose, onSucce
                     </div>
                     <button
                         onClick={onClose}
-                        className="p-3 rounded-2xl bg-white/5 hover:bg-red-600 hover:text-white transition-all text-zinc-400"
+                        className="p-3 rounded-2xl bg-white/5 hover:bg-primary hover:text-white transition-all text-zinc-400"
                     >
                         <X size={20} />
                     </button>
@@ -119,13 +119,13 @@ const EditNewsModal: React.FC<EditNewsModalProps> = ({ article, onClose, onSucce
                     {/* Headline */}
                     <div className="space-y-4">
                         <label className="flex flex-row-reverse items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">
-                            <Type className="w-3.5 h-3.5 text-red-600" /> خبر کی سرخی
+                            <Type className="w-3.5 h-3.5 text-primary" /> خبر کی سرخی
                         </label>
                         <input
                             type="text"
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
-                            className="w-full text-2xl md:text-4xl font-serif font-black border-b-2 border-gray-100 dark:border-zinc-800 bg-transparent py-4 focus:border-red-600 outline-none transition-all dark:text-white text-right"
+                            className="w-full text-2xl md:text-4xl font-serif font-black border-b-2 border-gray-100 bg-transparent py-4 focus:border-primary outline-none transition-all text-right"
                             required
                         />
                     </div>
@@ -134,24 +134,24 @@ const EditNewsModal: React.FC<EditNewsModalProps> = ({ article, onClose, onSucce
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div className="space-y-4">
                             <label className="flex flex-row-reverse items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">
-                                <Tag className="w-3.5 h-3.5 text-red-600" /> خبر کا زمرہ
+                                <Tag className="w-3.5 h-3.5 text-primary" /> خبر کا زمرہ
                             </label>
                             <select
                                 value={category}
                                 onChange={(e) => handleCategoryChange(e.target.value)}
-                                className="w-full px-5 py-3 rounded-2xl border border-gray-100 dark:border-zinc-800 bg-gray-50 dark:bg-zinc-800/50 focus:ring-4 focus:ring-red-500/10 outline-none transition-all dark:text-white cursor-pointer font-bold text-lg min-h-[3.5rem] text-right"
+                                className="w-full px-5 py-3 rounded-2xl border border-gray-100 bg-gray-50 focus:ring-4 focus:ring-primary/10 outline-none transition-all cursor-pointer font-bold text-lg min-h-[3.5rem] text-right"
                             >
                                 {CATEGORIES.map(cat => <option key={cat.name} value={cat.name}>{cat.name}</option>)}
                             </select>
                         </div>
                         <div className="space-y-4">
                             <label className="flex flex-row-reverse items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">
-                                <Layout className="w-3.5 h-3.5 text-red-600" /> ذیلی زمرہ
+                                <Layout className="w-3.5 h-3.5 text-primary" /> ذیلی زمرہ
                             </label>
                             <select
                                 value={subCategory}
                                 onChange={(e) => setSubCategory(e.target.value)}
-                                className="w-full px-5 py-3 rounded-2xl border border-gray-100 dark:border-zinc-800 bg-gray-50 dark:bg-zinc-800/50 focus:ring-4 focus:ring-red-500/10 outline-none transition-all dark:text-white cursor-pointer font-bold text-lg min-h-[3.5rem] text-right"
+                                className="w-full px-5 py-3 rounded-2xl border border-gray-100 bg-gray-50 focus:ring-4 focus:ring-primary/10 outline-none transition-all cursor-pointer font-bold text-lg min-h-[3.5rem] text-right"
                             >
                                 {currentSubCategories.map(sub => <option key={sub} value={sub}>{sub}</option>)}
                             </select>
@@ -161,13 +161,13 @@ const EditNewsModal: React.FC<EditNewsModalProps> = ({ article, onClose, onSucce
                     {/* Content */}
                     <div className="space-y-4">
                         <label className="flex flex-row-reverse items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">
-                            <FileText className="w-3.5 h-3.5 text-red-600" /> خبر کی تفصیل
+                            <FileText className="w-3.5 h-3.5 text-primary" /> خبر کی تفصیل
                         </label>
                         <textarea
                             value={content}
                             onChange={(e) => setContent(e.target.value)}
                             rows={8}
-                            className="w-full p-6 rounded-3xl border border-gray-100 dark:border-zinc-800 bg-gray-50 dark:bg-zinc-800/50 focus:ring-4 focus:ring-red-500/10 outline-none transition-all dark:text-white font-sans leading-relaxed text-xl text-right"
+                            className="w-full p-6 rounded-3xl border border-gray-100 bg-gray-50 focus:ring-4 focus:ring-primary/10 outline-none transition-all font-sans leading-relaxed text-xl text-right"
                             required
                         />
                     </div>
@@ -175,18 +175,18 @@ const EditNewsModal: React.FC<EditNewsModalProps> = ({ article, onClose, onSucce
                     {/* Image Update */}
                     <div className="space-y-4 text-right">
                         <label className="flex flex-row-reverse items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">
-                            <ImageIcon className="w-3.5 h-3.5 text-red-600" /> میڈیا اپ ڈیٹ
+                            <ImageIcon className="w-3.5 h-3.5 text-primary" /> میڈیا اپ ڈیٹ
                         </label>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {imagePreview && (
-                                <div className="relative rounded-3xl overflow-hidden shadow-xl border border-gray-100 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-800/50">
+                                <div className="relative rounded-3xl overflow-hidden shadow-xl border border-gray-100 bg-gray-50">
                                     <img src={imagePreview} alt="Current" className="w-full h-auto max-h-[400px] object-contain mx-auto block" />
                                     <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity pointer-events-none">
                                         <span className="text-[12px] font-black text-white uppercase tracking-widest">موجودہ تصویر</span>
                                     </div>
                                 </div>
                             )}
-                            <label className="flex flex-col items-center justify-center border-2 border-dashed border-gray-200 dark:border-zinc-800 rounded-3xl cursor-pointer hover:border-red-500 transition-all min-h-[200px] group">
+                            <label className="flex flex-col items-center justify-center border-2 border-dashed border-gray-200 rounded-3xl cursor-pointer hover:border-primary transition-all min-h-[200px] group">
                                 <ImageIcon size={24} className="text-gray-300 mb-2 group-hover:scale-110 transition-transform" />
                                 <span className="text-xs font-bold text-gray-400">تصویر تبدیل کریں</span>
                                 <input type="file" onChange={handleImageChange} className="hidden" accept="image/*" />
@@ -196,11 +196,11 @@ const EditNewsModal: React.FC<EditNewsModalProps> = ({ article, onClose, onSucce
                 </form>
 
                 {/* Modal Footer */}
-                <div className="p-8 border-t border-gray-50 dark:border-zinc-800 bg-gray-50/50 dark:bg-zinc-900/50 flex flex-row-reverse gap-4">
+                <div className="p-8 border-t border-gray-50 bg-gray-50/50 flex flex-row-reverse gap-4">
                     <button
                         onClick={handleSubmit}
                         disabled={loading}
-                        className="flex-[2] bg-red-600 hover:bg-black text-white py-4 px-6 rounded-2xl font-black uppercase tracking-widest text-xs shadow-xl hover:shadow-red-600/20 transition-all active:scale-[0.98] disabled:opacity-50 flex flex-row-reverse items-center justify-center gap-2"
+                        className="flex-[2] bg-primary hover:bg-black text-white py-4 px-6 rounded-2xl font-black uppercase tracking-widest text-xs shadow-xl hover:shadow-primary/20 transition-all active:scale-[0.98] disabled:opacity-50 flex flex-row-reverse items-center justify-center gap-2"
                     >
                         {loading ? (
                             <>
@@ -215,7 +215,7 @@ const EditNewsModal: React.FC<EditNewsModalProps> = ({ article, onClose, onSucce
                     </button>
                     <button
                         onClick={onClose}
-                        className="flex-1 py-4 px-6 rounded-2xl border border-gray-200 dark:border-zinc-800 text-gray-500 font-black uppercase tracking-widest text-[10px] hover:bg-gray-100 dark:hover:bg-zinc-800 transition-all"
+                        className="flex-1 py-4 px-6 rounded-2xl border border-gray-200 text-gray-500 font-black uppercase tracking-widest text-[10px] hover:bg-gray-100 transition-all"
                     >
                         منسوخ کریں
                     </button>

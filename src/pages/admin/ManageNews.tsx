@@ -71,24 +71,24 @@ const ManageNews: React.FC = () => {
             <div className="flex flex-col md:flex-row-reverse md:items-end justify-between gap-4">
                 <div>
                     <div className="flex flex-row-reverse items-center gap-2 mb-2">
-                        <div className="w-8 h-1 bg-red-600"></div>
-                        <span className="text-[12px] font-bold text-red-600 uppercase tracking-widest">آرکائیو مینیجر</span>
+                        <div className="w-8 h-1 bg-primary"></div>
+                        <span className="text-[12px] font-bold text-primary uppercase tracking-widest">آرکائیو مینیجر</span>
                     </div>
-                    <h1 className="text-4xl md:text-5xl font-serif font-black text-gray-900 dark:text-white">مواد کی ترتیب</h1>
-                    <p className="text-gray-500 dark:text-gray-400 text-lg mt-1 max-w-xl">خبروں کو ایڈٹ کریں، اپ ڈیٹ کریں یا آرکائیو سے مستقل طور پر حذف کریں۔</p>
+                    <h1 className="text-4xl md:text-5xl font-serif font-black text-gray-900">مواد کی ترتیب</h1>
+                    <p className="text-gray-500 text-lg mt-1 max-w-xl">خبروں کو ایڈٹ کریں، اپ ڈیٹ کریں یا آرکائیو سے مستقل طور پر حذف کریں۔</p>
                 </div>
             </div>
 
             {/* Filters & Search */}
-            <div className="bg-white dark:bg-zinc-900 p-6 rounded-[2rem] border border-gray-100 dark:border-zinc-800 flex flex-col md:flex-row-reverse gap-6 items-center shadow-sm">
+            <div className="bg-white p-6 rounded-[2rem] border border-gray-100 flex flex-col md:flex-row-reverse gap-6 items-center shadow-sm">
                 <div className="relative flex-1 w-full group">
-                    <Search className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5 group-focus-within:text-red-600 transition-colors" />
+                    <Search className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5 group-focus-within:text-primary transition-colors" />
                     <input
                         type="text"
                         placeholder="سرخیاں یا الفاظ تلاش کریں..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full pr-12 pl-4 py-4 rounded-2xl border border-gray-100 dark:border-zinc-800 bg-gray-50 dark:bg-zinc-800/50 outline-none focus:ring-2 focus:ring-red-500 transition-all dark:text-white text-lg text-right"
+                        className="w-full pr-12 pl-4 py-4 rounded-2xl border border-gray-100 bg-gray-50 outline-none focus:ring-2 focus:ring-primary transition-all text-lg text-right"
                     />
                 </div>
                 <div className="flex flex-row-reverse items-center gap-3 w-full md:w-auto">
@@ -97,7 +97,7 @@ const ManageNews: React.FC = () => {
                         <select
                             value={filterCategory}
                             onChange={(e) => setFilterCategory(e.target.value)}
-                            className="w-full pr-10 pl-4 py-3 rounded-2xl border border-gray-100 dark:border-zinc-800 bg-gray-50 dark:bg-zinc-800/50 outline-none focus:ring-2 focus:ring-red-500 dark:text-white text-lg font-bold text-right min-h-[3.5rem]"
+                            className="w-full pr-10 pl-4 py-3 rounded-2xl border border-gray-100 bg-gray-50 outline-none focus:ring-2 focus:ring-primary text-lg font-bold text-right min-h-[3.5rem]"
                         >
                             {categories.map(cat => <option key={cat} value={cat}>{cat === 'All' ? 'تمام زمرے' : cat}</option>)}
                         </select>
@@ -106,32 +106,32 @@ const ManageNews: React.FC = () => {
             </div>
 
             {/* News List */}
-            <div className="bg-white dark:bg-zinc-900 rounded-[2rem] border border-gray-100 dark:border-zinc-800 overflow-hidden shadow-sm">
+            <div className="bg-white rounded-[2rem] border border-gray-100 overflow-hidden shadow-sm">
                 <div className="overflow-x-auto">
                     <table className="w-full text-right border-collapse">
                         <thead>
-                            <tr className="bg-gray-50 dark:bg-zinc-800/50 border-b border-gray-100 dark:border-zinc-800">
-                                <th className="p-6 text-[12px] font-bold uppercase tracking-widest text-gray-500 dark:text-zinc-500 text-center">تصویر</th>
-                                <th className="p-6 text-[12px] font-bold uppercase tracking-widest text-gray-500 dark:text-zinc-500">تفصیلات</th>
-                                <th className="p-6 text-[12px] font-bold uppercase tracking-widest text-gray-500 dark:text-zinc-500">زمرہ</th>
-                                <th className="p-6 text-[12px] font-bold uppercase tracking-widest text-gray-500 dark:text-zinc-500 text-left">کارروائی</th>
+                            <tr className="bg-gray-50 border-b border-gray-100">
+                                <th className="p-6 text-[12px] font-bold uppercase tracking-widest text-gray-500 text-center">تصویر</th>
+                                <th className="p-6 text-[12px] font-bold uppercase tracking-widest text-gray-500">تفصیلات</th>
+                                <th className="p-6 text-[12px] font-bold uppercase tracking-widest text-gray-500">زمرہ</th>
+                                <th className="p-6 text-[12px] font-bold uppercase tracking-widest text-gray-500 text-left">کارروائی</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-50 dark:divide-zinc-800/50">
+                        <tbody className="divide-y divide-gray-50">
                             {loading ? (
                                 <tr>
                                     <td colSpan={4} className="p-24 text-center">
                                         <div className="flex flex-col items-center gap-4">
-                                            <div className="w-10 h-10 border-4 border-red-600 border-t-transparent rounded-full animate-spin"></div>
+                                            <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
                                             <span className="text-sm font-bold text-gray-400">آرکائیو لوڈ ہو رہا ہے...</span>
                                         </div>
                                     </td>
                                 </tr>
                             ) : filteredNews.length > 0 ? (
                                 filteredNews.map((item) => (
-                                    <tr key={item.id} className="group hover:bg-gray-50/50 dark:hover:bg-zinc-800/20 transition-all duration-300">
+                                    <tr key={item.id} className="group hover:bg-gray-50/50 transition-all duration-300">
                                         <td className="p-6">
-                                            <div className="w-16 h-16 mx-auto rounded-2xl overflow-hidden bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 shadow-sm transition-transform group-hover:scale-105">
+                                            <div className="w-16 h-16 mx-auto rounded-2xl overflow-hidden bg-gray-100 border border-gray-200 shadow-sm transition-transform group-hover:scale-105">
                                                 <img
                                                     src={item.imageUrl}
                                                     alt={item.title}
@@ -142,9 +142,9 @@ const ManageNews: React.FC = () => {
                                         </td>
                                         <td className="p-6 max-w-md">
                                             <div className="space-y-1">
-                                                <h3 className="text-lg font-bold text-gray-900 dark:text-white line-clamp-1 group-hover:text-red-600 transition-colors">{item.title}</h3>
+                                                <h3 className="text-lg font-bold text-gray-900 line-clamp-1 group-hover:text-primary transition-colors">{item.title}</h3>
                                                 <div className="flex flex-row-reverse items-center gap-3 text-[12px] text-gray-400 font-bold">
-                                                    <span className="flex flex-row-reverse items-center gap-1"><User size={12} className="text-red-600 ml-1" /> {item.author || 'ڈیسک'}</span>
+                                                    <span className="flex flex-row-reverse items-center gap-1"><User size={12} className="text-primary ml-1" /> {item.author || 'ڈیسک'}</span>
                                                     <span>•</span>
                                                     <span className="flex flex-row-reverse items-center gap-1"><Calendar size={12} className="ml-1" /> {formatTime(item.createdAt)}</span>
                                                 </div>
@@ -152,7 +152,7 @@ const ManageNews: React.FC = () => {
                                         </td>
                                         <td className="p-6">
                                             <div className="flex flex-col items-end gap-1.5">
-                                                <span className="inline-block px-3 py-1 bg-red-50 dark:bg-red-900/10 text-red-600 text-[12px] font-bold rounded-full border border-red-100 dark:border-red-900/20">
+                                                <span className="inline-block px-3 py-1 bg-primary/5 text-primary text-[12px] font-bold rounded-full border border-primary/10">
                                                     {item.category}
                                                 </span>
                                                 <span className="text-[12px] text-gray-400 font-bold pr-1">
@@ -164,28 +164,28 @@ const ManageNews: React.FC = () => {
                                             <div className="flex items-center justify-start gap-2">
                                                 <button
                                                     onClick={() => window.open(`/news/${item.id}`, '_blank')}
-                                                    className="p-3 rounded-xl bg-gray-50 dark:bg-zinc-800 text-gray-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 transition-all shadow-sm"
+                                                    className="p-3 rounded-xl bg-gray-50 text-gray-500 hover:text-primary hover:bg-primary/5 transition-all shadow-sm"
                                                     title="لائیو دیکھیں"
                                                 >
                                                     <ExternalLink size={18} />
                                                 </button>
                                                 <button
                                                     onClick={() => handleCopyLink(item.id)}
-                                                    className={`p-3 rounded-xl transition-all shadow-sm ${copiedId === item.id ? 'bg-green-500 text-white' : 'bg-gray-50 dark:bg-zinc-800 text-gray-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10'}`}
+                                                    className={`p-3 rounded-xl transition-all shadow-sm ${copiedId === item.id ? 'bg-green-500 text-white' : 'bg-gray-50 text-gray-500 hover:text-primary hover:bg-primary/5'}`}
                                                     title="لنک کاپی کریں"
                                                 >
                                                     {copiedId === item.id ? <Check size={18} /> : <Copy size={18} />}
                                                 </button>
                                                 <button
                                                     onClick={() => setEditingArticle(item)}
-                                                    className="p-3 rounded-xl bg-gray-50 dark:bg-zinc-800 text-gray-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 transition-all shadow-sm"
+                                                    className="p-3 rounded-xl bg-gray-50 text-gray-500 hover:text-primary hover:bg-primary/5 transition-all shadow-sm"
                                                     title="ایڈٹ کریں"
                                                 >
                                                     <Edit2 size={18} />
                                                 </button>
                                                 <button
                                                     onClick={() => handleDeleteClick(item.id, item.imageUrl)}
-                                                    className="p-3 rounded-xl bg-gray-50 dark:bg-zinc-800 text-gray-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 transition-all shadow-sm"
+                                                    className="p-3 rounded-xl bg-gray-50 text-gray-500 hover:text-primary hover:bg-primary/5 transition-all shadow-sm"
                                                     title="حذف کریں"
                                                 >
                                                     <Trash2 size={18} />
@@ -208,11 +208,11 @@ const ManageNews: React.FC = () => {
                     </table>
                 </div>
                 {/* Pagination Placeholder */}
-                <div className="p-6 bg-gray-50/50 dark:bg-zinc-800/30 border-t border-gray-100 dark:border-zinc-800 flex flex-row-reverse items-center justify-between">
+                <div className="p-6 bg-gray-50/50 border-t border-gray-100 flex flex-row-reverse items-center justify-between">
                     <span className="text-sm font-bold text-gray-400">کل {news.length} میں سے {filteredNews.length} خبریں دکھائی جا رہی ہیں</span>
                     <div className="flex gap-2">
-                        <button disabled className="px-6 py-2 bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-xl text-sm font-bold text-gray-300">پچھلا</button>
-                        <button disabled className="px-6 py-2 bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-xl text-sm font-bold text-gray-900 dark:text-white shadow-sm">اگلا</button>
+                        <button disabled className="px-6 py-2 bg-white border border-gray-200 rounded-xl text-sm font-bold text-gray-300">پچھلا</button>
+                        <button disabled className="px-6 py-2 bg-white border border-gray-200 rounded-xl text-sm font-bold text-gray-900 shadow-sm">اگلا</button>
                     </div>
                 </div>
             </div>

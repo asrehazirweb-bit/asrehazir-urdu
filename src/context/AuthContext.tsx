@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { auth, db } from '../lib/firebase';
 import { onAuthStateChanged, type User, getRedirectResult } from 'firebase/auth';
-import { doc, getDoc} from 'firebase/firestore';
+import { doc, getDoc } from 'firebase/firestore';
 
 interface UserData {
     role: "admin" | "editor" | "reader";
@@ -12,21 +12,21 @@ interface UserData {
 interface AuthContextType {
     user: User | null;
     userData: UserData | null;
-    isUrduAdmin: boolean;
+    isAdmin: boolean;
     loading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType>({
     user: null,
     userData: null,
-    isUrduAdmin: false,
+    isAdmin: false,
     loading: true
 });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
     const [userData, setUserData] = useState<UserData | null>(null);
-    const [isUrduAdmin, setIsUrduAdmin] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(false);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -61,21 +61,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                         if (!hasAccess) {
                             console.warn("Urdu - User does not have Urdu CMS access (ur in appAccess)");
                         }
-                        setIsUrduAdmin(hasAccess);
+                        setIsAdmin(hasAccess);
                     } else {
                         console.warn("Urdu - No user profile found in Firestore for UID:", firebaseUser.uid);
                         setUserData(null);
-                        setIsUrduAdmin(false);
+                        setIsAdmin(false);
                     }
                 } catch (error) {
                     console.error("Urdu - Error fetching user data:", error);
-                    setIsUrduAdmin(false);
+                    setIsAdmin(false);
                 } finally {
                     setLoading(false);
                 }
             } else {
                 setUserData(null);
-                setIsUrduAdmin(false);
+                setIsAdmin(false);
                 setLoading(false);
             }
         });
@@ -84,7 +84,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }, []);
 
     return (
-        <AuthContext.Provider value={{ user, userData, isUrduAdmin, loading }}>
+        <AuthContext.Provider value={{ user, userData, isAdmin, loading }}>
             {children}
         </AuthContext.Provider>
     );

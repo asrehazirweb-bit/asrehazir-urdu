@@ -3,7 +3,7 @@ import { Facebook, Twitter, Instagram } from 'lucide-react';
 
 export function Footer() {
     return (
-        <footer className="w-full bg-secondary dark:bg-[#0a0807] text-white pt-16 pb-8 mt-16 px-8 border-t-4 border-accent transition-colors">
+        <footer className="w-full bg-secondary text-white pt-16 pb-8 mt-16 px-8 border-t-4 border-accent transition-colors">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
                 <div className="col-span-1 md:col-span-1">
                     <h2 className="text-2xl font-serif font-bold mb-6 text-accent">عصر حاضر</h2>

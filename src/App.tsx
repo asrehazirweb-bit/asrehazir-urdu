@@ -15,6 +15,7 @@ import UrduPostEditor from './pages/admin/UrduPostEditor';
 import AddNews from './pages/admin/AddNews';
 import ManageNews from './pages/admin/ManageNews';
 import AdsManagement from './pages/admin/AdsManagement';
+import { AdminGuard } from './components/auth/AdminGuard';
 
 function App() {
   return (
@@ -52,7 +53,9 @@ function App() {
         <Route
           path="/admin"
           element={
-            <AdminLayout />
+            <AdminGuard>
+              <AdminLayout />
+            </AdminGuard>
           }
         >
           <Route index element={<UrduAdminDashboard />} />

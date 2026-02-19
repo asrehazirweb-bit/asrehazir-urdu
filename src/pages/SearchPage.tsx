@@ -49,33 +49,33 @@ export function SearchPage() {
 
                 {/* Main Content - 8 Columns */}
                 <div className="lg:col-span-8 flex flex-col">
-                    <div className="mb-8 border-b-2 border-red-700 pb-2 flex flex-row-reverse justify-between items-end">
-                        <h1 className="text-3xl md:text-5xl font-black text-gray-900 dark:text-white uppercase tracking-tight">
+                    <div className="mb-8 border-b-2 border-primary pb-2 flex flex-row-reverse justify-between items-end">
+                        <h1 className="text-3xl md:text-5xl font-black text-gray-900 uppercase tracking-tight">
                             تلاش کے نتائج
                         </h1>
-                        <span className="text-lg font-bold text-red-700 hidden md:block italic">
+                        <span className="text-lg font-bold text-primary hidden md:block italic">
                             تلاش: "{query}"
                         </span>
                     </div>
 
                     {loading ? (
                         <div className="flex justify-center py-20">
-                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-700"></div>
+                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
                         </div>
                     ) : mappedNews.length > 0 ? (
                         <div className="space-y-0">
                             <div className="mb-6">
                                 <p className="text-lg text-gray-500">
-                                    آپ کی تلاش کے لیے <span className="text-red-700 font-black">{mappedNews.length}</span> خبریں ملیں۔
+                                    آپ کی تلاش کے لیے <span className="text-primary font-black">{mappedNews.length}</span> خبریں ملیں۔
                                 </p>
                             </div>
                             <IndiaNewsFeed items={mappedNews} />
                         </div>
                     ) : (
-                        <div className="text-center py-20 bg-gray-50 dark:bg-zinc-900/50 rounded-xl border border-dashed border-gray-200 dark:border-zinc-800">
+                        <div className="text-center py-20 bg-gray-50 rounded-xl border border-dashed border-gray-200">
                             <div className="max-w-md mx-auto">
-                                <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-2 uppercase">کوئی نتیجہ نہیں ملا</h3>
-                                <p className="text-gray-500 text-lg">ہمیں <span className="font-bold underline italic text-red-700 opacity-80">"{query}"</span> سے متعلق کوئی خبر نہیں ملی۔ براہ کرم مختلف الفاظ استعمال کریں یا ہجے چیک کریں۔</p>
+                                <h3 className="text-2xl font-black text-gray-900 mb-2 uppercase">کوئی نتیجہ نہیں ملا</h3>
+                                <p className="text-gray-500 text-lg">ہمیں <span className="font-bold underline italic text-primary opacity-80">"{query}"</span> سے متعلق کوئی خبر نہیں ملی۔ براہ کرم مختلف الفاظ استعمال کریں یا ہجے چیک کریں۔</p>
                             </div>
                         </div>
                     )}

@@ -27,16 +27,16 @@ export function Sidebar({ offbeatItems = [], topStories = [] }: SidebarProps) {
 
             {/* 0. TOP STORIES BLOCK (Static - Scrolls away) */}
             {finalTop.length > 0 && (
-                <div className="border border-gray-100 dark:border-white/10 bg-white dark:bg-white/5">
-                    <div className="p-4 border-b border-gray-100 dark:border-white/10 flex items-center gap-2">
-                        <div className="w-1.5 h-4 bg-[#B27B1E]"></div>
-                        <h2 className="text-secondary dark:text-gray-300 font-sans font-bold uppercase tracking-wider text-sm">خاص خبریں</h2>
+                <div className="border border-gray-100 bg-white">
+                    <div className="p-4 border-b border-gray-100 flex items-center gap-2">
+                        <div className="w-1.5 h-4 bg-primary"></div>
+                        <h2 className="text-secondary font-sans font-bold uppercase tracking-wider text-sm">خاص خبریں</h2>
                     </div>
                     <div>
                         {finalTop.map((story, idx) => (
-                            <Link key={`${story.id}-${idx}`} to={`/news/${story.id}`} className="p-3 border-b border-gray-100 dark:border-white/5 last:border-0 hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer flex gap-3 group transition-colors block">
+                            <Link key={`${story.id}-${idx}`} to={`/news/${story.id}`} className="p-3 border-b border-gray-100 last:border-0 hover:bg-gray-50 cursor-pointer flex gap-3 group transition-colors block">
                                 {story.image && (
-                                    <div className="w-24 h-20 flex-shrink-0 bg-gray-100 dark:bg-white/5 relative overflow-hidden">
+                                    <div className="w-24 h-20 flex-shrink-0 bg-gray-100 relative overflow-hidden">
                                         <img
                                             src={story.image || "/api/placeholder/100/100"}
                                             alt={story.title}
@@ -45,7 +45,7 @@ export function Sidebar({ offbeatItems = [], topStories = [] }: SidebarProps) {
                                     </div>
                                 )}
                                 <div className="flex flex-col justify-center w-full">
-                                    <h4 className={`font-bold text-xs leading-snug text-gray-800 dark:text-gray-200 line-clamp-2 group-hover:text-accent transition-colors ${story.titleFont || 'font-serif'}`}>
+                                    <h4 className={`font-bold text-xs leading-snug text-gray-800 line-clamp-2 group-hover:text-accent transition-colors ${story.titleFont || 'font-serif'}`}>
                                         {story.title}
                                     </h4>
                                     <span className="text-[10px] text-gray-400 font-sans mt-1">{story.time}</span>
@@ -62,18 +62,18 @@ export function Sidebar({ offbeatItems = [], topStories = [] }: SidebarProps) {
             <div className="sticky top-4 flex flex-col gap-8">
 
                 {/* 1. OFFBEAT BLOCK */}
-                <div className="border border-gray-100 dark:border-white/10 bg-white dark:bg-white/5">
-                    <div className="p-4 border-b border-gray-100 dark:border-white/10 flex items-center gap-2">
-                        <div className="w-1.5 h-4 bg-[#004d99]"></div>
-                        <h2 className="text-secondary dark:text-gray-300 font-sans font-bold uppercase tracking-wider text-sm">عجیب و غریب</h2>
+                <div className="border border-gray-100 bg-white">
+                    <div className="p-4 border-b border-gray-100 flex items-center gap-2">
+                        <div className="w-1.5 h-4 bg-primary"></div>
+                        <h2 className="text-secondary font-sans font-bold uppercase tracking-wider text-sm">عجیب و غریب</h2>
                     </div>
 
                     <div className="flex flex-col">
                         {gridOffbeat.map((item, idx) => (
-                            <Link key={`${item.id}-${idx}`} to={`/news/${item.id}`} className="p-4 border-b border-gray-100 dark:border-white/5 last:border-0 relative pr-8 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors cursor-pointer group block text-right">
+                            <Link key={`${item.id}-${idx}`} to={`/news/${item.id}`} className="p-4 border-b border-gray-100 last:border-0 relative pr-8 hover:bg-gray-50 transition-colors cursor-pointer group block text-right">
                                 <div className="absolute right-4 top-6 w-1.5 h-1.5 rounded-full bg-gray-300 group-hover:bg-accent transition-colors"></div>
                                 <span className="text-[10px] text-gray-400 font-sans mb-1 block">{item.time}</span>
-                                <h3 className={`font-bold text-sm leading-snug text-gray-800 dark:text-gray-200 line-clamp-2 group-hover:text-accent dark:group-hover:text-accent transition-colors ${item.titleFont || 'font-serif'}`}>
+                                <h3 className={`font-bold text-sm leading-snug text-gray-800 line-clamp-2 group-hover:text-accent transition-colors ${item.titleFont || 'font-serif'}`}>
                                     {item.title}
                                 </h3>
                             </Link>
@@ -102,8 +102,8 @@ export function Sidebar({ offbeatItems = [], topStories = [] }: SidebarProps) {
 
                 <AdBlock placement="sidebar" className="h-[250px] !my-0" label="سائیڈ بار اشتہار" />
 
-                <div className="border border-gray-100 dark:border-white/10 bg-white dark:bg-white/5 p-6 text-right">
-                    <h3 className="text-secondary dark:text-gray-200 font-serif font-bold text-lg mb-6 border-b border-gray-100 dark:border-white/10 pb-2">مزید جانیے</h3>
+                <div className="border border-gray-100 bg-white p-6 text-right">
+                    <h3 className="text-secondary font-serif font-bold text-lg mb-6 border-b border-gray-100 pb-2">مزید جانیے</h3>
                     <ul className="flex flex-col gap-4">
                         {[
                             { name: 'عالمی خبریں', path: '/world' },
@@ -115,8 +115,8 @@ export function Sidebar({ offbeatItems = [], topStories = [] }: SidebarProps) {
                         ].map((item, idx) => (
                             <li key={idx}>
                                 <Link to={item.path} className="flex flex-row-reverse items-center justify-between group cursor-pointer">
-                                    <span className="text-sm font-sans text-gray-600 dark:text-gray-400 group-hover:text-red-700 transition-colors">{item.name}</span>
-                                    <ChevronRight size={16} className="text-gray-400 group-hover:text-red-700 transition-colors rotate-180" />
+                                    <span className="text-sm font-sans text-gray-600 group-hover:text-primary transition-colors">{item.name}</span>
+                                    <ChevronRight size={16} className="text-gray-400 group-hover:text-primary transition-colors rotate-180" />
                                 </Link>
                             </li>
                         ))}

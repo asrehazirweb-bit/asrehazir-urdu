@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { auth } from '../lib/firebase';
 import { signInWithPopup } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
-import { Lock, Chrome } from 'lucide-react';
+import { Chrome } from 'lucide-react';
 import { googleProvider } from '../lib/firebase';
 
 import { useAuth } from '../context/AuthContext';
@@ -15,10 +15,18 @@ const LoginPage: React.FC = () => {
 
     // TEMPORARY: Direct redirect for testing
     React.useEffect(() => {
-        if (isAdmin) {
+        if (loading) return;
+
+        if (user && isAdmin) {
             navigate('/admin');
+        } else if (user && !isAdmin) {
+            // STRICT MODE: Auto-logout non-admins
+            auth.signOut().then(() => {
+                setError('رسائی مسترد: صرف ایڈمن لاگ ان کر سکتے ہیں۔');
+                setLocalLoading(false);
+            });
         }
-    }, [navigate, isAdmin]);
+    }, [navigate, isAdmin, user, loading]);
 
     const handleGoogleLogin = async () => {
         setLocalLoading(true);
@@ -49,7 +57,7 @@ const LoginPage: React.FC = () => {
 
                 <div className="mt-8 space-y-6">
                     {error && (
-                        <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm text-center">
+                        <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm text-center font-bold">
                             {error}
                         </div>
                     )}
@@ -67,33 +75,10 @@ const LoginPage: React.FC = () => {
                             </button>
                         </div>
                         <p className="text-xs text-center text-gray-500">
-                            ڈیش بورڈ تک رسائی کے لیے اپنے مجاز گوگل اکاؤنٹ کا استعمال کریں۔
+                            صرف مجاز ایڈمن اکاؤنٹس ہی لاگ ان کر سکتے ہیں۔
                         </p>
                     </div>
                 </div>
-
-                {user && !isAdmin && !loading && (
-                    <div className="mt-6 p-4 bg-amber-50 rounded-xl border border-amber-200">
-                        <div className="flex items-center gap-2 mb-2 text-amber-800">
-                            <Lock className="h-4 w-4" />
-                            <span className="text-sm font-semibold">Access Denied</span>
-                        </div>
-                        <p className="text-xs text-amber-700 mb-3">
-                            You are logged in, but your account does not have admin privileges for Urdu CMS. Please contact the developer with your UID:
-                        </p>
-                        <div className="bg-white p-2 rounded border border-amber-200 flex items-center justify-between">
-                            <code className="text-[10px] break-all font-mono text-gray-800">
-                                {user.uid}
-                            </code>
-                            <button
-                                onClick={() => navigator.clipboard.writeText(user.uid)}
-                                className="text-[10px] text-primary font-semibold hover:underline"
-                            >
-                                Copy
-                            </button>
-                        </div>
-                    </div>
-                )}
             </div>
         </div>
     );

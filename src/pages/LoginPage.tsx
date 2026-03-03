@@ -8,23 +8,16 @@ import { googleProvider } from '../lib/firebase';
 import { useAuth } from '../context/AuthContext';
 
 const LoginPage: React.FC = () => {
-    const { user, isAdmin, loading } = useAuth();
+    const { user, userData, isAdmin, loading } = useAuth();
     const [localLoading, setLocalLoading] = useState(false);
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
-    // TEMPORARY: Direct redirect for testing
+    // Handle navigation/status
     React.useEffect(() => {
         if (loading) return;
-
         if (user && isAdmin) {
             navigate('/admin');
-        } else if (user && !isAdmin) {
-            // STRICT MODE: Auto-logout non-admins
-            auth.signOut().then(() => {
-                setError('رسائی مسترد: صرف ایڈمن لاگ ان کر سکتے ہیں۔');
-                setLocalLoading(false);
-            });
         }
     }, [navigate, isAdmin, user, loading]);
 
@@ -33,12 +26,11 @@ const LoginPage: React.FC = () => {
         setError('');
         try {
             // Using Popup for immediate feedback
-            const result = await signInWithPopup(auth, googleProvider);
-            console.log("Urdu Login Success UID:", result.user.uid);
-            // navigate('/admin') will be handled by the useEffect
+            await signInWithPopup(auth, googleProvider);
+            console.log("Urdu Login Success");
         } catch (err: any) {
             console.error("Urdu - Popup Login Error:", err);
-            setError(`Login failed: ${err.message}`);
+            setError(`لاگ ان میں غلطی: ${err.message}`);
             setLocalLoading(false);
         }
     };
@@ -71,13 +63,49 @@ const LoginPage: React.FC = () => {
                                 className="w-full flex items-center justify-center gap-3 px-4 py-4 border border-gray-300 rounded-xl shadow-sm bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none transition-all duration-200 active:scale-95 group"
                             >
                                 <Chrome className="h-6 w-6 text-primary group-hover:scale-110 transition-transform" />
-                                <span className="font-bold font-sans">Google کے ساتھ سائن ان کریں</span>
+                                <span className="font-bold underline-offset-4">Google کے ساتھ سائن ان کریں</span>
                             </button>
                         </div>
-                        <p className="text-xs text-center text-gray-500">
-                            صرف مجاز ایڈمن اکاؤنٹس ہی لاگ ان کر سکتے ہیں۔
-                        </p>
                     </div>
+
+                    {user && !isAdmin && !loading && (
+                        <div className="mt-6 p-6 bg-amber-50 rounded-2xl border border-amber-200 text-right">
+                            <div className="flex items-center gap-2 mb-3 text-amber-800 justify-end">
+                                <span className="text-sm font-bold">رسائی مسترد کر دی گئی ہے</span>
+                            </div>
+                            <p className="text-xs text-amber-700 mb-4 leading-relaxed">
+                                آپ لاگ ان ہیں، لیکن آپ کے اکاؤنٹ کو ایڈمن کے اختیارات حاصل نہیں ہیں۔ براہ کرم ایڈمن تک رسائی کی درخواست کریں۔
+                            </p>
+
+                            {/* PART 2: Admin Access Request */}
+                            {userData?.requestStatus === 'pending' ? (
+                                <div className="bg-amber-100/50 p-3 rounded-lg border border-amber-200 text-center">
+                                    <p className="text-[10px] font-bold text-amber-800 uppercase tracking-widest">درخواست پینڈنگ ہے</p>
+                                    <p className="text-[10px] text-amber-600 mt-1">ایڈمن جلد آپ کی درخواست کا جائزہ لے گا۔</p>
+                                </div>
+                            ) : userData?.requestStatus === 'approved' ? (
+                                <div className="bg-green-50 p-3 rounded-lg border border-green-200 text-center">
+                                    <p className="text-[10px] font-bold text-green-800 uppercase tracking-widest">رسائی منظور کر دی گئی!</p>
+                                    <p className="text-[10px] text-green-600 mt-1">براہ کرم ڈیش بورڈ تک رسائی کے لیے صفحہ ریفریش کریں۔</p>
+                                </div>
+                            ) : (
+                                <button
+                                    onClick={async () => {
+                                        const { doc, updateDoc } = await import('firebase/firestore');
+                                        const { db } = await import('../lib/firebase');
+                                        await updateDoc(doc(db, 'users', user.uid), {
+                                            adminRequest: true,
+                                            requestStatus: 'pending'
+                                        });
+                                        window.location.reload();
+                                    }}
+                                    className="w-full py-3 bg-amber-600 text-white rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-amber-700 transition-all shadow-md active:scale-95"
+                                >
+                                    ایڈمن تک رسائی کی درخواست کریں
+                                </button>
+                            )}
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

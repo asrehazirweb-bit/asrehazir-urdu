@@ -4,9 +4,15 @@ import { onAuthStateChanged, type User, getRedirectResult } from 'firebase/auth'
 import { doc, getDoc } from 'firebase/firestore';
 
 interface UserData {
-    role: "admin" | "editor" | "reader";
-    appAccess: string[];
-    languagePreference: string;
+    uid: string;
+    email: string | null;
+    displayName: string | null;
+    role: "admin" | "user" | "editor" | "reader";
+    adminRequest: boolean;
+    requestStatus: "pending" | "approved" | "rejected" | null;
+    appAccess?: string[];
+    languagePreference?: string;
+    createdAt?: any;
 }
 
 interface AuthContextType {
@@ -55,17 +61,33 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                         console.log("Urdu - Firestore User Data:", data);
 
                         // Check if user is admin/editor AND has 'ur' in appAccess
-                        const hasAccess = (data.role === 'admin' || data.role === 'editor') &&
-                            data.appAccess?.includes('ur');
+                        // OR if they are a standard 'admin' role (PART 6)
+                        const hasAccess = !!(data.role === 'admin' || (data.role === 'editor' && data.appAccess?.includes('ur')));
 
                         if (!hasAccess) {
-                            console.warn("Urdu - User does not have Urdu CMS access (ur in appAccess)");
+                            console.warn("Urdu - User does not have Urdu CMS access");
                         }
                         setIsAdmin(hasAccess);
                     } else {
-                        console.warn("Urdu - No user profile found in Firestore for UID:", firebaseUser.uid);
-                        setUserData(null);
+                        // Create default user profile if it doesn't exist (PART 1: Registration)
+                        console.log("Urdu - Creating new user profile in Firestore for UID:", firebaseUser.uid);
+                        const newUser: UserData = {
+                            uid: firebaseUser.uid,
+                            email: firebaseUser.email,
+                            displayName: firebaseUser.displayName,
+                            role: "user",
+                            adminRequest: false,
+                            requestStatus: null,
+                            appAccess: [],
+                            languagePreference: 'ur',
+                            createdAt: new Date()
+                        };
+
+                        setUserData(newUser);
                         setIsAdmin(false);
+
+                        const { setDoc, serverTimestamp } = await import('firebase/firestore');
+                        await setDoc(doc(db, 'users', firebaseUser.uid), { ...newUser, createdAt: serverTimestamp() });
                     }
                 } catch (error) {
                     console.error("Urdu - Error fetching user data:", error);

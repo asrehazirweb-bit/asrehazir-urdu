@@ -23,14 +23,14 @@ export function IndiaSection({ featured, items }: IndiaSectionProps) {
         <section className="flex flex-col w-full mb-12 font-serif border-b border-gray-100 pb-8 transition-colors text-right">
 
             {/* === A. SECTION HEADER === */}
-            <div className="flex flex-row-reverse items-center justify-between mb-6 border-b border-gray-200 pb-2">
-                <div className="flex flex-row-reverse items-center gap-3">
+            <div className="flex flex-row items-center justify-between mb-6 border-b border-gray-200 pb-2">
+                <div className="flex flex-row items-center gap-3">
                     <div className="w-3 h-8 bg-accent"></div>
                     <h2 className="text-2xl font-black tracking-tight text-secondary">
                         بھارت
                     </h2>
                 </div>
-                <Link to="/national" className="flex flex-row-reverse items-center gap-1 text-sm font-bold text-accent hover:text-secondary transition-colors tracking-wide">
+                <Link to="/national" className="flex flex-row items-center gap-1 text-sm font-bold text-accent hover:text-secondary transition-colors tracking-wide">
                     قومی خبریں مزید <ChevronRight size={14} className="rotate-180" />
                 </Link>
             </div>
@@ -57,7 +57,7 @@ export function IndiaSection({ featured, items }: IndiaSectionProps) {
                         <p className="text-gray-600 font-sans text-sm leading-[1.8] mb-3 line-clamp-3">
                             {featured.excerpt || "مکمل کہانی پڑھنے کے لیے کلک کریں۔"}
                         </p>
-                        <div className="flex flex-row-reverse items-center text-xs text-gray-400 font-sans tracking-wide mt-auto">
+                        <div className="flex flex-row items-center text-xs text-gray-400 font-sans tracking-wide mt-auto">
                             <Clock size={12} className="ml-1" />
                             <span>{featured.time}</span>
                         </div>
@@ -75,7 +75,7 @@ export function IndiaSection({ featured, items }: IndiaSectionProps) {
                                 <h4 className="text-sm font-bold text-secondary leading-snug line-clamp-1 group-hover:text-accent transition-colors">
                                     {item.title}
                                 </h4>
-                                <div className="flex flex-row-reverse items-center mt-1">
+                                <div className="flex flex-row items-center mt-1">
                                     <span className="text-[10px] text-gray-400 font-sans tracking-wider flex items-center">
                                         {item.time}
                                     </span>

@@ -94,7 +94,7 @@ export function ContactPage() {
                             <div className="flex flex-col gap-4">
                                 <a
                                     href="mailto:asrehazir.web@gmail.com"
-                                    className="w-full py-4 rounded-2xl bg-white text-black font-black uppercase text-sm hover:bg-primary hover:text-white transition-all shadow-xl text-center flex flex-row-reverse items-center justify-center gap-2"
+                                    className="w-full py-4 rounded-2xl bg-white text-black font-black uppercase text-sm hover:bg-primary hover:text-white transition-all shadow-xl text-center flex flex-row items-center justify-center gap-2"
                                 >
                                     <Mail size={18} /> ادارتی ڈیسک سے رابطہ کریں
                                 </a>

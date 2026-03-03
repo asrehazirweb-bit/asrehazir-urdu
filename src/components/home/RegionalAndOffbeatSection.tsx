@@ -29,12 +29,12 @@ export function RegionalAndOffbeatSection({ regionalItems = [] }: RegionalSectio
         <div className="w-full bg-white mb-12 transition-colors text-right">
 
             {/* Header */}
-            <div className="flex flex-row-reverse items-center justify-between mb-6 border-b border-gray-100 pb-2">
-                <div className="flex flex-row-reverse items-center gap-2">
+            <div className="flex flex-row items-center justify-between mb-6 border-b border-gray-100 pb-2">
+                <div className="flex flex-row items-center gap-2">
                     <div className="w-1.5 h-4 bg-[#004d99]"></div>
                     <h2 className="text-secondary font-sans font-bold text-sm">جنوبی بھارت</h2>
                 </div>
-                <div className="hidden md:flex flex-row-reverse gap-4 text-xs font-sans text-gray-500 font-medium">
+                <div className="hidden md:flex flex-row gap-4 text-xs font-sans text-gray-500 font-medium">
                     {['آندھرا پردیش', 'بنگلور', 'حیدرآباد', 'تلنگانہ'].map((tab) => (
                         <span key={tab} className="cursor-pointer hover:text-accent transition-colors">{tab}</span>
                     ))}

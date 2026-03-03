@@ -17,6 +17,8 @@ import AddNews from './pages/admin/AddNews';
 import ManageNews from './pages/admin/ManageNews';
 import AdsManagement from './pages/admin/AdsManagement';
 import ManageCategories from './pages/admin/ManageCategories';
+import ManageUsers from './pages/admin/ManageUsers';
+import AppSettings from './pages/admin/AppSettings';
 import { AdminGuard } from './components/auth/AdminGuard';
 
 function App() {
@@ -76,7 +78,9 @@ function App() {
           <Route path="editor" element={<UrduPostEditor />} />
           <Route path="editor/:id" element={<UrduPostEditor />} />
           <Route path="categories" element={<ManageCategories />} />
-          <Route path="settings" element={<div className="p-8 text-right font-serif">کنفیگریشن ماڈیول جلد آ رہا ہے...</div>} />
+          <Route path="users" element={<ManageUsers />} />
+          <Route path="users" element={<ManageUsers />} />
+          <Route path="settings" element={<AppSettings />} />
         </Route>
 
         {/* Fallback */}

@@ -22,14 +22,14 @@ export function HyderabadSection({ featured, items }: HyderabadSectionProps) {
     return (
         <section className="flex flex-col w-full mb-12 font-serif border-b border-gray-100 pb-8 transition-colors text-right">
 
-            <div className="flex flex-row-reverse items-center justify-between mb-6 border-b border-gray-200 pb-2">
-                <div className="flex flex-row-reverse items-center gap-3">
+            <div className="flex flex-row items-center justify-between mb-6 border-b border-gray-200 pb-2">
+                <div className="flex flex-row items-center gap-3">
                     <div className="w-3 h-8 bg-accent"></div>
                     <h2 className="text-2xl font-black tracking-tight text-secondary">
                         حیدرآباد
                     </h2>
                 </div>
-                <Link to="/hyderabad" className="flex flex-row-reverse items-center gap-1 text-sm font-bold text-accent hover:text-secondary transition-colors tracking-wide">
+                <Link to="/hyderabad" className="flex flex-row items-center gap-1 text-sm font-bold text-accent hover:text-secondary transition-colors tracking-wide">
                     حیدرآباد کی مزید خبریں <ChevronRight size={14} className="rotate-180" />
                 </Link>
             </div>
@@ -58,7 +58,7 @@ export function HyderabadSection({ featured, items }: HyderabadSectionProps) {
                         <p className="text-gray-600 font-sans text-sm leading-[1.8] mb-4 line-clamp-3">
                             {featured.excerpt || "مکمل کہانی پڑھنے کے لیے کلک کریں۔"}
                         </p>
-                        <div className="flex flex-row-reverse items-center text-xs text-gray-400 font-sans tracking-wide mt-auto">
+                        <div className="flex flex-row items-center text-xs text-gray-400 font-sans tracking-wide mt-auto">
                             <Clock size={12} className="ml-1" />
                             <span>{featured.time}</span>
                         </div>
@@ -83,7 +83,7 @@ export function HyderabadSection({ featured, items }: HyderabadSectionProps) {
                                 <h4 className="text-sm font-bold text-secondary leading-snug line-clamp-2 group-hover:text-accent transition-colors mb-1.5">
                                     {item.title}
                                 </h4>
-                                <div className="text-[10px] text-gray-400 font-sans flex flex-row-reverse items-center">
+                                <div className="text-[10px] text-gray-400 font-sans flex flex-row items-center">
                                     <Clock size={10} className="ml-1" />
                                     {item.time}
                                 </div>

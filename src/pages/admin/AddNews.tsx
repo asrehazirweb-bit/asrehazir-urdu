@@ -39,7 +39,7 @@ const AddNews: React.FC = () => {
     const [category, setCategory] = useState('');
     const [subCategory, setSubCategory] = useState('');
     const [hashtags, setHashtags] = useState('');
-    const [isLive, setIsLive] = useState(false);
+    const [showInLive, setShowInLive] = useState(false);
     const [image, setImage] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [existingImageUrl, setExistingImageUrl] = useState<string | null>(null);
@@ -111,7 +111,7 @@ const AddNews: React.FC = () => {
             setSection(data.section || 'خبرِ خاص');
             setVideoUrl(data.videoUrl || '');
             setHashtags(data.hashtags || '');
-            setIsLive(data.isLive || false);
+            setShowInLive(data.showInLive || false);
             setSendPush(data.sendPush || false);
         }
     }, []);
@@ -121,12 +121,12 @@ const AddNews: React.FC = () => {
         const timer = setTimeout(() => {
             if (title || content) {
                 localStorage.setItem('asre-hazir-urdu-draft', JSON.stringify({
-                    title, subHeadline, content, category, subCategory, section, videoUrl, hashtags, isLive, sendPush
+                    title, subHeadline, content, category, subCategory, section, videoUrl, hashtags, showInLive, sendPush
                 }));
             }
         }, 2000);
         return () => clearTimeout(timer);
-    }, [title, subHeadline, content, category, subCategory, section, videoUrl, hashtags, isLive, sendPush]);
+    }, [title, subHeadline, content, category, subCategory, section, videoUrl, hashtags, showInLive, sendPush]);
 
     const fetchMediaLibrary = async () => {
         setIsMediaLibraryOpen(true);
@@ -156,7 +156,7 @@ const AddNews: React.FC = () => {
         setSubCategory('ٹاپ اسٹوریز');
         setVideoUrl('');
         setHashtags('');
-        setIsLive(false);
+        setShowInLive(false);
         setSendPush(false);
         localStorage.removeItem('asre-hazir-urdu-draft');
         setIsClearModalOpen(false);
@@ -211,7 +211,7 @@ const AddNews: React.FC = () => {
                 category,
                 subCategory,
                 hashtags: hashtags.split(',').map(s => s.trim()).filter(Boolean),
-                isLive,
+                showInLive,
                 videoUrl,
                 imageUrl: imageUrl,
                 createdAt: serverTimestamp(),
@@ -242,7 +242,7 @@ const AddNews: React.FC = () => {
             setImagePreview(null);
             setExistingImageUrl(null);
             setHashtags('');
-            setIsLive(false);
+            setShowInLive(false);
             setSendPush(false);
             localStorage.removeItem('asre-hazir-urdu-draft');
 
@@ -363,16 +363,11 @@ const AddNews: React.FC = () => {
                                     </label>
                                     <div className="flex flex-col gap-3">
                                         <div className="flex items-center justify-end gap-4 p-4 bg-white rounded-xl border border-gray-100 h-14">
-                                            <div className="flex flex-wrap gap-2 mr-auto">
-                                                {categories.some(c => c.name === category) && (
-                                                    <span className="bg-green-100 text-green-700 px-2 py-1 rounded-md text-[10px] font-bold">لائیو کے لیے اہل</span>
-                                                )}
-                                            </div>
                                             <span className="font-bold text-sm text-gray-600">اسے لائیو نیوز کے طور پر دکھائیں</span>
                                             <input
                                                 type="checkbox"
-                                                checked={isLive}
-                                                onChange={(e) => setIsLive(e.target.checked)}
+                                                checked={showInLive}
+                                                onChange={(e) => setShowInLive(e.target.checked)}
                                                 className="w-6 h-6 accent-primary cursor-pointer"
                                             />
                                         </div>

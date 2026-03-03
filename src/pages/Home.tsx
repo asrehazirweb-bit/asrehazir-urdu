@@ -160,13 +160,23 @@ export function Home() {
                     {/* 1. Hero */}
                     {heroLeadStory && <HeroSection leadStory={heroLeadStory} />}
 
-                    {/* 2. Latest News */}
+                    {/* 2. Articles & Essays (Moved UP) */}
+                    <CategoryGridSection
+                        category="مضامین اور مقالہ جات"
+                        items={news.filter(n =>
+                            n.category === 'مضامین اور مقالہ جات' ||
+                            n.category === 'Articles & Essays'
+                        )}
+                        formatTime={formatTime}
+                    />
+
+                    {/* 3. Latest News (Moved DOWN) */}
                     <div className="mb-12">
                         <AdBlock placement="between_news" className="h-24 md:hidden mb-12" label="بریکنگ نیوز اشتہار" />
                         <LatestNewsSection items={latestNewsItems} />
                     </div>
 
-                    {/* 3. Telangana Section */}
+                    {/* 4. Telangana Section */}
                     {telanganaFeature && (
                         <TelanganaSection
                             featured={telanganaFeature}
@@ -174,23 +184,13 @@ export function Home() {
                         />
                     )}
 
-                    {/* Regional (South) */}
+                    {/* 5. Regional (South) */}
                     <RegionalAndOffbeatSection regionalItems={regionalItems} />
 
-                    {/* 4. India / Stats */}
+                    {/* 6. India / Stats */}
                     <CategoryFeatureSection
                         tabs={['قومی', 'عالمی', 'علاقائی']}
                         allNews={news}
-                        formatTime={formatTime}
-                    />
-
-                    {/* 5. Articles & Essays */}
-                    <CategoryGridSection
-                        category="مضامین اور مقالہ جات"
-                        items={news.filter(n =>
-                            n.category === 'مضامین اور مقالہ جات' ||
-                            n.category === 'Articles & Essays'
-                        )}
                         formatTime={formatTime}
                     />
 

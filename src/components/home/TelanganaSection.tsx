@@ -24,14 +24,14 @@ export function TelanganaSection({ featured, items }: TelanganaSectionProps) {
     return (
         <section className="flex flex-col w-full mb-12 font-serif border-b border-gray-100 pb-8 transition-colors text-right">
 
-            <div className="flex flex-row-reverse items-center justify-between mb-6 border-b border-gray-200 pb-2">
-                <div className="flex flex-row-reverse items-center gap-3">
+            <div className="flex flex-row items-center justify-between mb-6 border-b border-gray-200 pb-2">
+                <div className="flex flex-row items-center gap-3">
                     <div className="w-2 md:w-3 h-6 md:h-8 bg-accent"></div>
                     <h2 className="text-xl md:text-2xl font-black tracking-tight text-secondary uppercase">
                         دکن نیوز
                     </h2>
                 </div>
-                <Link to="/deccan" className="flex flex-row-reverse items-center gap-1 text-[10px] md:text-sm font-bold text-accent hover:text-secondary transition-colors uppercase tracking-wide">
+                <Link to="/deccan" className="flex flex-row items-center gap-1 text-[10px] md:text-sm font-bold text-accent hover:text-secondary transition-colors uppercase tracking-wide">
                     مزید <span className="hidden sm:inline">دکن نیوز</span> <ChevronRight size={14} className="rotate-180" />
                 </Link>
             </div>
@@ -60,7 +60,7 @@ export function TelanganaSection({ featured, items }: TelanganaSectionProps) {
                         <p className={`text-gray-600 font-sans text-sm leading-relaxed mb-4 line-clamp-3 ${featured.contentFont || ''}`}>
                             {featured.excerpt || "اس کہانی کا کوئی خلاصہ دستیاب نہیں ہے۔ مکمل مضمون پڑھنے کے لیے کلک کریں۔"}
                         </p>
-                        <div className="flex flex-row-reverse items-center text-xs text-gray-400 font-sans uppercase tracking-wide mt-auto">
+                        <div className="flex flex-row items-center text-xs text-gray-400 font-sans uppercase tracking-wide mt-auto">
                             <Clock size={12} className="ml-1" />
                             <span>{featured.time}</span>
                         </div>
@@ -85,7 +85,7 @@ export function TelanganaSection({ featured, items }: TelanganaSectionProps) {
                                 <h4 className={`text-sm font-bold text-secondary leading-snug line-clamp-3 group-hover:text-accent transition-colors ${item.titleFont || ''}`}>
                                     {item.title}
                                 </h4>
-                                <div className="text-[10px] text-gray-400 font-sans uppercase tracking-wider flex flex-row-reverse items-center mt-auto">
+                                <div className="text-[10px] text-gray-400 font-sans uppercase tracking-wider flex flex-row items-center mt-auto">
                                     <Clock size={10} className="ml-1" />
                                     {item.time}
                                 </div>

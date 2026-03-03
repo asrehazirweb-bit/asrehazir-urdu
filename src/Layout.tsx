@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
+import { FloatingWhatsApp } from './components/FloatingWhatsApp';
 import { NewsTicker } from './components/news/NewsTicker';
 
 interface LayoutProps {
@@ -11,7 +12,7 @@ export function Layout({ children }: LayoutProps) {
     // STRICT RULE: Single entry layout wrapper. layout-shift safety.
     // Header and Footer are part of the global layout.
     return (
-        <div className="mx-auto w-full max-w-full min-h-screen bg-white relative flex flex-col transition-colors duration-300">
+        <div className="mx-auto w-full max-w-full min-h-screen bg-white relative flex flex-col transition-colors duration-300" dir="rtl">
 
             <NewsTicker />
             <Header />
@@ -20,6 +21,7 @@ export function Layout({ children }: LayoutProps) {
                 {children}
             </main>
             <Footer />
+            <FloatingWhatsApp />
         </div>
     );
 }

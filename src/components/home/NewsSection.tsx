@@ -18,9 +18,9 @@ interface NewsSectionProps {
 export function NewsSection({ title, items, variant = 'grid' }: NewsSectionProps) {
     return (
         <div className="mb-12 text-right">
-            <div className="flex flex-row-reverse items-center mb-6 border-b border-accent/30 pb-2">
+            <div className="flex flex-row items-center mb-6 border-b border-accent/30 pb-2">
                 <h2 className="text-xl font-bold font-sans text-accent tracking-wider">{title}</h2>
-                <div className="flex-grow mr-4 h-[1px] bg-gray-100"></div>
+                <div className="flex-grow ml-4 h-[1px] bg-gray-100"></div>
             </div>
 
             <div className={variant === 'grid' ? "grid grid-cols-1 md:grid-cols-2 gap-6" : "flex flex-col gap-6"}>
@@ -50,9 +50,9 @@ export function NewsSection({ title, items, variant = 'grid' }: NewsSectionProps
 export function VideoSection({ items }: { items: NewsItem[] }) {
     return (
         <div className="mb-12 bg-secondary py-12 px-4 -mx-4 md:-mx-8 md:px-8 text-white relative text-right">
-            <div className="flex flex-row-reverse items-center mb-8 border-b border-white/10 pb-2">
+            <div className="flex flex-row items-center mb-8 border-b border-white/10 pb-2">
                 <h2 className="text-xl font-bold font-sans text-accent tracking-wider">ضرور دیکھیں</h2>
-                <div className="flex-grow mr-4 h-[1px] bg-white/10"></div>
+                <div className="flex-grow ml-4 h-[1px] bg-white/10"></div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
-import { Facebook, Twitter, Youtube, ChevronRight } from 'lucide-react';
+import { Facebook, X as XIcon, ChevronRight } from 'lucide-react';
+import { SOCIAL_LINKS } from '../../constants/socialLinks';
 import { AdBlock } from './AdBlock';
 
 interface NewsItem {
@@ -79,23 +80,26 @@ export function Sidebar({ offbeatItems = [], topStories = [] }: SidebarProps) {
                     </div>
                 </div>
 
-                {/* 2. SOCIAL STATS CARD */}
-                <div className="flex w-full h-auto min-h-[80px] overflow-hidden rounded-2xl">
-                    <div className="flex-1 bg-[#FF0000] text-white p-4 flex flex-col items-center justify-center cursor-pointer hover:opacity-90 transition-opacity">
-                        <Youtube size={20} className="mb-1" />
-                        <span className="font-bold text-xs">1.9M</span>
-                        <span className="text-[8px] uppercase opacity-80">Subscribers</span>
-                    </div>
-                    <div className="flex-1 bg-[#000000] text-white p-4 flex flex-col items-center justify-center cursor-pointer hover:opacity-90 transition-opacity border-x border-white/10">
-                        <Twitter size={20} className="mb-1" />
-                        <span className="font-bold text-xs">40.4K</span>
-                        <span className="text-[8px] uppercase opacity-80">Followers</span>
-                    </div>
-                    <div className="flex-1 bg-[#4267B2] text-white p-4 flex flex-col items-center justify-center cursor-pointer hover:opacity-90 transition-opacity">
-                        <Facebook size={20} className="mb-1" />
-                        <span className="font-bold text-xs">1.4M</span>
-                        <span className="text-[8px] uppercase opacity-80">Fans</span>
-                    </div>
+                {/* 2. SOCIAL CARDS */}
+                <div className="flex w-full h-[80px] overflow-hidden rounded-2xl">
+                    <a
+                        href={SOCIAL_LINKS.facebook}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="flex-1 bg-[#1877F2] text-white flex flex-col items-center justify-center cursor-pointer hover:shadow-inner transition-all group"
+                    >
+                        <Facebook size={20} className="mb-1 group-hover:scale-110 transition-transform" />
+                        <span className="font-bold text-[10px]">فیس بک</span>
+                    </a>
+                    <a
+                        href={SOCIAL_LINKS.x}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="flex-1 bg-[#000000] text-white flex flex-col items-center justify-center cursor-pointer hover:shadow-inner transition-all group border-r border-white/10"
+                    >
+                        <XIcon size={20} className="mb-1 group-hover:scale-110 transition-transform" />
+                        <span className="font-bold text-[10px]">ایکس پر فالو کریں</span>
+                    </a>
                 </div>
 
                 <AdBlock placement="sidebar" className="h-[250px] !my-0" label="سائیڈ بار اشتہار" />
@@ -112,7 +116,7 @@ export function Sidebar({ offbeatItems = [], topStories = [] }: SidebarProps) {
                             { name: 'جرائم اور حادثات', path: '/crime-accidents' }
                         ].map((item, idx) => (
                             <li key={idx}>
-                                <Link to={item.path} className="flex flex-row-reverse items-center justify-between group cursor-pointer">
+                                <Link to={item.path} className="flex flex-row items-center justify-between group cursor-pointer">
                                     <span className="text-sm font-sans text-gray-600 group-hover:text-primary transition-colors">{item.name}</span>
                                     <ChevronRight size={16} className="text-gray-400 group-hover:text-primary transition-colors rotate-180" />
                                 </Link>

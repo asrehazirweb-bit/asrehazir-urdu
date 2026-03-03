@@ -6,6 +6,8 @@ import { Calendar, Share2, Facebook, Link2, ArrowLeft, Clock } from 'lucide-reac
 import type { NewsArticle } from '../hooks/useNews';
 import Toast from '../components/ui/Toast';
 import DOMPurify from 'dompurify';
+import SocialShare from '../components/SocialShare';
+import { useMetaTags } from '../hooks/useMetaTags';
 
 const getCategoryPath = (category: string) => {
     const cat = category.toLowerCase();
@@ -67,6 +69,13 @@ const ArticleDetail: React.FC = () => {
         fetchArticle();
         window.scrollTo(0, 0);
     }, [id]);
+
+    useMetaTags({
+        title: article?.title ? `${article.title} - عصر حاضر` : 'عصر حاضر نیوز',
+        description: article?.content?.replace(/<[^>]*>/g, '').slice(0, 160),
+        image: article?.imageUrl,
+        url: window.location.href
+    });
 
     useEffect(() => {
         const handleScroll = () => {
@@ -135,7 +144,7 @@ const ArticleDetail: React.FC = () => {
 
             {/* Header / Breadcrumb */}
             <div className="max-w-4xl mx-auto px-4 pt-8 pb-4">
-                <div className="flex flex-row-reverse items-center gap-2 text-[12px] font-black text-primary mb-6">
+                <div className="flex flex-row items-center gap-2 text-[12px] font-black text-primary mb-6">
                     <Link to="/" className="hover:text-black transition-colors">ہوم</Link>
                     <span>/</span>
                     <Link to={getCategoryPath(article.category)} className="hover:text-black transition-colors">{article.category}</Link>
@@ -145,7 +154,7 @@ const ArticleDetail: React.FC = () => {
 
                 {/* LIVE Badge */}
                 {article.isLive && (
-                    <div className="flex flex-row-reverse items-center gap-2 mb-4">
+                    <div className="flex flex-row items-center gap-2 mb-4">
                         <span className="inline-flex flex-row-reverse items-center gap-2 bg-red-600 text-white px-4 py-1.5 rounded-full text-[11px] font-black uppercase tracking-[0.3em] shadow-lg shadow-red-600/30 animate-pulse">
                             <span className="w-2 h-2 rounded-full bg-white animate-ping"></span>
                             لائیو
@@ -164,16 +173,16 @@ const ArticleDetail: React.FC = () => {
                     </p>
                 )}
 
-                <div className="flex flex-wrap flex-row-reverse items-center justify-between gap-6 pb-8 border-b border-gray-100">
+                <div className="flex flex-wrap flex-row items-center justify-between gap-6 pb-8 border-b border-gray-100">
                     <div className="flex flex-row-reverse items-center gap-4 text-right">
                         <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-primary to-primary/80 flex items-center justify-center text-white font-black text-lg shadow-lg">
                             {article.author?.[0] || 'ع'}
                         </div>
                         <div>
                             <div className="text-sm font-black text-gray-900 tracking-wider">{article.author || 'عصر حاضر ڈیسک'}</div>
-                            <div className="flex flex-row-reverse items-center gap-3 text-xs text-gray-500 mt-0.5">
-                                <span className="flex flex-row-reverse items-center gap-1"><Calendar size={12} className="ml-1" /> {formatTime(article.createdAt)}</span>
-                                <span className="flex flex-row-reverse items-center gap-1"><Clock size={12} className="ml-1" /> 4 منٹ کا مطالعہ</span>
+                            <div className="flex flex-row items-center gap-3 text-xs text-gray-500 mt-0.5">
+                                <span className="flex flex-row items-center gap-1"><Calendar size={12} className="ml-1" /> {formatTime(article.createdAt)}</span>
+                                <span className="flex flex-row items-center gap-1"><Clock size={12} className="ml-1" /> 4 منٹ کا مطالعہ</span>
                             </div>
                         </div>
                     </div>
@@ -216,9 +225,12 @@ const ArticleDetail: React.FC = () => {
                             />
                         </div>
 
+                        {/* Social Share Section (Dynamic) */}
+                        <SocialShare url={window.location.href} title={article.title} />
+
                         {/* Article Footer */}
-                        <div className="mt-16 pt-8 border-t border-gray-100 flex flex-col md:flex-row-reverse md:items-center justify-between gap-6">
-                            <div className="flex flex-row-reverse flex-wrap gap-2 text-right">
+                        <div className="mt-16 pt-8 border-t border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                            <div className="flex flex-row flex-wrap gap-2 text-right">
                                 {article.hashtags && article.hashtags.length > 0 ? (
                                     article.hashtags.map(tag => (
                                         <Link
@@ -238,7 +250,7 @@ const ArticleDetail: React.FC = () => {
                                 )}
                             </div>
 
-                            <div className="flex flex-row-reverse items-center gap-4">
+                            <div className="flex flex-row items-center gap-4">
                                 <span className="text-xs font-black uppercase tracking-widest text-gray-400">کہانی شیئر کریں:</span>
                                 <div className="flex gap-2">
                                     <button onClick={() => handleShare('facebook')} className="text-gray-400 hover:text-blue-600 transition-colors"><Facebook size={20} /></button>
@@ -256,7 +268,7 @@ const ArticleDetail: React.FC = () => {
             {/* Related News Section */}
             {relatedNews.length > 0 && (
                 <div className="max-w-6xl mx-auto px-4 mt-24 text-right">
-                    <div className="flex flex-row-reverse items-center justify-between mb-10">
+                    <div className="flex flex-row items-center justify-between mb-10">
                         <h2 className="text-2xl font-serif font-black text-gray-900 italic underline decoration-primary decoration-4 underline-offset-8">
                             {article.category} سے مزید خبریں
                         </h2>

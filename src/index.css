@@ -61,7 +61,14 @@
     max-width: 100%;
   }
 
-  html,
+  html {
+    width: 100%;
+    max-width: 100%;
+    position: relative;
+    margin: 0;
+    padding: 0;
+  }
+
   body {
     width: 100%;
     max-width: 100%;
@@ -72,6 +79,7 @@
     touch-action: pan-y;
     -webkit-overflow-scrolling: touch;
   }
+
 
   body {
     @apply text-secondary font-serif bg-white transition-colors duration-300 antialiased;

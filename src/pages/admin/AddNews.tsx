@@ -414,27 +414,21 @@ const AddNews: React.FC = () => {
                                     <label className="flex flex-row-reverse items-center gap-2 text-sm font-bold text-gray-400">
                                         <Layout className="w-4 h-4 text-primary" /> ذیلی زمرہ
                                     </label>
-                                    {currentCat ? (
-                                        <select
-                                            value={subCategory}
-                                            onChange={(e) => setSubCategory(e.target.value)}
-                                            className="w-full px-5 py-3 rounded-2xl border border-gray-100 bg-gray-50 focus:ring-4 focus:ring-primary/10 outline-none transition-all font-bold text-lg min-h-[3.5rem] text-right"
-                                        >
-                                            {currentSubCategories.map(sub => (
+                                    <select
+                                        value={subCategory}
+                                        onChange={(e) => setSubCategory(e.target.value)}
+                                        className="w-full px-5 py-3 rounded-2xl border border-gray-100 bg-gray-50 focus:ring-4 focus:ring-primary/10 outline-none transition-all font-bold text-lg min-h-[3.5rem] text-right"
+                                    >
+                                        {currentSubCategories.length > 0 ? (
+                                            currentSubCategories.map(sub => (
                                                 <option key={sub} value={sub}>{sub}</option>
-                                            ))}
-                                            <option value="دیگر">دیگر (اپنی مرضی کا)...</option>
-                                        </select>
-                                    ) : (
-                                        <input
-                                            type="text"
-                                            placeholder="اپنی مرضی کا ذیلی زمرہ..."
-                                            value={subCategory}
-                                            onChange={(e) => setSubCategory(e.target.value)}
-                                            className="w-full px-5 py-3 rounded-2xl border border-gray-100 bg-gray-50 focus:ring-4 focus:ring-primary/10 outline-none transition-all font-bold text-lg min-h-[3.5rem] text-right"
-                                        />
-                                    )}
+                                            ))
+                                        ) : (
+                                            <option value="جنرل">جنرل</option>
+                                        )}
+                                    </select>
                                 </div>
+
                             </div>
 
                             {/* Video URL (Conditional) */}

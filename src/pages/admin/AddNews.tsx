@@ -155,7 +155,7 @@ const AddNews: React.FC = () => {
         const cat = categories.find(c => c.name === val);
         if (cat) {
             setSubCategory(cat.subCategories[0] || '');
-        } else if (val !== 'دیگر') {
+        } else {
             setSubCategory('جنرل');
         }
     };
@@ -247,7 +247,7 @@ const AddNews: React.FC = () => {
 
     const currentCat = categories.find(c => c.name === category);
     const currentSubCategories = currentCat?.subCategories || [];
-    const SECTIONS = ['خبرِ خاص', 'تازہ ترین خبریں', 'ضرور دیکھیں', 'علاقائی خبریں', 'بریکنگ نیوز', 'دیگر'];
+    const SECTIONS = ['خبرِ خاص', 'تازہ ترین خبریں', 'ضرور دیکھیں', 'علاقائی خبریں', 'بریکنگ نیوز'];
 
     if (catsLoading) {
         return (
@@ -384,25 +384,12 @@ const AddNews: React.FC = () => {
                                         <Sparkles className="w-4 h-4 text-primary" /> پیج سیکشن
                                     </label>
                                     <select
-                                        value={SECTIONS.includes(section) ? section : 'دیگر'}
-                                        onChange={(e) => {
-                                            const val = e.target.value;
-                                            if (val === 'دیگر') setSection('');
-                                            else setSection(val);
-                                        }}
+                                        value={section}
+                                        onChange={(e) => setSection(e.target.value)}
                                         className="w-full px-5 py-3 rounded-2xl border border-gray-100 bg-gray-50 focus:ring-4 focus:ring-primary/10 outline-none transition-all font-bold text-lg min-h-[3.5rem] text-right"
                                     >
                                         {SECTIONS.map(s => <option key={s} value={s}>{s}</option>)}
                                     </select>
-                                    {!SECTIONS.includes(section) && (
-                                        <input
-                                            type="text"
-                                            placeholder="اپنی مرضی کا سیکشن..."
-                                            value={section}
-                                            onChange={(e) => setSection(e.target.value)}
-                                            className="w-full p-4 mt-2 rounded-xl border border-primary/20 bg-white outline-none focus:border-primary transition-all font-bold text-lg text-right"
-                                        />
-                                    )}
                                 </div>
 
                                 {/* Category Selection */}
@@ -411,33 +398,16 @@ const AddNews: React.FC = () => {
                                         <Tag className="w-4 h-4 text-primary" /> خبر کا زمرہ
                                     </label>
                                     <select
-                                        value={categories.find(c => c.name === category) ? category : 'دیگر'}
-                                        onChange={(e) => {
-                                            const val = e.target.value;
-                                            if (val === 'دیگر') {
-                                                setCategory('');
-                                                setSubCategory('جنرل');
-                                            } else {
-                                                handleCategoryChange(val);
-                                            }
-                                        }}
+                                        value={category}
+                                        onChange={(e) => handleCategoryChange(e.target.value)}
                                         className="w-full px-5 py-3 rounded-2xl border border-gray-100 bg-gray-50 focus:ring-4 focus:ring-primary/10 outline-none transition-all font-bold text-lg min-h-[3.5rem] text-right"
                                     >
                                         {categories.map(cat => (
                                             <option key={cat.name} value={cat.name}>{cat.name}</option>
                                         ))}
-                                        <option value="دیگر">دیگر (اپنی مرضی کا)...</option>
                                     </select>
-                                    {(category === '' || !categories.find(c => c.name === category)) && (
-                                        <input
-                                            type="text"
-                                            placeholder="اپنی مرضی کا زمرہ..."
-                                            value={category}
-                                            onChange={(e) => setCategory(e.target.value)}
-                                            className="w-full p-4 mt-2 rounded-xl border border-primary/20 bg-white outline-none focus:border-primary transition-all font-bold text-lg text-right"
-                                        />
-                                    )}
                                 </div>
+
 
                                 {/* Subcategory Selection */}
                                 <div className="space-y-4">

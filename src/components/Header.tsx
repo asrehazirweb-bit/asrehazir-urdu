@@ -1,8 +1,17 @@
 import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
-import { Search, Menu, Facebook, Instagram, X, ChevronRight } from 'lucide-react';
+import { Search, Menu, Facebook, Instagram, X, ChevronRight, ChevronDown } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import { collection, query, orderBy, onSnapshot } from 'firebase/firestore';
+import { db } from '../lib/firebase';
 import { AdBlock } from './home/AdBlock';
+
+interface CategoryDoc {
+    id: string;
+    name: string;
+    subCategories: string[];
+    order: number;
+}
 
 export function Header() {
     const currentDate = format(new Date(), 'EEEE, MMMM do, yyyy');
@@ -10,31 +19,25 @@ export function Header() {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
+    const [categories, setCategories] = useState<CategoryDoc[]>([]);
+    const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
     const navigate = useNavigate();
+
+    // Fetch dynamic category list
+    useEffect(() => {
+        const q = query(collection(db, 'categories_urdu'), orderBy('order', 'asc'));
+        const unsub = onSnapshot(q, (snap) => {
+            const cats = snap.docs.map(doc => ({ id: doc.id, ...doc.data() })) as CategoryDoc[];
+            setCategories(cats);
+        });
+        return () => unsub();
+    }, []);
 
     useEffect(() => {
         const handleScroll = () => setIsScrolled(window.scrollY > 20);
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
-
-    const menuItems = [
-        { label: 'صفحہ اول', path: '/' },
-        { label: 'لائیو', path: '/live', isLive: true },
-        { label: 'عالمی خبریں', path: '/world' },
-        { label: 'قومی خبریں', path: '/national' },
-        { label: 'حیدرآباد', path: '/hyderabad' },
-        { label: 'تلنگانہ', path: '/telangana' },
-        { label: 'آندھرا پردیش', path: '/andhra-pradesh' },
-        { label: 'تصویریں', path: '/photos' },
-        { label: 'ویڈیوز', path: '/videos' },
-        { label: 'مضامین اور مقالہ جات', path: '/articles-essays' },
-        { label: 'کھیل اور تفریح', path: '/sports-entertainment' },
-        { label: 'جرائم اور حادثات', path: '/crime-accidents' },
-        { label: 'ہمارے بارے میں', path: '/about-us' },
-        { label: 'رابطہ کریں', path: '/contact' },
-    ];
-
 
     // Lock background scroll when menu is open
     useEffect(() => {
@@ -47,6 +50,7 @@ export function Header() {
             document.body.style.overflow = 'unset';
         };
     }, [isMenuOpen]);
+
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
@@ -168,28 +172,69 @@ export function Header() {
                 {/* Navigation */}
                 <nav className={`w-full border-t border-gray-100 py-1 hidden md:block`}>
                     <ul className="flex flex-row-reverse justify-center items-center gap-2">
-                        {menuItems.map((item) => (
-                            <li key={item.label}>
+                        {/* Static Links */}
+                        <li>
+                            <Link to="/" className="px-5 py-2 text-[16px] lg:text-[18px] font-bold text-gray-700 hover:text-primary transition-colors relative group">
+                                صفحہ اول
+                                <span className="absolute bottom-0 right-0 w-0 h-0.5 transition-all duration-300 group-hover:w-full bg-primary"></span>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link to="/live" className="px-5 py-2 text-[16px] lg:text-[18px] font-bold text-red-600 hover:text-red-700 transition-colors relative group">
+                                <span className="flex flex-row-reverse items-center gap-1.5">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-red-600 animate-ping flex-shrink-0"></span>
+                                    لائیو
+                                </span>
+                                <span className="absolute bottom-0 right-0 w-0 h-0.5 transition-all duration-300 group-hover:w-full bg-red-600"></span>
+                            </Link>
+                        </li>
+
+                        {/* Dynamic Categories */}
+                        {categories.map((cat) => (
+                            <li
+                                key={cat.id}
+                                className="relative group"
+                                onMouseEnter={() => setActiveDropdown(cat.id)}
+                                onMouseLeave={() => setActiveDropdown(null)}
+                            >
                                 <Link
-                                    to={item.path}
-                                    className={`px-6 py-2 text-[16px] lg:text-[18px] font-bold transition-colors relative group
-                                        ${'isLive' in item && item.isLive
-                                            ? 'text-red-600 hover:text-red-700'
-                                            : 'text-gray-700 hover:text-primary'
-                                        }`}
+                                    to={`/category/${encodeURIComponent(cat.name)}`}
+                                    className="px-5 py-2 text-[16px] lg:text-[20px] font-bold text-gray-700 hover:text-primary transition-colors flex flex-row-reverse items-center gap-1"
                                 >
-                                    {'isLive' in item && item.isLive ? (
-                                        <span className="flex flex-row-reverse items-center gap-1.5">
-                                            <span className="w-1.5 h-1.5 rounded-full bg-red-600 animate-ping flex-shrink-0"></span>
-                                            {item.label}
-                                        </span>
-                                    ) : item.label}
-                                    <span className={`absolute bottom-0 right-0 w-0 h-0.5 transition-all duration-400 group-hover:w-full ${'isLive' in item && item.isLive ? 'bg-red-600' : 'bg-primary'}`}></span>
+                                    {cat.name}
+                                    {cat.subCategories && cat.subCategories.length > 0 && <ChevronDown size={14} className="mt-1" />}
+                                    <span className="absolute bottom-0 right-0 w-0 h-0.5 transition-all duration-300 group-hover:w-full bg-primary"></span>
                                 </Link>
+
+                                {/* Dropdown - RTL position */}
+                                {cat.subCategories && cat.subCategories.length > 0 && activeDropdown === cat.id && (
+                                    <div className="absolute top-full right-1/2 translate-x-1/2 w-60 pt-2 z-[100] animate-in fade-in slide-in-from-top-2 duration-200">
+                                        <div className="bg-white border border-gray-100 shadow-2xl rounded-2xl overflow-hidden py-4 text-right">
+                                            {cat.subCategories.map((sub) => (
+                                                <Link
+                                                    key={sub}
+                                                    to={`/category/${encodeURIComponent(cat.name)}/${encodeURIComponent(sub)}`}
+                                                    className="block px-8 py-3 text-[16px] font-bold text-gray-600 hover:text-primary hover:bg-gray-50 transition-all border-r-4 border-transparent hover:border-primary"
+                                                >
+                                                    {sub}
+                                                </Link>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
                             </li>
                         ))}
+
+                        {/* Static Footer Links */}
+                        <li>
+                            <Link to="/about-us" className="px-5 py-2 text-[16px] lg:text-[18px] font-bold text-gray-700 hover:text-primary transition-colors relative group">
+                                ہمارے بارے میں
+                                <span className="absolute bottom-0 right-0 w-0 h-0.5 transition-all duration-300 group-hover:w-full bg-primary"></span>
+                            </Link>
+                        </li>
                     </ul>
                 </nav>
+
 
             </header >
 
@@ -210,21 +255,46 @@ export function Header() {
 
                         <div className="p-6 space-y-8 flex-1">
                             <div>
-                                <span className="text-[12px] font-black uppercase tracking-[0.2em] text-gray-400 mb-4 block">نیویگیشن</span>
+                                <span className="text-[12px] font-black uppercase tracking-[0.2em] text-gray-400 mb-4 block">اہم خبریں</span>
                                 <ul className="flex flex-col gap-1">
-                                    {menuItems.map((item) => (
-                                        <li key={item.label}>
+                                    <li>
+                                        <Link to="/" onClick={() => setIsMenuOpen(false)} className="block py-4 text-xl font-bold text-gray-900 border-b border-gray-50 underline decoration-gray-100 underline-offset-8">صفحہ اول</Link>
+                                    </li>
+                                    <li>
+                                        <Link to="/live" onClick={() => setIsMenuOpen(false)} className="flex flex-row-reverse items-center justify-between py-4 text-xl font-bold text-red-600 border-b border-gray-50 underline decoration-red-100 underline-offset-8">
+                                            لائیو خبریں
+                                            <span className="w-2 h-2 rounded-full bg-red-600 animate-pulse"></span>
+                                        </Link>
+                                    </li>
+                                    {categories.map((cat) => (
+                                        <li key={cat.id} className="border-b border-gray-50 last:border-0 pb-2">
                                             <Link
-                                                to={item.path}
+                                                to={`/category/${encodeURIComponent(cat.name)}`}
                                                 onClick={() => setIsMenuOpen(false)}
-                                                className="block py-4 text-xl font-bold text-gray-900 hover:text-primary active:-translate-x-1 transition-all border-b border-gray-50 last:border-0"
+                                                className="block py-4 text-xl font-bold text-gray-900 hover:text-primary transition-all"
                                             >
-                                                {item.label}
+                                                {cat.name}
                                             </Link>
+                                            {cat.subCategories && cat.subCategories.length > 0 && (
+                                                <ul className="pr-4 pb-2 flex flex-col gap-3">
+                                                    {cat.subCategories.slice(0, 5).map(sub => (
+                                                        <li key={sub}>
+                                                            <Link
+                                                                to={`/category/${encodeURIComponent(cat.name)}/${encodeURIComponent(sub)}`}
+                                                                onClick={() => setIsMenuOpen(false)}
+                                                                className="text-sm font-bold text-gray-500 hover:text-primary"
+                                                            >
+                                                                • {sub}
+                                                            </Link>
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            )}
                                         </li>
                                     ))}
                                 </ul>
                             </div>
+
 
                             {/* Quick Links Urdu Section */}
                             <div className="pt-6 border-t border-gray-100">

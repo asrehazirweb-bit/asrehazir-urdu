@@ -1,53 +1,60 @@
-
+import { useParams } from 'react-router-dom';
 import { Sidebar } from '../components/home/Sidebar';
 import { IndiaNewsFeed } from '../components/india/IndiaNewsFeed';
 import { useNews } from '../hooks/useNews';
-
-interface CategoryPageProps {
-    category: string;
-    title: string;
-}
 
 const stripHtml = (html: string) => {
     const doc = new DOMParser().parseFromString(html, 'text/html');
     return doc.body.textContent || "";
 };
 
-export function CategoryPage({ category, title }: CategoryPageProps) {
-    // Fetch more to allow for client-side filtering of legacy categories
+export function CategoryPage() {
+    const { categoryName, subCategory } = useParams();
+    const displayTitle = subCategory || categoryName || 'خبریں';
+
+    // Fetch more to allow for client-side filtering
     const { news: allNews, loading, formatTime } = useNews('All', 100);
     const sideBarNews = useNews('All', 8);
 
-    // Legacy mapping logic
+    // Dynamic filtering logic
     const filteredNews = allNews.filter(item => {
-        const cat = item.category?.toLowerCase() || '';
-        if (category === 'Deccan News') {
-            const isSouthIndia = cat.includes('south india') || cat.includes('جنوبی ہند');
-            if (isSouthIndia) return false;
-            return cat.includes('deccan') || cat.includes('hyderabad') || cat.includes('telangana') || cat.includes('andhra pradesh') || cat.includes('دکن');
+        const itemCat = item.category || '';
+        const itemSubCat = item.subCategory || '';
+
+        // Exact match for category and subcategory if provided
+        if (subCategory) {
+            return itemCat === categoryName && itemSubCat === subCategory;
         }
-        if (category === 'National News') {
-            return cat.includes('national') || cat.includes('india') || cat.includes('قومی') || cat.includes('south india') || cat.includes('جنوبی ہند');
+
+        if (categoryName) {
+            // Check if it matches the main category
+            if (itemCat === categoryName) return true;
+
+            // Legacy mapping fallback for common Urdu categories
+            const cat = categoryName.toLowerCase();
+            const itemCatLower = itemCat.toLowerCase();
+
+            if (cat === 'حیدرآباد' || cat === 'دکن') {
+                return itemCatLower.includes('deccan') || itemCatLower.includes('hyderabad') || itemCatLower.includes('telangana') || itemCatLower.includes('andhra pradesh') || itemCatLower.includes('دکن');
+            }
+            if (cat === 'قومی خبریں') {
+                return itemCatLower.includes('national') || itemCatLower.includes('india') || itemCatLower.includes('قومی');
+            }
+            if (cat === 'عالمی خبریں') {
+                return itemCatLower.includes('world') || itemCatLower.includes('international') || itemCatLower.includes('middle east') || itemCatLower.includes('عالمی');
+            }
+            if (cat === 'مضامین اور مقالہ جات') {
+                return itemCatLower.includes('articles') || itemCatLower.includes('essays') || itemCatLower.includes('مضامین');
+            }
+            if (cat === 'کھیل اور تفریح') {
+                return itemCatLower.includes('sports') || itemCatLower.includes('entertainment') || itemCatLower.includes('کھیل');
+            }
+            if (cat === 'جرائم اور حادثات') {
+                return itemCatLower.includes('crime') || itemCatLower.includes('accident') || itemCatLower.includes('جرائم');
+            }
         }
-        if (category === 'World News') {
-            return cat.includes('world') || cat.includes('international') || cat.includes('middle east') || cat.includes('عالمی');
-        }
-        if (category === 'Articles & Essays') {
-            return cat.includes('articles') || cat.includes('essays') || cat.includes('business') || cat.includes('مضامین');
-        }
-        if (category === 'Sports & Entertainment') {
-            return cat.includes('sports') || cat.includes('entertainment') || cat.includes('کھیل');
-        }
-        if (category === 'Crime & Accidents') {
-            return cat.includes('crime') || cat.includes('accident') || cat.includes('جرائم');
-        }
-        if (category === 'Photos' || category === 'تصویریں') {
-            return cat.includes('photo') || cat.includes('gallery') || cat.includes('تصویر');
-        }
-        if (category === 'Videos' || category === 'ویڈیوز') {
-            return cat.includes('video') || cat.includes('ویڈیو') || cat.includes('ویڈیوز');
-        }
-        return item.category === category;
+
+        return false;
     });
 
     const mappedNews = filteredNews.map(item => ({
@@ -55,7 +62,7 @@ export function CategoryPage({ category, title }: CategoryPageProps) {
         title: item.title,
         excerpt: stripHtml(item.content).substring(0, 150) + '...',
         image: item.imageUrl,
-        location: category,
+        location: item.category || 'خبریں',
         subCategory: item.subCategory,
         videoUrl: (item as any).videoUrl,
         date: formatTime(item.createdAt)
@@ -76,16 +83,24 @@ export function CategoryPage({ category, title }: CategoryPageProps) {
     }));
 
     return (
-        <div className="pt-6 font-serif text-right">
+        <div className="pt-6 font-serif text-right" dir="rtl">
             <div className="w-full mx-auto px-4 grid grid-cols-1 lg:grid-cols-12 gap-8 mb-12">
 
                 {/* Main Content - 8 Columns */}
-                <div className="lg:col-span-8 flex flex-col order-1 lg:order-2">
-                    <div className="mb-8 border-b-2 border-primary pb-2 flex flex-row-reverse justify-between items-end">
-                        <h1 className="text-3xl md:text-4xl font-black text-gray-900 uppercase tracking-tight">
-                            {title}
-                        </h1>
-                        <span className="text-[12px] font-sans font-bold text-gray-500 hidden md:block">
+                <div className="lg:col-span-8 flex flex-col">
+                    <div className="mb-8 border-b-2 border-primary pb-2 flex flex-col md:flex-row md:justify-between md:items-end gap-2">
+                        <div>
+                            {subCategory && (
+                                <div className="flex items-center gap-2 text-[12px] font-sans font-bold text-gray-400 mb-1">
+                                    <span>{categoryName}</span>
+                                    <span>/</span>
+                                </div>
+                            )}
+                            <h1 className="text-3xl md:text-5xl font-black text-gray-900 tracking-tight">
+                                {displayTitle}
+                            </h1>
+                        </div>
+                        <span className="text-[12px] font-sans font-bold text-gray-500">
                             عصر حاضر کی خصوصی کوریج
                         </span>
                     </div>
@@ -100,14 +115,14 @@ export function CategoryPage({ category, title }: CategoryPageProps) {
                         </div>
                     ) : (
                         <div className="text-center py-20 bg-gray-50 rounded-xl border border-dashed border-gray-200">
-                            <p className="text-gray-500 font-sans italic">اس وقت {title} میں کوئی رپورٹ نہیں ملی۔</p>
+                            <p className="text-gray-500 font-sans italic">اس وقت {displayTitle} میں کوئی رپورٹ نہیں ملی۔</p>
                         </div>
                     )}
 
                 </div>
 
                 {/* Sidebar - 4 Columns */}
-                <div className="lg:col-span-4 order-2 lg:order-1">
+                <div className="lg:col-span-4">
                     <Sidebar
                         offbeatItems={sidebarOffbeat}
                         topStories={sidebarTop}
@@ -118,3 +133,4 @@ export function CategoryPage({ category, title }: CategoryPageProps) {
         </div>
     );
 }
+

@@ -27,19 +27,23 @@ function App() {
         {/* Public Routes */}
         <Route element={<Layout><Home /></Layout>} path="/" />
 
-        {/* News Categories */}
-        <Route element={<Layout><CategoryPage category="عالمی خبریں" title="عالمی خبریں" /></Layout>} path="/world" />
-        <Route element={<Layout><CategoryPage category="قومی خبریں" title="قومی خبریں" /></Layout>} path="/national" />
-        <Route element={<Layout><CategoryPage category="حیدرآباد" title="حیدرآباد" /></Layout>} path="/hyderabad" />
-        <Route element={<Layout><CategoryPage category="تلنگانہ" title="تلنگانہ" /></Layout>} path="/telangana" />
-        <Route element={<Layout><CategoryPage category="آندھرا پردیش" title="آندھرا پردیش" /></Layout>} path="/andhra-pradesh" />
-        {/* Legacy deccan route — keep for backward compat */}
-        <Route element={<Layout><CategoryPage category="حیدرآباد" title="حیدرآباد" /></Layout>} path="/deccan" />
-        <Route element={<Layout><CategoryPage category="تصویریں" title="تصویریں" /></Layout>} path="/photos" />
-        <Route element={<Layout><CategoryPage category="ویڈیوز" title="ویڈیوز" /></Layout>} path="/videos" />
-        <Route element={<Layout><CategoryPage category="مضامین اور مقالہ جات" title="مضامین اور مقالہ جات" /></Layout>} path="/articles-essays" />
-        <Route element={<Layout><CategoryPage category="کھیل اور تفریح" title="کھیل اور تفریح" /></Layout>} path="/sports-entertainment" />
-        <Route element={<Layout><CategoryPage category="جرائم اور حادثات" title="جرائم اور حادثات" /></Layout>} path="/crime-accidents" />
+        {/* Dynamic News Categories */}
+        <Route element={<Layout><CategoryPage /></Layout>} path="/category/:categoryName" />
+        <Route element={<Layout><CategoryPage /></Layout>} path="/category/:categoryName/:subCategory" />
+
+        {/* Legacy redirects for old URLs */}
+        <Route element={<Navigate to="/category/عالمی خبریں" replace />} path="/world" />
+        <Route element={<Navigate to="/category/قومی خبریں" replace />} path="/national" />
+        <Route element={<Navigate to="/category/حیدرآباد" replace />} path="/hyderabad" />
+        <Route element={<Navigate to="/category/تلنگانہ" replace />} path="/telangana" />
+        <Route element={<Navigate to="/category/آندھرا پردیش" replace />} path="/andhra-pradesh" />
+        <Route element={<Navigate to="/category/حیدرآباد" replace />} path="/deccan" />
+        <Route element={<Navigate to="/category/تصویریں" replace />} path="/photos" />
+        <Route element={<Navigate to="/category/ویڈیوز" replace />} path="/videos" />
+        <Route element={<Navigate to="/category/مضامین اور مقالہ جات" replace />} path="/articles-essays" />
+        <Route element={<Navigate to="/category/کھیل اور تفریح" replace />} path="/sports-entertainment" />
+        <Route element={<Navigate to="/category/جرائم اور حادثات" replace />} path="/crime-accidents" />
+
 
 
         {/* Static Pages */}

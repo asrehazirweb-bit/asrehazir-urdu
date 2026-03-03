@@ -577,13 +577,16 @@ const AddNews: React.FC = () => {
                     <div
                         style={{
                             background: '#fff',
-                            borderRadius: '1.5rem 1.5rem 0 0',
-                            maxHeight: '80vh',
-                            height: '80vh',
+                            borderRadius: window.innerWidth < 640 ? '1.5rem 1.5rem 0 0' : '2rem',
+                            maxHeight: window.innerWidth < 640 ? '85vh' : '90vh',
+                            height: window.innerWidth < 640 ? '85vh' : '90vh',
+                            width: window.innerWidth < 640 ? '100%' : '1000px',
+                            maxWidth: '95vw',
                             display: 'flex',
                             flexDirection: 'column',
                             overflow: 'hidden',
                             boxShadow: '0 -10px 60px rgba(0,0,0,0.4)',
+                            alignSelf: 'center',
                         }}
                     >
                         {/* Drag handle */}
@@ -634,10 +637,12 @@ const AddNews: React.FC = () => {
                                 overflowY: 'auto',
                                 overflowX: 'hidden',
                                 WebkitOverflowScrolling: 'touch',
-                                padding: 12,
+                                padding: 10,
                                 display: 'grid',
-                                gridTemplateColumns: 'repeat(2, 1fr)',
-                                gap: 10,
+                                gridTemplateColumns: window.innerWidth < 640
+                                    ? 'repeat(3, 1fr)'
+                                    : 'repeat(5, 1fr)',
+                                gap: 8,
                                 alignContent: 'start',
                             }}
                         >

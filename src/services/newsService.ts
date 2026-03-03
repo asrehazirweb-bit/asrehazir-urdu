@@ -15,6 +15,7 @@ import { db } from '../lib/firebase';
 export interface UrduPost {
     id?: string;
     title: string;
+    subHeadline?: string;
     content: string;
     category: string;
     subCategory?: string;
@@ -23,8 +24,10 @@ export interface UrduPost {
     status: 'published' | 'draft';
     createdAt: Timestamp;
     updatedAt: Timestamp;
-    titleFont?: string;
-    contentFont?: string;
+    isLive?: boolean;
+    hashtags?: string[];
+    titleFont?: string; // Legacy
+    contentFont?: string; // Legacy
 }
 
 // Urdu posts collection path: news (matching Home page and useNews hook)

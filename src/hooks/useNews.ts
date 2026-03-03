@@ -5,14 +5,18 @@ import { collection, query, where, orderBy, limit, onSnapshot } from 'firebase/f
 export interface NewsArticle {
     id: string;
     title: string;
+    subHeadline?: string;
     content: string;
     category: string;
     subCategory?: string;
+    hashtags?: string[];
     imageUrl: string;
     createdAt: any;
     author: string;
     authorId: string;
     section?: string;
+    videoUrl?: string;
+    isLive?: boolean;
     titleFont?: string;
     contentFont?: string;
 }

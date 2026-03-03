@@ -6,6 +6,7 @@ import { AdBlock } from '../components/home/AdBlock';
 import { LatestNewsSection } from '../components/home/LatestNewsSection';
 import { RegionalAndOffbeatSection } from '../components/home/RegionalAndOffbeatSection';
 import { CategoryFeatureSection, CategoryGridSection } from '../components/home/CategoryFeatureSection';
+import { NewsTicker } from '../components/NewsTicker';
 import { useNews } from '../hooks/useNews';
 
 const stripHtml = (html: string) => {
@@ -107,10 +108,34 @@ export function Home() {
         titleFont: (item as any).titleFont
     }));
 
-    return (
-        <div className="pt-6 text-right">
+    // Separate live news articles
+    const liveNews = news.filter(n => n.isLive);
 
-            <div className="w-full mx-auto px-4 grid grid-cols-1 lg:grid-cols-12 gap-8 mb-12">
+    return (
+        <div className="pt-0 text-right">
+
+            {/* === NEWS TICKER RTL === */}
+            <NewsTicker items={news.slice(0, 10).map(n => ({ id: n.id, title: n.title }))} />
+
+            {/* === LIVE NEWS STRIP RTL === */}
+            {liveNews.length > 0 && (
+                <div className="w-full bg-red-600 text-white px-4 py-3 flex flex-row-reverse items-center gap-4 overflow-x-auto scrollbar-hide" dir="rtl">
+                    <div className="flex-shrink-0 flex flex-row-reverse items-center gap-2 border-l border-red-400 pl-4">
+                        <span className="w-2.5 h-2.5 rounded-full bg-white animate-ping"></span>
+                        <span className="text-[11px] font-black uppercase tracking-[0.25em] whitespace-nowrap">🔴 لائیو</span>
+                    </div>
+                    <div className="flex flex-row-reverse items-center gap-6">
+                        {liveNews.slice(0, 5).map(item => (
+                            <a key={item.id} href={`/news/${item.id}`}
+                                className="text-sm font-bold whitespace-nowrap hover:text-red-200 transition-colors border-l border-red-400 pl-6 last:border-0 last:pl-0">
+                                {item.title}
+                            </a>
+                        ))}
+                    </div>
+                </div>
+            )}
+
+            <div className="w-full mx-auto px-4 grid grid-cols-1 lg:grid-cols-12 gap-8 mb-12 mt-6">
 
                 {/* === LEFT SIDEBAR COLUMN (4 Columns) - Swapped for RTL === */}
                 <div className="lg:col-span-4 order-2 lg:order-1">

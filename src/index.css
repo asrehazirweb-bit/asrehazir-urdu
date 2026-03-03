@@ -197,12 +197,35 @@
     }
 
     100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  @keyframes ticker-rtl {
+    0% {
+      transform: translateX(0);
+    }
+
+    100% {
       transform: translateX(50%);
     }
   }
 
   .animate-ticker {
     animation: ticker 30s linear infinite;
+    display: inline-flex;
+    width: max-content;
+  }
+
+  .animate-ticker-rtl {
+    animation: ticker-rtl 30s linear infinite;
+    display: inline-flex;
+    width: max-content;
+  }
+
+  .animate-ticker:hover,
+  .animate-ticker-rtl:hover {
+    animation-play-state: paused;
   }
 }
 

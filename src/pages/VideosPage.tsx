@@ -1,110 +1,147 @@
-
-import { Play, ChevronRight, Clock, Video } from 'lucide-react';
-import { Link } from 'react-router-dom';
-
-interface VideoItem {
-    id: string | number;
-    title: string;
-    image?: string;
-    duration: string;
-    category?: string;
-    date: string;
-}
-
-// MOCK DATA
-const VIDEO_FEED: VideoItem[] = [
-    { id: 'vid-1', title: "Exclusive: Chief Minister discusses roadmap for state development", image: "/images/assembly.png", duration: "12:45", category: "Politics", date: "2 Hours Ago" },
-    { id: 'vid-2', title: "Ground Report: How the city is dealing with unexpected floods", image: "/images/rain_traffic.png", duration: "05:30", category: "Report", date: "4 Hours Ago" },
-    { id: 'vid-3', title: "Tech Watch: Review of the latest smartphone launched today", image: "/images/tech_campus.png", duration: "08:15", category: "Technology", date: "6 Hours Ago" },
-    { id: 'vid-4', title: "Cultural Fiesta: Highlights from the annual music festival", image: "/images/numaish.png", duration: "04:20", category: "Culture", date: "8 Hours Ago" },
-    { id: 'vid-5', title: "Expert Analysis: Impact of the Union Budget on middle class", image: "/images/hero.png", duration: "15:00", category: "Economy", date: "10 Hours Ago" },
-    { id: 'vid-6', title: "Viral: Tiger spotted crossing highway near reserve forest", image: "/images/golconda.png", duration: "01:10", category: "Viral", date: "12 Hours Ago" },
-    { id: 'vid-7', title: "Health Tips: Doctor explains how to stay safe during flu season", image: "/images/charminar_traffic.png", duration: "06:50", category: "Health", date: "1 Day Ago" },
-    { id: 'vid-8', title: "Cinema Talk: Director reveals secrets behind the blockbuster hit", image: "/images/hero.png", duration: "09:30", category: "Entertainment", date: "1 Day Ago" },
-    { id: 'vid-9', title: "Space Mission: ISRO chief on upcoming Gaganyaan launch", image: "/images/tech_campus.png", duration: "03:45", category: "Science", date: "2 Days Ago" }
-];
+import { Play, ChevronLeft, ChevronRight, Video } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useVideos } from '../hooks/useVideos';
+import type { VideoArticle } from '../hooks/useVideos';
 
 export function VideosPage() {
+    const { videos, loading, error } = useVideos(24);
+    const navigate = useNavigate();
+
+    const formatTime = (createdAt: any) => {
+        if (!createdAt) return 'ابھی ابھی';
+        const date = createdAt.toDate ? createdAt.toDate() : new Date(createdAt);
+        return date.toLocaleDateString('ur-PK', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
+        });
+    };
+
+    const handleVideoClick = (video: VideoArticle) => {
+        if (video.videoUrl && (video.videoUrl.includes('youtube.com') || video.videoUrl.includes('youtu.be') || video.videoUrl.includes('facebook.com'))) {
+            window.open(video.videoUrl, '_blank');
+        } else {
+            navigate(`/news/${video.id}`);
+        }
+    };
+
+    if (loading) {
+        return (
+            <div className="flex justify-center items-center min-h-screen bg-white">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="flex flex-col justify-center items-center min-h-screen bg-white text-center px-4">
+                <h2 className="text-2xl font-serif font-bold text-gray-900 mb-4">{error}</h2>
+                <Link to="/" className="text-primary hover:underline flex items-center gap-2">
+                    <ChevronLeft size={18} /> ہوم پیج پر واپس جائیں
+                </Link>
+            </div>
+        );
+    }
+
     return (
-        <div className="flex flex-col w-full font-serif pt-6 pb-12 bg-white transition-colors">
+        <div className="flex flex-col w-full font-serif pt-6 pb-12 bg-white transition-colors min-h-screen" dir="rtl">
 
             {/* PAGE HEADER */}
             <div className="w-full px-4 mb-8 border-b border-gray-200 pb-6 text-center">
-                <div className="flex items-center justify-center gap-2 text-xs font-sans font-bold uppercase tracking-wider text-gray-500 mb-4">
-                    <Link to="/" className="hover:text-accent transition-colors">Home</Link>
-                    <ChevronRight size={10} />
-                    <span className="text-accent">Videos</span>
+                <div className="flex flex-row-reverse items-center justify-center gap-2 text-xs font-sans font-black uppercase tracking-widest text-gray-500 mb-4">
+                    <Link to="/" className="hover:text-primary transition-colors">خبریں</Link>
+                    <ChevronRight size={10} className="rotate-180" />
+                    <span className="text-primary">ویڈیوز</span>
                 </div>
 
-                <h1 className="text-4xl md:text-6xl font-black text-secondary uppercase tracking-tight mb-4 flex items-center justify-center gap-3">
-                    <Video size={40} className="text-accent" />
-                    Videos
+                <h1 className="text-4xl md:text-6xl font-black text-gray-900 uppercase tracking-tight mb-4 flex flex-row-reverse items-center justify-center gap-3">
+                    <Video size={40} className="text-primary" />
+                    ویڈیوز
                 </h1>
                 <p className="text-gray-600 font-sans text-base leading-relaxed max-w-2xl mx-auto">
-                    Watch in-depth reports, exclusive interviews, ground realities, and explainer videos on trending topics.
+                    تازہ ترین ویڈیوز، انٹرویوز، گراؤنڈ رپورٹس اور معلوماتی ویڈیوز یہاں دیکھیں۔
                 </p>
             </div>
 
             {/* VIDEO GRID */}
             <div className="w-full max-w-7xl mx-auto px-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {VIDEO_FEED.map((item) => (
-                        <article key={item.id} className="group cursor-pointer flex flex-col gap-3">
-                            {/* Thumbnail Container (16:9 Aspect Ratio) */}
-                            <div className="w-full aspect-video bg-gray-900 relative overflow-hidden rounded-sm group-hover:shadow-lg transition-all">
-                                {item.image ? (
-                                    <img
-                                        src={item.image}
-                                        alt={item.title}
-                                        className="w-full h-full object-cover opacity-80 group-hover:opacity-60 transition-opacity duration-300"
-                                    />
-                                ) : (
-                                    <div className="w-full h-full flex items-center justify-center bg-gray-800">
-                                        <Video className="text-gray-600" size={40} />
+                {videos.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {videos.map((item) => (
+                            <article
+                                key={item.id}
+                                className="group cursor-pointer flex flex-col gap-3 text-right"
+                                onClick={() => handleVideoClick(item)}
+                            >
+                                {/* Thumbnail Container (16:9 Aspect Ratio) */}
+                                <div className="w-full aspect-video bg-gray-900 relative overflow-hidden rounded-2xl shadow-lg group-hover:shadow-2xl transition-all duration-500 transform group-hover:-translate-y-1 border border-gray-100">
+                                    {item.imageUrl ? (
+                                        <img
+                                            src={item.imageUrl}
+                                            alt={item.title}
+                                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-90 group-hover:opacity-100"
+                                        />
+                                    ) : (
+                                        <div className="w-full h-full flex items-center justify-center bg-gray-800">
+                                            <Video className="text-gray-600" size={40} />
+                                        </div>
+                                    )}
+
+                                    {/* Glass Overlay on Hover */}
+                                    <div className="absolute inset-0 bg-black/10 group-hover:bg-black/30 transition-colors duration-300"></div>
+
+                                    {/* Play Button Overlay */}
+                                    <div className="absolute inset-0 flex items-center justify-center">
+                                        <div className="w-16 h-16 rounded-full bg-primary/95 text-white flex items-center justify-center group-hover:scale-125 transition-all duration-500 shadow-2xl shadow-primary/30 ring-4 ring-white/20">
+                                            <Play size={24} fill="currentColor" className="mr-1 mt-0.5" />
+                                        </div>
                                     </div>
-                                )}
 
-                                {/* Play Button Overlay */}
-                                <div className="absolute inset-0 flex items-center justify-center">
-                                    <div className="w-12 h-12 rounded-full bg-accent/90 text-white flex items-center justify-center group-hover:scale-110 transition-transform shadow-md">
-                                        <Play size={20} fill="currentColor" className="ml-1" />
+                                    {/* Duration Badge */}
+                                    {item.duration && (
+                                        <div className="absolute bottom-3 left-3 bg-black/80 backdrop-blur-md text-white text-[12px] font-black px-3 py-1 rounded-lg flex items-center border border-white/10">
+                                            {item.duration}
+                                        </div>
+                                    )}
+
+                                    {/* Category Badge */}
+                                    <div className="absolute top-3 right-3">
+                                        <span className="bg-white/95 backdrop-blur-md text-zinc-900 text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-lg shadow-xl shadow-black/10 border border-white/20">
+                                            {item.category}
+                                        </span>
                                     </div>
                                 </div>
 
-                                {/* Duration Badge */}
-                                <div className="absolute bottom-2 right-2 bg-black/80 text-white text-[10px] font-bold px-2 py-0.5 rounded flex items-center">
-                                    {item.duration}
+                                {/* Content */}
+                                <div className="flex flex-col px-1">
+                                    <h2 className="text-xl font-bold leading-relaxed text-gray-900 group-hover:text-primary transition-colors line-clamp-2 mb-2 font-serif">
+                                        {item.title}
+                                    </h2>
+                                    <div className="flex flex-row-reverse items-center justify-start gap-2 text-[10px] text-gray-500 font-sans font-black uppercase tracking-widest">
+                                        <div className="w-8 h-[1.5px] bg-primary/30"></div>
+                                        <span>{formatTime(item.createdAt)}</span>
+                                    </div>
                                 </div>
+                            </article>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="text-center py-20 bg-gray-50 rounded-3xl border-2 border-dashed border-gray-200">
+                        <Video size={48} className="mx-auto text-gray-300 mb-4" />
+                        <h3 className="text-xl font-bold text-gray-500">کوئی ویڈیو نہیں ملی</h3>
+                        <p className="text-gray-400">براہ کرم مزید اپڈیٹس کے لیے بعد میں دوبارہ چیک کریں۔</p>
+                    </div>
+                )}
+            </div>
 
-                                {/* Category Badge */}
-                                <div className="absolute top-2 left-2">
-                                    <span className="bg-secondary/90 text-white text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 shadow-sm">
-                                        {item.category}
-                                    </span>
-                                </div>
-                            </div>
-
-                            {/* Content */}
-                            <div className="flex flex-col">
-                                <h2 className="text-lg font-bold leading-tight text-secondary group-hover:text-accent transition-colors line-clamp-2">
-                                    {item.title}
-                                </h2>
-                                <div className="flex items-center gap-2 mt-2 text-[10px] text-gray-400 font-sans uppercase tracking-wide">
-                                    <Clock size={12} />
-                                    <span>{item.date}</span>
-                                </div>
-                            </div>
-                        </article>
-                    ))}
+            {videos.length >= 24 && (
+                <div className="flex justify-center mt-12">
+                    <button className="px-10 py-4 bg-zinc-900 text-white text-[14px] font-black uppercase tracking-widest rounded-2xl hover:bg-primary transition-all shadow-2xl shadow-zinc-900/20 active:scale-95">
+                        مزید ویڈیوز دیکھیں
+                    </button>
                 </div>
-            </div>
-
-            {/* Pagination Placeholder */}
-            <div className="flex justify-center mt-12">
-                <button className="px-6 py-2 border border-gray-300 text-sm font-bold text-gray-500 hover:bg-gray-50 uppercase tracking-wide transition-colors">
-                    Load More Videos
-                </button>
-            </div>
+            )}
 
         </div>
     );

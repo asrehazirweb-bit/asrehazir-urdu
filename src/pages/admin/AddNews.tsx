@@ -1,81 +1,104 @@
 import React, { useState, useEffect } from 'react';
 import { db, auth } from '../../lib/firebase';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, query, orderBy, limit, getDocs, onSnapshot } from 'firebase/firestore';
 import { uploadImage } from '../../lib/cloudinary';
-import { Image as ImageIcon, Send, Layout, Type, FileText, Tag, Trash2, Sparkles, CheckCircle2 } from 'lucide-react';
+import { Image as ImageIcon, Send, Layout, Type, FileText, Tag, Trash2, Sparkles, CheckCircle2, List, Activity, Hash, Loader } from 'lucide-react';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
 import ConfirmationModal from '../../components/admin/ConfirmationModal';
 import Toast from '../../components/ui/Toast';
 
-const CATEGORIES = [
-    { name: 'عالمی خبریں', subCategories: ['ٹاپ اسٹوریز', 'مشرق وسطیٰ', 'بین الاقوامی', 'سفارت کاری'] },
-    { name: 'قومی خبریں', subCategories: ['ٹاپ اسٹوریز', 'سیاست', 'گورننس', 'ریاستیں'] },
-    { name: 'دکن نیوز', subCategories: ['حیدرآباد', 'تلنگانہ', 'آندھرا پردیش', 'جنوبی بھارت'] },
-    { name: 'مضامین اور مقالہ جات', subCategories: ['ادارتی', 'تجزیہ', 'رائے', 'خصوصی رپورٹس'] },
-    { name: 'کھیل اور تفریح', subCategories: ['کرکٹ', 'سنیما', 'OTT', 'لائف اسٹائل'] },
-    { name: 'جرائم اور حادثات', subCategories: ['مقامی جرائم', 'تحقیقات', 'سیکیورٹی', 'حادثات'] },
-    { name: 'تصویریں', subCategories: ['ٹاپ اسٹوریز', 'سیاست', 'کھیل', 'تفریح', 'تقریبات'] },
-    { name: 'ویڈیوز', subCategories: ['خبریں', 'تقریبات', 'انٹرویوز', 'وائرل'] }
+interface CategoryDoc {
+    id: string;
+    name: string;
+    subCategories: string[];
+    order: number;
+}
+
+// Fallback — matches Urdu navbar exactly. Used when Firestore rules not yet set.
+const FALLBACK_CATEGORIES: CategoryDoc[] = [
+    { id: 'f1', name: 'عالمی خبریں', subCategories: ['ٹاپ اسٹوریز', 'مشرق وسطیٰ', 'بین الاقوامی', 'سفارت کاری'], order: 1 },
+    { id: 'f2', name: 'قومی خبریں', subCategories: ['ٹاپ اسٹوریز', 'سیاست', 'گورننس', 'ریاستیں'], order: 2 },
+    { id: 'f3', name: 'حیدرآباد', subCategories: ['مقامی خبریں', 'جرائم', 'سیاست', 'کاروبار', 'تقریبات'], order: 3 },
+    { id: 'f4', name: 'تلنگانہ', subCategories: ['مقامی خبریں', 'سیاست', 'ترقی', 'زراعت'], order: 4 },
+    { id: 'f5', name: 'آندھرا پردیش', subCategories: ['مقامی خبریں', 'سیاست', 'ترقی', 'کاروبار'], order: 5 },
+    { id: 'f6', name: 'تصویریں', subCategories: ['ٹاپ اسٹوریز', 'سیاست', 'کھیل', 'تفریح', 'تقریبات'], order: 6 },
+    { id: 'f7', name: 'ویڈیوز', subCategories: ['خبریں', 'تقریبات', 'انٹرویوز', 'وائرل'], order: 7 },
+    { id: 'f8', name: 'مضامین اور مقالہ جات', subCategories: ['ادارتی', 'تجزیہ', 'رائے', 'خصوصی رپورٹس'], order: 8 },
+    { id: 'f9', name: 'کھیل اور تفریح', subCategories: ['کرکٹ', 'سنیما', 'OTT', 'لائف اسٹائل'], order: 9 },
+    { id: 'f10', name: 'جرائم اور حادثات', subCategories: ['مقامی جرائم', 'تحقیقات', 'سیکیورٹی', 'حادثات'], order: 10 },
 ];
 
-const FONTS_TITLE = [
-    { id: 'font-noto-urdu', name: 'Nasta`liq (Standard)' },
-    { id: 'font-amiri', name: 'Amiri (Classical)' },
-    { id: 'font-reem-kufi', name: 'Reem Kufi (Artistic)' },
-    { id: 'font-scheherazade', name: 'Scheherazade (Traditional)' },
-    { id: 'font-tajawal', name: 'Tajawal (Modern)' },
-    { id: 'font-aref-ruqaa', name: 'Aref Ruqaa (Calligraphic)' },
-    { id: 'font-changa', name: 'Changa (Bold)' },
-    { id: 'font-lateef', name: 'Lateef (Soft)' },
-    { id: 'font-harmattan', name: 'Harmattan (Clean)' },
-    { id: 'font-markazi-text', name: 'Markazi (Balanced)' }
-];
-
-const FONTS_CONTENT = [
-    { id: 'font-noto-urdu', name: 'Nasta`liq' },
-    { id: 'font-markazi-text', name: 'Markazi Text' },
-    { id: 'font-harmattan', name: 'Harmattan' },
-    { id: 'font-lateef', name: 'Lateef' },
-    { id: 'font-scheherazade', name: 'Scheherazade' },
-    { id: 'font-tajawal', name: 'Tajawal' },
-    { id: 'font-amiri', name: 'Amiri' },
-    { id: 'font-reem-kufi', name: 'Reem Kufi' },
-    { id: 'font-noto-sans-arabic', name: 'Noto Sans Arabic' },
-    { id: 'font-serif', name: 'Default Serif' }
-];
 
 const AddNews: React.FC = () => {
     const [title, setTitle] = useState('');
+    const [subHeadline, setSubHeadline] = useState('');
     const [content, setContent] = useState('');
     const [section, setSection] = useState('خبرِ خاص');
-    const [category, setCategory] = useState('عالمی خبریں');
-    const [subCategory, setSubCategory] = useState('عالمی');
+    const [category, setCategory] = useState('');
+    const [subCategory, setSubCategory] = useState('');
+    const [hashtags, setHashtags] = useState('');
+    const [isLive, setIsLive] = useState(false);
     const [image, setImage] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
+    const [existingImageUrl, setExistingImageUrl] = useState<string | null>(null);
+    const [sendPush, setSendPush] = useState(false);
     const [loading, setLoading] = useState(false);
     const [successMessage, setSuccessMessage] = useState(false);
-    const [titleFont, setTitleFont] = useState('font-noto-urdu');
-    const [contentFont, setContentFont] = useState('font-noto-urdu');
     const [videoUrl, setVideoUrl] = useState('');
+    const [isMediaLibraryOpen, setIsMediaLibraryOpen] = useState(false);
+    const [mediaLibrary, setMediaLibrary] = useState<string[]>([]);
 
-    // New state for modal and toast
+    // Dynamic categories from Firestore
+    const [categories, setCategories] = useState<CategoryDoc[]>([]);
+    const [catsLoading, setCatsLoading] = useState(true);
+
+    // Modal and toast
     const [isClearModalOpen, setIsClearModalOpen] = useState(false);
     const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+
+    // Load categories from Firestore; fall back to defaults on error/empty
+    useEffect(() => {
+        const unsub = onSnapshot(
+            query(collection(db, 'categories_urdu'), orderBy('order', 'asc')),
+            (snap) => {
+                const cats = snap.docs.map(d => ({ id: d.id, ...d.data() })) as CategoryDoc[];
+                const resolved = cats.length > 0 ? cats : FALLBACK_CATEGORIES;
+                setCategories(resolved);
+                setCatsLoading(false);
+                if (!category) {
+                    setCategory(resolved[0].name);
+                    setSubCategory(resolved[0].subCategories?.[0] || '');
+                }
+            },
+            (_err) => {
+                // Permission denied — use fallback so dropdown always works
+                setCategories(FALLBACK_CATEGORIES);
+                setCatsLoading(false);
+                if (!category) {
+                    setCategory(FALLBACK_CATEGORIES[0].name);
+                    setSubCategory(FALLBACK_CATEGORIES[0].subCategories[0]);
+                }
+            }
+        );
+        return () => unsub();
+    }, []);
 
     // Load draft
     useEffect(() => {
         const draft = localStorage.getItem('asre-hazir-urdu-draft');
         if (draft) {
-            const { title: dTitle, content: dContent, category: dCategory, subCategory: dSubCategory, section: dSection, titleFont: dTitleFont, contentFont: dContentFont } = JSON.parse(draft);
-            setTitle(dTitle || '');
-            setContent(dContent || '');
-            setCategory(dCategory || 'عالمی خبریں');
-            setSubCategory(dSubCategory || 'ٹاپ اسٹوریز');
-            setSection(dSection || 'ٹاپ اسٹوریز');
-            setTitleFont(dTitleFont || 'font-noto-urdu');
-            setContentFont(dContentFont || 'font-noto-urdu');
-            setVideoUrl(JSON.parse(draft).videoUrl || '');
+            const data = JSON.parse(draft);
+            setTitle(data.title || '');
+            setSubHeadline(data.subHeadline || '');
+            setContent(data.content || '');
+            setCategory(data.category || 'عالمی خبریں');
+            setSubCategory(data.subCategory || 'ٹاپ اسٹوریز');
+            setSection(data.section || 'خبرِ خاص');
+            setVideoUrl(data.videoUrl || '');
+            setHashtags(data.hashtags || '');
+            setIsLive(data.isLive || false);
+            setSendPush(data.sendPush || false);
         }
     }, []);
 
@@ -83,11 +106,25 @@ const AddNews: React.FC = () => {
     useEffect(() => {
         const timer = setTimeout(() => {
             if (title || content) {
-                localStorage.setItem('asre-hazir-urdu-draft', JSON.stringify({ title, content, category, subCategory, section, titleFont, contentFont, videoUrl }));
+                localStorage.setItem('asre-hazir-urdu-draft', JSON.stringify({
+                    title, subHeadline, content, category, subCategory, section, videoUrl, hashtags, isLive, sendPush
+                }));
             }
         }, 2000);
         return () => clearTimeout(timer);
-    }, [title, content, category, subCategory, section, titleFont, contentFont, videoUrl]);
+    }, [title, subHeadline, content, category, subCategory, section, videoUrl, hashtags, isLive, sendPush]);
+
+    const fetchMediaLibrary = async () => {
+        setIsMediaLibraryOpen(true);
+        try {
+            const q = query(collection(db, 'news'), orderBy('createdAt', 'desc'), limit(50));
+            const snapshot = await getDocs(q);
+            const urls = Array.from(new Set(snapshot.docs.map(doc => doc.data().imageUrl).filter(Boolean))) as string[];
+            setMediaLibrary(urls);
+        } catch (error) {
+            console.error("Error fetching media library:", error);
+        }
+    };
 
     const handleClearDraftClick = () => {
         setIsClearModalOpen(true);
@@ -95,13 +132,18 @@ const AddNews: React.FC = () => {
 
     const confirmClearDraft = () => {
         setTitle('');
+        setSubHeadline('');
         setContent('');
         setImage(null);
         setImagePreview(null);
+        setExistingImageUrl(null);
         setSection('خبرِ خاص');
         setCategory('عالمی خبریں');
-        setSubCategory('عالمی');
+        setSubCategory('ٹاپ اسٹوریز');
         setVideoUrl('');
+        setHashtags('');
+        setIsLive(false);
+        setSendPush(false);
         localStorage.removeItem('asre-hazir-urdu-draft');
         setIsClearModalOpen(false);
         setToast({ message: 'ڈرافٹ ختم کر دیا گیا', type: 'success' });
@@ -109,9 +151,9 @@ const AddNews: React.FC = () => {
 
     const handleCategoryChange = (val: string) => {
         setCategory(val);
-        const cat = CATEGORIES.find(c => c.name === val);
+        const cat = categories.find(c => c.name === val);
         if (cat) {
-            setSubCategory(cat.subCategories[0]);
+            setSubCategory(cat.subCategories[0] || '');
         } else if (val !== 'دیگر') {
             setSubCategory('جنرل');
         }
@@ -120,6 +162,7 @@ const AddNews: React.FC = () => {
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files ? e.target.files[0] : null;
         setImage(file);
+        setExistingImageUrl(null);
         if (file) {
             const reader = new FileReader();
             reader.onloadend = () => {
@@ -136,7 +179,7 @@ const AddNews: React.FC = () => {
         setLoading(true);
 
         try {
-            let imageUrl = '';
+            let imageUrl = existingImageUrl || '';
             if (image) {
                 try {
                     imageUrl = await uploadImage(image, 'urdu');
@@ -146,27 +189,47 @@ const AddNews: React.FC = () => {
                 }
             }
 
-            await addDoc(collection(db, 'news'), {
+            const docData = {
                 title,
+                subHeadline,
                 content,
                 section,
                 category,
                 subCategory,
-                titleFont,
-                contentFont,
+                hashtags: hashtags.split(',').map(s => s.trim()).filter(Boolean),
+                isLive,
                 videoUrl,
-                imageUrl: imageUrl,  // Single image field
+                imageUrl: imageUrl,
                 createdAt: serverTimestamp(),
                 author: auth.currentUser?.displayName || 'عصر حاضر ڈیسک',
                 authorId: auth.currentUser?.uid,
                 status: 'published'
-            });
+            };
+
+            const docRef = await addDoc(collection(db, 'news'), docData);
+
+            // Trigger Push Notification record if requested
+            if (sendPush) {
+                await addDoc(collection(db, 'notifications'), {
+                    title: 'نئی خبر شائع ہوئی',
+                    message: title,
+                    articleId: docRef.id,
+                    createdAt: serverTimestamp(),
+                    read: false,
+                    portal: 'urdu'
+                });
+            }
 
             setSuccessMessage(true);
             setTitle('');
+            setSubHeadline('');
             setContent('');
             setImage(null);
             setImagePreview(null);
+            setExistingImageUrl(null);
+            setHashtags('');
+            setIsLive(false);
+            setSendPush(false);
             localStorage.removeItem('asre-hazir-urdu-draft');
 
             setTimeout(() => setSuccessMessage(false), 5000);
@@ -181,8 +244,18 @@ const AddNews: React.FC = () => {
         }
     };
 
-    const currentSubCategories = CATEGORIES.find(c => c.name === category)?.subCategories || [];
+    const currentCat = categories.find(c => c.name === category);
+    const currentSubCategories = currentCat?.subCategories || [];
     const SECTIONS = ['خبرِ خاص', 'تازہ ترین خبریں', 'ضرور دیکھیں', 'علاقائی خبریں', 'بریکنگ نیوز', 'دیگر'];
+
+    if (catsLoading) {
+        return (
+            <div className="flex items-center justify-center min-h-[400px] gap-3 text-gray-400" dir="rtl">
+                <Loader size={20} className="animate-spin text-primary" />
+                <span className="font-bold text-sm">زمرے لوڈ ہو رہے ہیں...</span>
+            </div>
+        );
+    }
 
     return (
         <div className="max-w-6xl mx-auto pb-20 px-4 text-right">
@@ -236,37 +309,69 @@ const AddNews: React.FC = () => {
                                     type="text"
                                     value={title}
                                     onChange={(e) => setTitle(e.target.value)}
-                                    className={`w-full text-3xl md:text-5xl font-black border-b-2 border-gray-100 bg-transparent py-4 focus:border-primary outline-none transition-all ${titleFont}`}
+                                    className="w-full text-3xl md:text-5xl font-black border-b-2 border-gray-100 bg-transparent py-4 focus:border-primary outline-none transition-all"
                                     placeholder="سرخی درج کریں..."
                                     required
                                 />
                             </div>
 
-                            {/* Font Strategy Selection */}
+                            {/* Sub-Headline */}
+                            <div className="space-y-4">
+                                <label className="flex items-center gap-2 text-[12px] font-black uppercase tracking-[0.2em] text-gray-400">
+                                    <List className="w-3.5 h-3.5 text-primary" /> ذیلی سرخی (Sub-Headline)
+                                </label>
+                                <input
+                                    type="text"
+                                    value={subHeadline}
+                                    onChange={(e) => setSubHeadline(e.target.value)}
+                                    className="w-full text-xl md:text-2xl font-bold border-b border-gray-100 bg-transparent py-2 focus:border-primary outline-none transition-all text-gray-600"
+                                    placeholder="ذیلی سرخی درج کریں..."
+                                />
+                            </div>
+
+                            {/* Hashtags & Live Toggle */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 bg-zinc-50 p-8 rounded-3xl border border-gray-100">
                                 <div className="space-y-4">
                                     <label className="flex items-center gap-2 text-[12px] font-black uppercase tracking-[0.2em] text-gray-400">
-                                        <Sparkles className="w-3.5 h-3.5 text-primary" /> سرخی کا فونٹ
+                                        <Hash className="w-3.5 h-3.5 text-primary" /> ہیش ٹیگز (کامہ سے الگ کریں)
                                     </label>
-                                    <select
-                                        value={titleFont}
-                                        onChange={(e) => setTitleFont(e.target.value)}
+                                    <input
+                                        type="text"
+                                        value={hashtags}
+                                        onChange={(e) => setHashtags(e.target.value)}
                                         className="w-full p-4 rounded-xl border border-gray-100 bg-white focus:ring-4 focus:ring-primary/10 outline-none transition-all font-bold text-xs h-14"
-                                    >
-                                        {FONTS_TITLE.map(f => <option key={f.id} value={f.id} className={f.id}>{f.name}</option>)}
-                                    </select>
+                                        placeholder="#politics, #hyderabad..."
+                                    />
                                 </div>
-                                <div className="space-y-4">
-                                    <label className="flex items-center gap-2 text-[12px] font-black uppercase tracking-[0.2em] text-gray-400">
-                                        <FileText className="w-3.5 h-3.5 text-primary" /> مواد کا فونٹ
+                                <div className="space-y-4 flex flex-col justify-center">
+                                    <label className="flex flex-row-reverse items-center gap-2 text-[12px] font-black uppercase tracking-[0.2em] text-gray-400 mb-2">
+                                        <Activity className="w-3.5 h-3.5 text-primary" /> نشریاتی اختیارات
                                     </label>
-                                    <select
-                                        value={contentFont}
-                                        onChange={(e) => setContentFont(e.target.value)}
-                                        className="w-full p-4 rounded-xl border border-gray-100 bg-white focus:ring-4 focus:ring-primary/10 outline-none transition-all font-bold text-xs h-14"
-                                    >
-                                        {FONTS_CONTENT.map(f => <option key={f.id} value={f.id} className={f.id}>{f.name}</option>)}
-                                    </select>
+                                    <div className="flex flex-col gap-3">
+                                        <div className="flex items-center justify-end gap-4 p-4 bg-white rounded-xl border border-gray-100 h-14">
+                                            <div className="flex flex-wrap gap-2 mr-auto">
+                                                {categories.some(c => c.name === category) && (
+                                                    <span className="bg-green-100 text-green-700 px-2 py-1 rounded-md text-[10px] font-bold">لائیو کے لیے اہل</span>
+                                                )}
+                                            </div>
+                                            <span className="font-bold text-sm text-gray-600">اسے لائیو نیوز کے طور پر دکھائیں</span>
+                                            <input
+                                                type="checkbox"
+                                                checked={isLive}
+                                                onChange={(e) => setIsLive(e.target.checked)}
+                                                className="w-6 h-6 accent-primary cursor-pointer"
+                                            />
+                                        </div>
+                                        <div className="flex items-center justify-end gap-4 p-4 bg-white rounded-xl border border-gray-100 h-14">
+                                            <span className="font-bold text-sm text-gray-600 italic">پش نوٹیفکیشن بھیجیں</span>
+                                            <input
+                                                type="checkbox"
+                                                checked={sendPush}
+                                                onChange={(e) => setSendPush(e.target.checked)}
+                                                className="w-6 h-6 accent-primary cursor-pointer"
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -305,7 +410,7 @@ const AddNews: React.FC = () => {
                                         <Tag className="w-4 h-4 text-primary" /> خبر کا زمرہ
                                     </label>
                                     <select
-                                        value={CATEGORIES.find(c => c.name === category) ? category : 'دیگر'}
+                                        value={categories.find(c => c.name === category) ? category : 'دیگر'}
                                         onChange={(e) => {
                                             const val = e.target.value;
                                             if (val === 'دیگر') {
@@ -317,12 +422,12 @@ const AddNews: React.FC = () => {
                                         }}
                                         className="w-full px-5 py-3 rounded-2xl border border-gray-100 bg-gray-50 focus:ring-4 focus:ring-primary/10 outline-none transition-all font-bold text-lg min-h-[3.5rem] text-right"
                                     >
-                                        {CATEGORIES.map(cat => (
+                                        {categories.map(cat => (
                                             <option key={cat.name} value={cat.name}>{cat.name}</option>
                                         ))}
                                         <option value="دیگر">دیگر (اپنی مرضی کا)...</option>
                                     </select>
-                                    {(category === '' || !CATEGORIES.find(c => c.name === category)) && (
+                                    {(category === '' || !categories.find(c => c.name === category)) && (
                                         <input
                                             type="text"
                                             placeholder="اپنی مرضی کا زمرہ..."
@@ -338,7 +443,7 @@ const AddNews: React.FC = () => {
                                     <label className="flex flex-row-reverse items-center gap-2 text-sm font-bold text-gray-400">
                                         <Layout className="w-4 h-4 text-primary" /> ذیلی زمرہ
                                     </label>
-                                    {CATEGORIES.find(c => c.name === category) ? (
+                                    {currentCat ? (
                                         <select
                                             value={subCategory}
                                             onChange={(e) => setSubCategory(e.target.value)}
@@ -384,7 +489,7 @@ const AddNews: React.FC = () => {
                                 <label className="flex items-center gap-2 text-[12px] font-black uppercase tracking-[0.2em] text-gray-400">
                                     <FileText className="w-3.5 h-3.5 text-primary" /> کہانی کی تفصیل
                                 </label>
-                                <div className={`quill-wrapper ql-rtl ${contentFont}`} dir="rtl">
+                                <div className="quill-wrapper ql-rtl font-noto-urdu" dir="rtl">
                                     <ReactQuill
                                         theme="snow"
                                         value={content}
@@ -405,14 +510,23 @@ const AddNews: React.FC = () => {
 
                             {/* Image Upload */}
                             <div className="space-y-4">
-                                <label className="flex flex-row-reverse items-center gap-2 text-sm font-bold text-gray-400">
-                                    <ImageIcon className="w-4 h-4 text-primary" /> خبر کی تصویر
-                                </label>
-                                <div className={`relative border-2 border-dashed rounded-[2rem] p-6 transition-all duration-500 ${imagePreview ? 'border-primary bg-primary/5' : 'border-gray-200 hover:border-primary'}`}>
-                                    {imagePreview ? (
+                                <div className="flex justify-between items-center mb-4">
+                                    <button
+                                        type="button"
+                                        onClick={fetchMediaLibrary}
+                                        className="text-primary font-bold hover:underline flex items-center gap-2"
+                                    >
+                                        <List size={16} /> میڈیا لائبریری سے منتخب کریں
+                                    </button>
+                                    <label className="flex flex-row-reverse items-center gap-2 text-sm font-bold text-gray-400">
+                                        <ImageIcon className="w-4 h-4 text-primary" /> خبر کی تصویر
+                                    </label>
+                                </div>
+                                <div className={`relative border-2 border-dashed rounded-[2rem] p-6 transition-all duration-500 ${imagePreview || existingImageUrl ? 'border-primary bg-primary/5' : 'border-gray-200 hover:border-primary'}`}>
+                                    {imagePreview || existingImageUrl ? (
                                         <div className="relative rounded-2xl overflow-hidden shadow-2xl bg-gray-50">
-                                            <img src={imagePreview} alt="Preview" className="w-full h-auto max-h-[500px] object-contain mx-auto block" />
-                                            <button type="button" onClick={() => { setImage(null); setImagePreview(null); }} className="absolute top-4 left-4 bg-black/80 backdrop-blur-md text-white px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest">تصویر تبدیل کریں</button>
+                                            <img src={imagePreview || existingImageUrl || ''} alt="Preview" className="w-full h-auto max-h-[500px] object-contain mx-auto block" />
+                                            <button type="button" onClick={() => { setImage(null); setImagePreview(null); setExistingImageUrl(null); }} className="absolute top-4 left-4 bg-black/80 backdrop-blur-md text-white px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest">تصویر تبدیل کریں</button>
                                         </div>
                                     ) : (
                                         <label className="flex flex-col items-center justify-center min-h-[16rem] cursor-pointer">
@@ -446,6 +560,37 @@ const AddNews: React.FC = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Media Library Modal */}
+            {isMediaLibraryOpen && (
+                <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+                    <div className="bg-white w-full max-w-4xl rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+                        <div className="p-8 border-b border-gray-100 flex justify-between items-center bg-zinc-900 text-white">
+                            <h2 className="text-2xl font-black">میڈیا لائبریری</h2>
+                            <button onClick={() => setIsMediaLibraryOpen(false)} className="bg-zinc-800 p-2 rounded-full hover:bg-red-600 transition-colors">
+                                <Trash2 size={20} />
+                            </button>
+                        </div>
+                        <div className="p-8 overflow-y-auto grid grid-cols-2 md:grid-cols-4 gap-4">
+                            {mediaLibrary.map((url, i) => (
+                                <div
+                                    key={i}
+                                    className="aspect-square rounded-2xl overflow-hidden border-2 border-transparent hover:border-primary cursor-pointer transition-all box-content"
+                                    onClick={() => {
+                                        setExistingImageUrl(url);
+                                        setImage(null);
+                                        setImagePreview(null);
+                                        setIsMediaLibraryOpen(false);
+                                    }}
+                                >
+                                    <img src={url} alt="Media" className="w-full h-full object-cover" />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* Confirmation Modal */}
             <ConfirmationModal
                 isOpen={isClearModalOpen}

@@ -1,54 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowRight, Save, X, Info, Image as ImageIcon, Trash2, FileText } from 'lucide-react';
+import { ArrowRight, Save, X, Image as ImageIcon, FileText, List, Activity, Hash, Type } from 'lucide-react';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
-import { doc, getDoc } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { db, storage } from '../../lib/firebase';
+import { doc, getDoc, collection, query, orderBy, limit, getDocs, addDoc } from 'firebase/firestore';
+import { db } from '../../lib/firebase';
 import { newsService } from '../../services/newsService';
 import type { UrduPost } from '../../services/newsService';
 import Toast from '../../components/ui/Toast';
-
-const FONTS_TITLE = [
-    { id: 'font-noto-urdu', name: 'Nasta`liq (Standard)' },
-    { id: 'font-amiri', name: 'Amiri (Classical)' },
-    { id: 'font-reem-kufi', name: 'Reem Kufi (Artistic)' },
-    { id: 'font-scheherazade', name: 'Scheherazade (Traditional)' },
-    { id: 'font-tajawal', name: 'Tajawal (Modern)' },
-    { id: 'font-aref-ruqaa', name: 'Aref Ruqaa (Calligraphic)' },
-    { id: 'font-changa', name: 'Changa (Bold)' },
-    { id: 'font-lateef', name: 'Lateef (Soft)' },
-    { id: 'font-harmattan', name: 'Harmattan (Clean)' },
-    { id: 'font-markazi-text', name: 'Markazi (Balanced)' }
-];
-
-const FONTS_CONTENT = [
-    { id: 'font-noto-urdu', name: 'Nasta`liq' },
-    { id: 'font-markazi-text', name: 'Markazi Text' },
-    { id: 'font-harmattan', name: 'Harmattan' },
-    { id: 'font-lateef', name: 'Lateef' },
-    { id: 'font-scheherazade', name: 'Scheherazade' },
-    { id: 'font-tajawal', name: 'Tajawal' },
-    { id: 'font-amiri', name: 'Amiri' },
-    { id: 'font-reem-kufi', name: 'Reem Kufi' },
-    { id: 'font-noto-sans-arabic', name: 'Noto Sans Arabic' },
-    { id: 'font-serif', name: 'Default Serif' }
-];
+import { uploadImage } from '../../lib/cloudinary';
 
 const UrduPostEditor: React.FC = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const [title, setTitle] = useState('');
+    const [subHeadline, setSubHeadline] = useState('');
     const [content, setContent] = useState('');
+    const [hashtags, setHashtags] = useState('');
+    const [isLive, setIsLive] = useState(false);
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [existingImageUrl, setExistingImageUrl] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [initialLoading, setInitialLoading] = useState(!!id);
     const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
-    const [titleFont, setTitleFont] = useState('font-noto-urdu');
-    const [contentFont, setContentFont] = useState('font-noto-urdu');
+    const [isMediaLibraryOpen, setIsMediaLibraryOpen] = useState(false);
+    const [mediaLibrary, setMediaLibrary] = useState<string[]>([]);
 
     useEffect(() => {
         if (id) {
@@ -57,12 +34,11 @@ const UrduPostEditor: React.FC = () => {
                 if (postDoc.exists()) {
                     const data = postDoc.data() as UrduPost;
                     setTitle(data.title);
+                    setSubHeadline(data.subHeadline || '');
                     setContent(data.content);
-                    if (data.imageUrl) {
-                        setExistingImageUrl(data.imageUrl);
-                    }
-                    if (data.titleFont) setTitleFont(data.titleFont);
-                    if (data.contentFont) setContentFont(data.contentFont);
+                    setExistingImageUrl(data.imageUrl || null);
+                    setHashtags(data.hashtags?.join(', ') || '');
+                    setIsLive(data.isLive || false);
                 }
                 setInitialLoading(false);
             };
@@ -70,10 +46,23 @@ const UrduPostEditor: React.FC = () => {
         }
     }, [id]);
 
+    const fetchMediaLibrary = async () => {
+        setIsMediaLibraryOpen(true);
+        try {
+            const q = query(collection(db, 'news'), orderBy('createdAt', 'desc'), limit(50));
+            const snapshot = await getDocs(q);
+            const urls = Array.from(new Set(snapshot.docs.map(doc => doc.data().imageUrl).filter(Boolean))) as string[];
+            setMediaLibrary(urls);
+        } catch (error) {
+            console.error("Error fetching media library:", error);
+        }
+    };
+
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files ? e.target.files[0] : null;
         if (file) {
             setImageFile(file);
+            setExistingImageUrl(null);
             const reader = new FileReader();
             reader.onloadend = () => {
                 setImagePreview(reader.result as string);
@@ -89,34 +78,45 @@ const UrduPostEditor: React.FC = () => {
         try {
             let finalImageUrl = existingImageUrl || '';
 
-            // Handle new image upload if selected
             if (imageFile) {
-                const storageRef = ref(storage, `urdu-news/${Date.now()}_${imageFile.name}`);
-                await uploadBytes(storageRef, imageFile);
-                finalImageUrl = await getDownloadURL(storageRef);
+                try {
+                    finalImageUrl = await uploadImage(imageFile, 'urdu');
+                } catch (imgErr: any) {
+                    console.error("Image upload error:", imgErr);
+                    setToast({ message: 'تصویر اپ لوڈ کرنے میں ناکامی، پرانی تصویر استعمال کی جائے گی۔', type: 'error' });
+                }
             }
+
+            const postData: Partial<UrduPost> = {
+                title,
+                subHeadline,
+                content,
+                imageUrl: finalImageUrl,
+                hashtags: hashtags.split(',').map(s => s.trim()).filter(Boolean),
+                isLive
+            };
 
             if (id) {
-                await newsService.updatePost(id, { title, content, imageUrl: finalImageUrl, titleFont, contentFont });
+                await newsService.updatePost(id, postData);
                 setToast({ message: 'خبر کامیابی کے ساتھ اپ ڈیٹ کر دی گئی ہے۔', type: 'success' });
             } else {
-                // Modified newsService.addPost to accept fonts if needed, or pass object
-                // Given the current service structure, we'll pass an object if updatePost allows, 
-                // but let's check addPost signature. It's title, content, imageUrl.
-                // I should update newsService.addPost too.
-                await newsService.addPostWithFonts(title, content, finalImageUrl, titleFont, contentFont);
-                setToast({ message: 'نئی خبر کامیابی کے ساتھ شامل کر دی گئی ہے۔', type: 'success' });
+                // If somehow accessed without ID as editor
+                await addDoc(collection(db, 'news'), {
+                    ...postData,
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                    status: 'published',
+                    author: 'عصرِ حاضر ڈیسک'
+                });
+                setToast({ message: 'نئی خبر شامل کر دی گئی۔', type: 'success' });
             }
 
-            // Wait a bit before navigating
-            setTimeout(() => {
-                navigate('/admin');
-            }, 2000);
+            setTimeout(() => navigate('/admin'), 2000);
 
         } catch (error) {
             console.error("Save error:", error);
             setToast({ message: 'خرابی پیش آگئی، براہ کرم دوبارہ کوشش کریں۔', type: 'error' });
-            setLoading(false); // Only stop loading on error, on success we wait for nav
+            setLoading(false);
         }
     };
 
@@ -135,22 +135,22 @@ const UrduPostEditor: React.FC = () => {
                 </button>
 
                 <div className="bg-white rounded-[2rem] border border-gray-100 shadow-xl overflow-hidden">
-                    <div className="p-10 border-b border-gray-50 flex justify-between items-center">
-                        <h1 className="text-3xl font-black text-gray-900">
+                    <div className="p-10 border-b border-gray-50 flex justify-between items-center bg-zinc-900 text-white">
+                        <h1 className="text-3xl font-black italic">
                             {id ? 'خبر میں ترمیم کریں' : 'نئی خبر لکھیں'}
                         </h1>
                         <div className="flex gap-3">
                             <button
                                 type="button"
                                 onClick={() => navigate('/admin')}
-                                className="px-6 py-2.5 rounded-full font-bold text-gray-400 hover:text-gray-900 transition-all flex items-center gap-2"
+                                className="px-6 py-2.5 rounded-full font-bold text-gray-400 hover:text-white transition-all flex items-center gap-2"
                             >
                                 <X size={18} /> منسوخ کریں
                             </button>
                             <button
                                 onClick={handleSubmit}
                                 disabled={loading}
-                                className="bg-red-600 hover:bg-black text-white px-10 py-2.5 rounded-full font-bold transition-all shadow-lg shadow-red-600/20 flex items-center gap-2"
+                                className="bg-primary hover:bg-black text-white px-10 py-2.5 rounded-full font-bold transition-all shadow-lg shadow-primary/20 flex items-center gap-2"
                             >
                                 {loading ? 'محفوظ ہو رہا ہے...' : <><Save size={18} /> محفوظ کریں</>}
                             </button>
@@ -158,15 +158,83 @@ const UrduPostEditor: React.FC = () => {
                     </div>
 
                     <form onSubmit={handleSubmit} className="p-10 space-y-10">
-                        {/* Image Upload Area */}
+                        {/* Title Section */}
                         <div className="space-y-4">
                             <label className="text-sm font-black text-gray-400 flex items-center gap-2">
-                                <ImageIcon size={14} className="text-red-600" /> خبر کی تصویر
+                                <Type size={14} className="text-primary" /> خبر کی سرخی
                             </label>
+                            <input
+                                type="text"
+                                value={title}
+                                onChange={(e) => setTitle(e.target.value)}
+                                className="w-full text-4xl font-black border-b-2 border-gray-50 focus:border-primary bg-transparent py-4 outline-none transition-all placeholder:text-gray-200"
+                                placeholder="سرخی یہاں لکھیں..."
+                                required
+                            />
+                        </div>
+
+                        {/* Sub-Headline Section */}
+                        <div className="space-y-4">
+                            <label className="text-sm font-black text-gray-400 flex items-center gap-2">
+                                <List size={14} className="text-primary" /> ذیلی سرخی (Sub-Headline)
+                            </label>
+                            <input
+                                type="text"
+                                value={subHeadline}
+                                onChange={(e) => setSubHeadline(e.target.value)}
+                                className="w-full text-xl font-bold border-b border-gray-50 bg-transparent py-2 focus:border-primary outline-none transition-all placeholder:text-gray-200 text-gray-600"
+                                placeholder="ذیلی سرخی یہاں لکھیں..."
+                            />
+                        </div>
+
+                        {/* Metadata Grid */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 bg-zinc-50 p-8 rounded-3xl border border-gray-100 shadow-inner">
+                            <div className="space-y-4">
+                                <label className="text-sm font-black text-gray-400 flex items-center gap-2">
+                                    <Hash size={14} className="text-primary" /> ہیش ٹیگز
+                                </label>
+                                <input
+                                    type="text"
+                                    value={hashtags}
+                                    onChange={(e) => setHashtags(e.target.value)}
+                                    className="w-full p-4 rounded-xl border border-gray-100 bg-white focus:ring-4 focus:ring-primary/10 outline-none transition-all font-bold text-xs h-12"
+                                    placeholder="#politics, #deccan..."
+                                />
+                            </div>
+                            <div className="space-y-4 flex flex-col justify-center">
+                                <label className="text-sm font-black text-gray-400 flex items-center gap-2 mb-2">
+                                    <Activity size={14} className="text-primary" /> لائیو اسٹیٹس
+                                </label>
+                                <div className="flex items-center justify-between gap-4 p-4 bg-white rounded-xl border border-gray-100 h-12">
+                                    <span className="font-bold text-sm text-gray-600">لائیو نیوز کے طور پر دکھائیں؟</span>
+                                    <input
+                                        type="checkbox"
+                                        checked={isLive}
+                                        onChange={(e) => setIsLive(e.target.checked)}
+                                        className="w-6 h-6 accent-primary cursor-pointer"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Image Section */}
+                        <div className="space-y-4">
+                            <div className="flex justify-between items-center mb-4">
+                                <button
+                                    type="button"
+                                    onClick={fetchMediaLibrary}
+                                    className="text-primary font-bold hover:underline flex items-center gap-2 text-sm"
+                                >
+                                    <List size={16} /> میڈیا لائبریری سے منتخب کریں
+                                </button>
+                                <label className="text-sm font-black text-gray-400 flex items-center gap-2">
+                                    <ImageIcon size={14} className="text-primary" /> خبر کی تصویر
+                                </label>
+                            </div>
 
                             <div className="relative group">
                                 {(imagePreview || existingImageUrl) ? (
-                                    <div className="relative aspect-video rounded-3xl overflow-hidden border border-gray-100">
+                                    <div className="relative aspect-video rounded-3xl overflow-hidden border-4 border-gray-100 shadow-2xl">
                                         <img
                                             src={imagePreview || existingImageUrl || ''}
                                             alt="Preview"
@@ -179,72 +247,27 @@ const UrduPostEditor: React.FC = () => {
                                                 setImagePreview(null);
                                                 setExistingImageUrl(null);
                                             }}
-                                            className="absolute top-4 right-4 bg-white/90 hover:bg-red-600 hover:text-white p-2 rounded-full shadow-lg transition-all"
+                                            className="absolute top-4 right-4 bg-black/80 text-white p-3 rounded-xl shadow-lg hover:bg-red-600 transition-all font-black text-xs uppercase"
                                         >
-                                            <Trash2 size={18} />
+                                            تبدیل کریں
                                         </button>
                                     </div>
                                 ) : (
-                                    <label className="flex flex-col items-center justify-center aspect-video bg-gray-50/50 border-2 border-dashed border-gray-100 rounded-3xl cursor-pointer hover:bg-white hover:border-red-600 transition-all">
+                                    <label className="flex flex-col items-center justify-center aspect-video bg-gray-50/50 border-2 border-dashed border-gray-200 rounded-3xl cursor-pointer hover:bg-white hover:border-primary transition-all">
                                         <ImageIcon size={40} className="text-gray-200 mb-2" />
-                                        <span className="text-gray-400">تصویر منتخب کریں</span>
+                                        <span className="text-gray-400 font-bold">تصویر اپ لوڈ کریں</span>
                                         <input type="file" onChange={handleImageChange} className="hidden" accept="image/*" />
                                     </label>
                                 )}
                             </div>
                         </div>
 
-                        {/* Title & Font Selection */}
-                        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-end">
-                            <div className="md:col-span-8 space-y-2">
-                                <label className="text-sm font-black text-gray-400 flex items-center gap-2">
-                                    <Info size={14} className="text-red-600" /> خبر کی سرخی
-                                </label>
-                                <input
-                                    type="text"
-                                    value={title}
-                                    onChange={(e) => setTitle(e.target.value)}
-                                    className={`w-full text-4xl font-bold border-b-2 border-gray-50 focus:border-red-600 bg-transparent py-4 outline-none transition-all placeholder:text-gray-100 ${titleFont}`}
-                                    placeholder="..."
-                                    required
-                                />
-                            </div>
-                            <div className="md:col-span-4 space-y-2">
-                                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
-                                    <Save size={12} className="text-red-600" /> سرخی کا فونٹ
-                                </label>
-                                <select
-                                    value={titleFont}
-                                    onChange={(e) => setTitleFont(e.target.value)}
-                                    className="w-full p-4 rounded-2xl bg-gray-50/50 border border-gray-50 focus:border-red-600 outline-none text-xs font-bold"
-                                >
-                                    {FONTS_TITLE.map(f => <option key={f.id} value={f.id} className={f.id}>{f.name}</option>)}
-                                </select>
-                            </div>
-                        </div>
-
-                        {/* Content Font selection */}
-                        <div className="bg-zinc-50/50 p-6 rounded-3xl border border-gray-50">
-                            <div className="max-w-xs space-y-2">
-                                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
-                                    <FileText size={12} className="text-red-600" /> مواد کا فونٹ
-                                </label>
-                                <select
-                                    value={contentFont}
-                                    onChange={(e) => setContentFont(e.target.value)}
-                                    className="w-full p-3 rounded-xl bg-white border border-gray-100 focus:border-red-600 outline-none text-xs font-bold"
-                                >
-                                    {FONTS_CONTENT.map(f => <option key={f.id} value={f.id} className={f.id}>{f.name}</option>)}
-                                </select>
-                            </div>
-                        </div>
-
-                        {/* Content */}
+                        {/* Content Section */}
                         <div className="space-y-4">
                             <label className="text-sm font-black text-gray-400 flex items-center gap-2">
-                                <Info size={14} className="text-red-600" /> خبر کی تفصیل
+                                <FileText size={14} className="text-primary" /> خبر کی تفصیل
                             </label>
-                            <div className={`quill-wrapper ql-rtl ${contentFont}`} dir="rtl">
+                            <div className="quill-wrapper ql-rtl font-noto-urdu" dir="rtl">
                                 <ReactQuill
                                     theme="snow"
                                     value={content}
@@ -265,6 +288,36 @@ const UrduPostEditor: React.FC = () => {
                     </form>
                 </div>
             </div>
+
+            {/* Media Library Modal */}
+            {isMediaLibraryOpen && (
+                <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+                    <div className="bg-white w-full max-w-4xl rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+                        <div className="p-8 border-b border-gray-100 flex justify-between items-center bg-zinc-900 text-white">
+                            <h2 className="text-2xl font-black italic uppercase italic">میڈیا لائبریری</h2>
+                            <button onClick={() => setIsMediaLibraryOpen(false)} className="bg-zinc-800 p-2 rounded-full hover:bg-red-600 transition-colors">
+                                <X size={20} />
+                            </button>
+                        </div>
+                        <div className="p-8 overflow-y-auto grid grid-cols-2 md:grid-cols-4 gap-4">
+                            {mediaLibrary.map((url, i) => (
+                                <div
+                                    key={i}
+                                    className="aspect-square rounded-2xl overflow-hidden border-4 border-transparent hover:border-primary cursor-pointer transition-all box-content shadow-lg shadow-black/5"
+                                    onClick={() => {
+                                        setExistingImageUrl(url);
+                                        setImageFile(null);
+                                        setImagePreview(null);
+                                        setIsMediaLibraryOpen(false);
+                                    }}
+                                >
+                                    <img src={url} alt="Media" className="w-full h-full object-cover" />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Toast Notification */}
             {toast && (

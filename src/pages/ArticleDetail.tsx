@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { db } from '../lib/firebase';
 import { doc, getDoc, collection, query, where, limit, getDocs } from 'firebase/firestore';
-import { Calendar, Share2, Facebook, Twitter, Link2, ArrowLeft, Clock } from 'lucide-react';
+import { Calendar, Share2, Facebook, Link2, ArrowLeft, Clock } from 'lucide-react';
 import type { NewsArticle } from '../hooks/useNews';
 import Toast from '../components/ui/Toast';
 import DOMPurify from 'dompurify';
@@ -143,9 +143,26 @@ const ArticleDetail: React.FC = () => {
                     <span className="text-gray-400 truncate max-w-[150px]">{article.subCategory || 'تازہ ترین'}</span>
                 </div>
 
-                <h1 className={`text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-black text-gray-900 leading-[1.35] mb-6 md:mb-8 tracking-tight ${article.titleFont || 'font-serif'}`}>
+                {/* LIVE Badge */}
+                {article.isLive && (
+                    <div className="flex flex-row-reverse items-center gap-2 mb-4">
+                        <span className="inline-flex flex-row-reverse items-center gap-2 bg-red-600 text-white px-4 py-1.5 rounded-full text-[11px] font-black uppercase tracking-[0.3em] shadow-lg shadow-red-600/30 animate-pulse">
+                            <span className="w-2 h-2 rounded-full bg-white animate-ping"></span>
+                            لائیو
+                        </span>
+                        <span className="text-xs text-red-600 font-bold">لائیو اپ ڈیٹ ہو رہا ہے</span>
+                    </div>
+                )}
+
+                <h1 className={`text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-black text-gray-900 leading-[1.35] mb-4 md:mb-6 tracking-tight ${article.titleFont || 'font-serif'}`}>
                     {article.title}
                 </h1>
+
+                {article.subHeadline && (
+                    <p className="text-xl md:text-3xl text-gray-600 font-serif italic mb-8 leading-relaxed border-r-4 border-primary pr-6 py-2">
+                        {article.subHeadline}
+                    </p>
+                )}
 
                 <div className="flex flex-wrap flex-row-reverse items-center justify-between gap-6 pb-8 border-b border-gray-100">
                     <div className="flex flex-row-reverse items-center gap-4 text-right">
@@ -165,8 +182,8 @@ const ArticleDetail: React.FC = () => {
                         <button onClick={() => handleShare('facebook')} className="p-2.5 rounded-full bg-gray-50 text-gray-600 hover:bg-primary hover:text-white transition-all shadow-sm">
                             <Facebook size={18} />
                         </button>
-                        <button onClick={() => handleShare('twitter')} className="p-2.5 rounded-full bg-gray-50 text-gray-600 hover:bg-primary hover:text-white transition-all shadow-sm">
-                            <Twitter size={18} />
+                        <button onClick={() => handleShare('twitter')} className="p-2.5 rounded-full bg-gray-50 text-gray-600 hover:bg-black hover:text-white transition-all shadow-sm">
+                            <svg viewBox="0 0 24 24" className="w-4 h-4 fill-current"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
                         </button>
                         <button onClick={() => handleShare('copy')} className="p-2.5 rounded-full bg-gray-50 text-gray-600 hover:bg-primary hover:text-white transition-all shadow-sm">
                             <Link2 size={18} />
@@ -202,18 +219,32 @@ const ArticleDetail: React.FC = () => {
                         {/* Article Footer */}
                         <div className="mt-16 pt-8 border-t border-gray-100 flex flex-col md:flex-row-reverse md:items-center justify-between gap-6">
                             <div className="flex flex-row-reverse flex-wrap gap-2 text-right">
-                                {['خبریں', article.category, article.subCategory].filter(Boolean).map(tag => (
-                                    <span key={tag} className="px-3 py-1 bg-gray-100 text-gray-600 text-[12px] font-black rounded-full">
-                                        #{tag}
-                                    </span>
-                                ))}
+                                {article.hashtags && article.hashtags.length > 0 ? (
+                                    article.hashtags.map(tag => (
+                                        <Link
+                                            key={tag.trim()}
+                                            to={`/search?q=${encodeURIComponent(tag.trim())}`}
+                                            className="px-3 py-1 bg-primary/5 text-primary text-[12px] font-black rounded-full hover:bg-primary hover:text-white transition-all transform hover:-translate-y-0.5"
+                                        >
+                                            #{tag.trim()}
+                                        </Link>
+                                    ))
+                                ) : (
+                                    ['خبریں', article.category, article.subCategory].filter(Boolean).map(tag => (
+                                        <span key={tag} className="px-3 py-1 bg-gray-100 text-gray-600 text-[12px] font-black rounded-full">
+                                            #{tag}
+                                        </span>
+                                    ))
+                                )}
                             </div>
 
                             <div className="flex flex-row-reverse items-center gap-4">
                                 <span className="text-xs font-black uppercase tracking-widest text-gray-400">کہانی شیئر کریں:</span>
                                 <div className="flex gap-2">
-                                    <button onClick={() => handleShare('facebook')} className="text-gray-400 hover:text-primary transition-colors"><Facebook size={20} /></button>
-                                    <button onClick={() => handleShare('twitter')} className="text-gray-400 hover:text-primary transition-colors"><Twitter size={20} /></button>
+                                    <button onClick={() => handleShare('facebook')} className="text-gray-400 hover:text-blue-600 transition-colors"><Facebook size={20} /></button>
+                                    <button onClick={() => handleShare('twitter')} className="text-gray-400 hover:text-black transition-colors">
+                                        <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
+                                    </button>
                                     <button onClick={() => handleShare('copy')} className="text-gray-400 hover:text-primary transition-colors"><Share2 size={20} /></button>
                                 </div>
                             </div>

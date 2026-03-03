@@ -124,11 +124,13 @@ export function Header() {
                 {/* Main Branding */}
                 <div className={`w-full mx-auto px-6 transition-all duration-300 ${isScrolled ? 'py-2 md:py-3' : 'py-3.5 md:py-10'}`}>
                     <div className="flex flex-row-reverse justify-between items-center relative gap-4">
-                        <button className="md:hidden p-2 -mr-2 text-gray-900" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                        {/* Hamburger - Right (RTL) */}
+                        <button className="md:hidden p-2 -mr-2 text-gray-900 z-10" onClick={() => setIsMenuOpen(!isMenuOpen)}>
                             <Menu size={24} />
                         </button>
 
-                        <Link to="/" className="md:absolute md:left-1/2 md:-translate-x-1/2 group transition-transform duration-300 active:scale-95">
+                        {/* Logo — ALWAYS centered (absolute on all screens) */}
+                        <Link to="/" className="absolute left-1/2 -translate-x-1/2 group transition-transform duration-300 active:scale-95">
                             <img
                                 src="/images/asrehazirlogo.jpeg"
                                 alt="عصرِ حاضر"
@@ -136,6 +138,7 @@ export function Header() {
                             />
                         </Link>
 
+                        {/* Left side buttons (RTL = left side on screen) */}
                         <div className="flex flex-row-reverse items-center gap-1 md:gap-4 ml-auto md:ml-0">
                             <div className="hidden md:flex items-center gap-2 ml-4">
                                 <a href="https://asre-hazir-epaper.vercel.app" target="_blank" rel="noreferrer" className="px-5 py-2 border-2 border-primary text-primary rounded-xl font-bold text-[14px] hover:bg-primary hover:text-white transition-all shadow-lg shadow-primary/10">ای پیپر</a>
@@ -143,16 +146,17 @@ export function Header() {
                             </div>
                             <button
                                 onClick={() => setIsSearchOpen(true)}
-                                className="p-2 text-gray-500 hover:text-primary transition-all"
+                                className="p-2 text-gray-500 hover:text-primary transition-all z-10"
                             >
                                 <Search size={22} className="w-5 h-5 md:w-[22px] md:h-[22px]" />
                             </button>
-                            <Link to="/login" className="hidden sm:block bg-gray-100 text-gray-900 px-6 py-2 text-[14px] font-bold rounded-full hover:bg-zinc-200 transition-all">
+                            <Link to="/login" className="hidden sm:block bg-gray-100 text-gray-900 px-6 py-2 text-[14px] font-bold rounded-full hover:bg-zinc-200 transition-all z-10">
                                 ایڈمن
                             </Link>
                         </div>
                     </div>
                 </div>
+
 
                 {/* Header Ad Slot */}
                 {!isScrolled && (

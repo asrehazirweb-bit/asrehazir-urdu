@@ -19,7 +19,7 @@ interface CategoryDoc {
 // Fallback categories for Urdu portal
 const FALLBACK_CATEGORIES: CategoryDoc[] = [
     { id: 'f1', name: 'عالمی خبریں', subCategories: ['خاص خبریں', 'مڈل ایسٹ', 'بین الاقوامی', 'سفارت کاری'], order: 1 },
-    { id: 'f2', name: 'قومی خبریں', subCategories: ['خاص خبریں', 'سیاست', 'گورننس', 'ریاستیں'], order: 2 },
+    { id: 'f2', name: 'قومی خبریں', subCategories: ['خاص خبریں', 'جنوبی ہند', 'سیاست', 'گورننس', 'ریاستیں'], order: 2 },
     { id: 'f3', name: 'حیدرآباد', subCategories: ['مقامی خبریں', 'جرائم', 'سیاست', 'تجارت', 'تقریبات'], order: 3 },
     { id: 'f4', name: 'تلنگانہ', subCategories: ['مقامی خبریں', 'سیاست', 'ترقی', 'زراعت'], order: 4 },
     { id: 'f5', name: 'آندھرا پردیش', subCategories: ['مقامی خبریں', 'سیاست', 'ترقی', 'تجارت'], order: 5 },

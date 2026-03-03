@@ -1,4 +1,6 @@
+import { Link } from 'react-router-dom';
 import { HeroSection } from '../components/home/HeroSection';
+
 import { TelanganaSection } from '../components/home/TelanganaSection';
 import { NewsSection, VideoSection } from '../components/home/NewsSection';
 import { Sidebar as HomeSidebar } from '../components/home/Sidebar';
@@ -57,6 +59,10 @@ export function Home() {
     }));
 
     const telanganaNews = news.filter(n =>
+        n.category === 'حیدرآباد' ||
+        n.category === 'تلنگانہ' ||
+        n.category === 'آندھرا پردیش' ||
+        // legacy fallbacks
         n.category === 'Deccan News' ||
         n.category === 'دکن نیوز' ||
         n.category === 'Hyderabad' ||
@@ -96,8 +102,8 @@ export function Home() {
     }));
 
     const worldNews = news.filter(n =>
-        n.category === 'World News' ||
         n.category === 'عالمی خبریں' ||
+        n.category === 'World News' ||
         n.category === 'International'
     ).slice(0, 2).map(item => ({
         id: item.id,
@@ -126,12 +132,15 @@ export function Home() {
                     </div>
                     <div className="flex flex-row-reverse items-center gap-6">
                         {liveNews.slice(0, 5).map(item => (
-                            <a key={item.id} href={`/news/${item.id}`}
+                            <Link key={item.id} to={`/news/${item.id}`}
                                 className="text-sm font-bold whitespace-nowrap hover:text-red-200 transition-colors border-l border-red-400 pl-6 last:border-0 last:pl-0">
                                 {item.title}
-                            </a>
+                            </Link>
                         ))}
                     </div>
+                    <Link to="/live" className="flex-shrink-0 border-r border-red-400 pr-4 text-[11px] font-black whitespace-nowrap hover:text-red-200 transition-colors">
+                        سب دیکھیں →
+                    </Link>
                 </div>
             )}
 
@@ -179,10 +188,8 @@ export function Home() {
                     <CategoryGridSection
                         category="مضامین اور مقالہ جات"
                         items={news.filter(n =>
-                            n.category === 'Articles & Essays' ||
                             n.category === 'مضامین اور مقالہ جات' ||
-                            n.category === 'Business' ||
-                            n.category === 'Technology'
+                            n.category === 'Articles & Essays'
                         )}
                         formatTime={formatTime}
                     />
@@ -199,10 +206,8 @@ export function Home() {
                     <CategoryGridSection
                         category="کھیل اور تفریح"
                         items={news.filter(n =>
-                            n.category === 'Sports & Entertainment' ||
                             n.category === 'کھیل اور تفریح' ||
-                            n.category === 'Entertainment' ||
-                            n.category === 'Sports'
+                            n.category === 'Sports & Entertainment'
                         )}
                         formatTime={formatTime}
                     />

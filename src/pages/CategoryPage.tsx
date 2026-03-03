@@ -122,7 +122,7 @@ export function CategoryPage() {
                 </div>
 
                 {/* Sidebar - 4 Columns */}
-                <div className="lg:col-span-4">
+                <div className="lg:col-span-4 self-start lg:sticky lg:top-[80px] max-h-screen overflow-y-auto pr-2 custom-scrollbar hidden lg:block order-1">
                     <Sidebar
                         offbeatItems={sidebarOffbeat}
                         topStories={sidebarTop}

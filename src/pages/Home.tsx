@@ -147,7 +147,7 @@ export function Home() {
             <div className="w-full mx-auto px-4 grid grid-cols-1 lg:grid-cols-12 gap-8 mb-12 mt-6 items-start">
 
                 {/* === LEFT SIDEBAR COLUMN (4 Columns) - Sticky for RTL === */}
-                <div className="lg:col-span-4 order-2 lg:order-1 self-start lg:sticky lg:top-[80px]">
+                <div className="lg:col-span-4 order-2 lg:order-1 self-start lg:sticky lg:top-[80px] max-h-screen overflow-y-auto pr-2 custom-scrollbar">
                     <HomeSidebar
                         topStories={heroTopStories}
                         offbeatItems={offbeatItems}

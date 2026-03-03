@@ -247,7 +247,7 @@ const AddNews: React.FC = () => {
 
     const currentCat = categories.find(c => c.name === category);
     const currentSubCategories = currentCat?.subCategories || [];
-    const SECTIONS = ['خبرِ خاص', 'تازہ ترین خبریں', 'ضرور دیکھیں', 'علاقائی خبریں', 'بریکنگ نیوز'];
+    const SECTIONS = ['خبرِ خاص', 'جنوبی ہند', 'تازہ ترین خبریں', 'ضرور دیکھیں', 'علاقائی خبریں', 'بریکنگ نیوز'];
 
     if (catsLoading) {
         return (

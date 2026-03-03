@@ -91,7 +91,7 @@ export function Header() {
                             <div className="flex flex-row-reverse gap-4 items-center">
                                 <span>{currentDate}</span>
                                 <span className="text-gray-300">|</span>
-                                <a href="https://asrehazir-english.vercel.app" target="_blank" rel="noreferrer" className="hover:text-primary transition-all font-black">English News</a>
+                                <a href="https://asrehazirenglish.vercel.app" target="_blank" rel="noreferrer" className="hover:text-primary transition-all font-black">English News</a>
                                 <span className="text-gray-300">|</span>
                                 <a href="https://asre-hazir-epaper.vercel.app" target="_blank" rel="noreferrer" className="flex flex-row-reverse items-center gap-1.5 font-black text-primary">
                                     <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
@@ -139,7 +139,7 @@ export function Header() {
                         <div className="flex flex-row-reverse items-center gap-1 md:gap-4 ml-auto md:ml-0">
                             <div className="hidden md:flex items-center gap-2 ml-4">
                                 <a href="https://asre-hazir-epaper.vercel.app" target="_blank" rel="noreferrer" className="px-5 py-2 border-2 border-primary text-primary rounded-xl font-bold text-[14px] hover:bg-primary hover:text-white transition-all shadow-lg shadow-primary/10">ای پیپر</a>
-                                <a href="https://asrehazir-english.vercel.app" target="_blank" rel="noreferrer" className="px-5 py-2 bg-zinc-900 text-white rounded-xl font-bold text-[14px] hover:bg-black transition-all shadow-xl shadow-zinc-900/10">English News</a>
+                                <a href="https://asrehazirenglish.vercel.app" target="_blank" rel="noreferrer" className="px-5 py-2 bg-zinc-900 text-white rounded-xl font-bold text-[14px] hover:bg-black transition-all shadow-xl shadow-zinc-900/10">English News</a>
                             </div>
                             <button
                                 onClick={() => setIsSearchOpen(true)}
@@ -258,7 +258,7 @@ export function Header() {
                                         📰 ای پیپر
                                     </a>
                                     <a
-                                        href="https://asrehazir-english.vercel.app"
+                                        href="https://asrehazirenglish.vercel.app"
                                         target="_blank"
                                         rel="noreferrer"
                                         className="flex items-center justify-center bg-zinc-900 text-white py-4 font-bold text-lg rounded-2xl hover:bg-black transition-all"

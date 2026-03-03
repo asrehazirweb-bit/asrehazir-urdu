@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { FileText, Users, Eye, TrendingUp, Clock, BarChart3, ChevronRight, Zap } from 'lucide-react';
+import { FileText, Eye, Clock, BarChart3, ChevronRight, Zap } from 'lucide-react';
 import { useNews } from '../../hooks/useNews';
 import { useNavigate, Link } from 'react-router-dom';
 
@@ -13,8 +13,6 @@ const AdminDashboard: React.FC = () => {
     const stats = [
         { label: 'کل خبریں', value: allNews.length.toString(), icon: <FileText className="text-primary" />, trend: '+Live', color: 'from-primary/10 to-primary/0' },
         { label: 'کل مشاہدات', value: '45.2k', icon: <Eye className="text-black" />, trend: '+5.4%', color: 'from-zinc-500/10 to-zinc-500/0' },
-        { label: 'سبسکرائبرز', value: '890', icon: <Users className="text-primary" />, trend: '+2.1%', color: 'from-primary/10 to-primary/0' },
-        { label: 'انگیجمنٹ', value: '12.5%', icon: <TrendingUp className="text-black" />, trend: '+1.2%', color: 'from-zinc-400/10 to-zinc-400/0' },
     ];
 
     const categoryCounts = allNews.reduce((acc: any, item) => {
@@ -64,7 +62,7 @@ const AdminDashboard: React.FC = () => {
             </div>
 
             {/* 2. STATS GRID */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {stats.map((stat, idx) => (
                     <div key={idx} className={`relative bg-white p-8 rounded-3xl shadow-sm border border-gray-100 group hover:border-primary overflow-hidden transition-all duration-300`}>
                         <div className={`absolute inset-0 bg-gradient-to-br ${stat.color} opacity-0 group-hover:opacity-100 transition-opacity`}></div>

@@ -16,17 +16,17 @@ interface CategoryDoc {
     order: number;
 }
 
-// Fallback — matches Urdu navbar exactly. Used when Firestore rules not yet set.
+// Fallback categories for Urdu portal
 const FALLBACK_CATEGORIES: CategoryDoc[] = [
-    { id: 'f1', name: 'عالمی خبریں', subCategories: ['ٹاپ اسٹوریز', 'مشرق وسطیٰ', 'بین الاقوامی', 'سفارت کاری'], order: 1 },
-    { id: 'f2', name: 'قومی خبریں', subCategories: ['ٹاپ اسٹوریز', 'سیاست', 'گورننس', 'ریاستیں'], order: 2 },
-    { id: 'f3', name: 'حیدرآباد', subCategories: ['مقامی خبریں', 'جرائم', 'سیاست', 'کاروبار', 'تقریبات'], order: 3 },
+    { id: 'f1', name: 'عالمی خبریں', subCategories: ['خاص خبریں', 'مڈل ایسٹ', 'بین الاقوامی', 'سفارت کاری'], order: 1 },
+    { id: 'f2', name: 'قومی خبریں', subCategories: ['خاص خبریں', 'سیاست', 'گورننس', 'ریاستیں'], order: 2 },
+    { id: 'f3', name: 'حیدرآباد', subCategories: ['مقامی خبریں', 'جرائم', 'سیاست', 'تجارت', 'تقریبات'], order: 3 },
     { id: 'f4', name: 'تلنگانہ', subCategories: ['مقامی خبریں', 'سیاست', 'ترقی', 'زراعت'], order: 4 },
-    { id: 'f5', name: 'آندھرا پردیش', subCategories: ['مقامی خبریں', 'سیاست', 'ترقی', 'کاروبار'], order: 5 },
-    { id: 'f6', name: 'تصویریں', subCategories: ['ٹاپ اسٹوریز', 'سیاست', 'کھیل', 'تفریح', 'تقریبات'], order: 6 },
-    { id: 'f7', name: 'ویڈیوز', subCategories: ['خبریں', 'تقریبات', 'انٹرویوز', 'وائرل'], order: 7 },
-    { id: 'f8', name: 'مضامین اور مقالہ جات', subCategories: ['ادارتی', 'تجزیہ', 'رائے', 'خصوصی رپورٹس'], order: 8 },
-    { id: 'f9', name: 'کھیل اور تفریح', subCategories: ['کرکٹ', 'سنیما', 'OTT', 'لائف اسٹائل'], order: 9 },
+    { id: 'f5', name: 'آندھرا پردیش', subCategories: ['مقامی خبریں', 'سیاست', 'ترقی', 'تجارت'], order: 5 },
+    { id: 'f6', name: 'فوٹو گیلری', subCategories: ['خاص خبریں', 'سیاست', 'کھیل', 'تفریح', 'تقریبات'], order: 6 },
+    { id: 'f7', name: 'ویڈیوز', subCategories: ['خبریں', 'تقریبات', 'انٹرویو', 'وائرل'], order: 7 },
+    { id: 'f8', name: 'مضامین اور مقالہ جات', subCategories: ['اداریہ', 'تجزیہ', 'رائے', 'خصوصی رپورٹ'], order: 8 },
+    { id: 'f9', name: 'کھیل اور تفریح', subCategories: ['کرکٹ', 'سینما', 'او ٹی ٹی', 'لائف اسٹائل'], order: 9 },
     { id: 'f10', name: 'جرائم اور حادثات', subCategories: ['مقامی جرائم', 'تحقیقات', 'سیکیورٹی', 'حادثات'], order: 10 },
 ];
 

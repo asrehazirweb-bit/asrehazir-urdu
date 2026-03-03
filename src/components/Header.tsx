@@ -13,6 +13,20 @@ interface CategoryDoc {
     order: number;
 }
 
+// Fallback categories for Urdu portal
+const FALLBACK_CATEGORIES: CategoryDoc[] = [
+    { id: 'f1', name: 'عالمی خبریں', subCategories: ['خاص خبریں', 'مڈل ایسٹ', 'بین الاقوامی', 'سفارت کاری'], order: 1 },
+    { id: 'f2', name: 'قومی خبریں', subCategories: ['خاص خبریں', 'سیاست', 'گورننس', 'ریاستیں'], order: 2 },
+    { id: 'f3', name: 'حیدرآباد', subCategories: ['مقامی خبریں', 'جرائم', 'سیاست', 'تجارت', 'تقریبات'], order: 3 },
+    { id: 'f4', name: 'تلنگانہ', subCategories: ['مقامی خبریں', 'سیاست', 'ترقی', 'زراعت'], order: 4 },
+    { id: 'f5', name: 'آندھرا پردیش', subCategories: ['مقامی خبریں', 'سیاست', 'ترقی', 'تجارت'], order: 5 },
+    { id: 'f6', name: 'فوٹو گیلری', subCategories: ['خاص خبریں', 'سیاست', 'کھیل', 'تفریح', 'تقریبات'], order: 6 },
+    { id: 'f7', name: 'ویڈیوز', subCategories: ['خبریں', 'تقریبات', 'انٹرویو', 'وائرل'], order: 7 },
+    { id: 'f8', name: 'مضامین اور مقالہ جات', subCategories: ['اداریہ', 'تجزیہ', 'رائے', 'خصوصی رپورٹ'], order: 8 },
+    { id: 'f9', name: 'کھیل اور تفریح', subCategories: ['کرکٹ', 'سینما', 'او ٹی ٹی', 'لائف اسٹائل'], order: 9 },
+    { id: 'f10', name: 'جرائم اور حادثات', subCategories: ['مقامی جرائم', 'تحقیقات', 'سیکیورٹی', 'حادثات'], order: 10 },
+];
+
 export function Header() {
     const currentDate = format(new Date(), 'EEEE, MMMM do, yyyy');
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -28,7 +42,11 @@ export function Header() {
         const q = query(collection(db, 'categories_urdu'), orderBy('order', 'asc'));
         const unsub = onSnapshot(q, (snap) => {
             const cats = snap.docs.map(doc => ({ id: doc.id, ...doc.data() })) as CategoryDoc[];
-            setCategories(cats);
+            // If Firestore is empty, use fallback categories
+            setCategories(cats.length > 0 ? cats : FALLBACK_CATEGORIES);
+        }, (_err) => {
+            // On error (e.g. permission), use fallback
+            setCategories(FALLBACK_CATEGORIES);
         });
         return () => unsub();
     }, []);
@@ -169,9 +187,9 @@ export function Header() {
                     </div>
                 )}
 
-                {/* Navigation */}
+                {/* Navigation - Standard RTL Flex */}
                 <nav className={`w-full border-t border-gray-100 py-1 hidden md:block`}>
-                    <ul className="flex flex-row-reverse justify-center items-center gap-2">
+                    <ul className="flex flex-row justify-center items-center gap-2">
                         {/* Static Links */}
                         <li>
                             <Link to="/" className="px-5 py-2 text-[16px] lg:text-[18px] font-bold text-gray-700 hover:text-primary transition-colors relative group">
@@ -199,7 +217,7 @@ export function Header() {
                             >
                                 <Link
                                     to={`/category/${encodeURIComponent(cat.name)}`}
-                                    className="px-5 py-2 text-[16px] lg:text-[20px] font-bold text-gray-700 hover:text-primary transition-colors flex flex-row-reverse items-center gap-1"
+                                    className="px-5 py-2 text-[16px] lg:text-[20px] font-bold text-gray-700 hover:text-primary transition-colors flex flex-row items-center gap-1"
                                 >
                                     {cat.name}
                                     {cat.subCategories && cat.subCategories.length > 0 && <ChevronDown size={14} className="mt-1" />}

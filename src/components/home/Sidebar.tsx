@@ -23,14 +23,14 @@ export function Sidebar({ offbeatItems = [], topStories = [] }: SidebarProps) {
     const finalTop = topStories.slice(0, 8);
 
     return (
-        <div className="flex flex-col gap-8 w-full h-full relative">
+        <div className="flex flex-col gap-8 w-full" dir="rtl">
 
-            {/* 0. TOP STORIES BLOCK (Static - Scrolls away) */}
+            {/* خاص خبریں TOP STORIES — always visible */}
             {finalTop.length > 0 && (
                 <div className="border border-gray-100 bg-white">
                     <div className="p-4 border-b border-gray-100 flex items-center gap-2">
                         <div className="w-1.5 h-4 bg-primary"></div>
-                        <h2 className="text-secondary font-sans font-bold uppercase tracking-wider text-sm">خاص خبریں</h2>
+                        <h2 className="text-secondary font-sans font-bold text-sm">خاص خبریں</h2>
                     </div>
                     <div>
                         {finalTop.map((story, idx) => (
@@ -44,7 +44,7 @@ export function Sidebar({ offbeatItems = [], topStories = [] }: SidebarProps) {
                                         />
                                     </div>
                                 )}
-                                <div className="flex flex-col justify-center w-full">
+                                <div className="flex flex-col justify-center w-full text-right">
                                     <h4 className={`font-bold text-xs leading-snug text-gray-800 line-clamp-2 group-hover:text-accent transition-colors ${story.titleFont || 'font-serif'}`}>
                                         {story.title}
                                     </h4>
@@ -53,13 +53,11 @@ export function Sidebar({ offbeatItems = [], topStories = [] }: SidebarProps) {
                             </Link>
                         ))}
                     </div>
-
                 </div>
             )}
 
-            {/* STICKY CONTAINER starts here */}
-            {/* This block will stick to the top as user scrolls past Top Stories */}
-            <div className="sticky top-4 flex flex-col gap-8">
+            {/* Remaining sidebar content — scrollable if taller than viewport */}
+            <div className="flex flex-col gap-8 max-h-[calc(100vh-100px)] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-200 scrollbar-track-transparent pr-0.5">
 
                 {/* 1. OFFBEAT BLOCK */}
                 <div className="border border-gray-100 bg-white">

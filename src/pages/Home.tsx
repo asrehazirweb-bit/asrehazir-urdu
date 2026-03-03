@@ -40,8 +40,8 @@ export function Home() {
         contentFont: heroNews[0].contentFont
     } : null;
 
-    // Use news from index 6 to 14 for the sidebar top stories
-    const heroTopStories = news.slice(6, 14).map(item => ({
+    // Use news from index 1 onwards for sidebar top stories (index 0 is hero)
+    const heroTopStories = news.slice(1, 9).map(item => ({
         id: item.id,
         title: item.title,
         category: item.category,
@@ -144,10 +144,10 @@ export function Home() {
                 </div>
             )}
 
-            <div className="w-full mx-auto px-4 grid grid-cols-1 lg:grid-cols-12 gap-8 mb-12 mt-6">
+            <div className="w-full mx-auto px-4 grid grid-cols-1 lg:grid-cols-12 gap-8 mb-12 mt-6 items-start">
 
-                {/* === LEFT SIDEBAR COLUMN (4 Columns) - Swapped for RTL === */}
-                <div className="lg:col-span-4 order-2 lg:order-1">
+                {/* === LEFT SIDEBAR COLUMN (4 Columns) - Sticky for RTL === */}
+                <div className="lg:col-span-4 order-2 lg:order-1 self-start lg:sticky lg:top-[80px]">
                     <HomeSidebar
                         topStories={heroTopStories}
                         offbeatItems={offbeatItems}

@@ -21,6 +21,34 @@ const getCategoryPath = (category: string) => {
     return '/';
 };
 
+import { AdBlock } from '../components/home/AdBlock';
+
+// Helper to render content with ads between paragraphs (Urdu optimized)
+const renderContentWithAds = (content: string, fontClass: string) => {
+    if (!content) return null;
+
+    const sanitized = DOMPurify.sanitize(content);
+    // Split by paragraph tags while keeping the tags
+    const paragraphs = sanitized.match(/<p>.*?<\/p>|[^<]+/g) || [];
+
+    if (paragraphs.length <= 2) {
+        return <div className={`article-content text-gray-800 leading-[2.2] mb-6 text-xl md:text-2xl ${fontClass}`} dangerouslySetInnerHTML={{ __html: sanitized }} />;
+    }
+
+    const firstHalf = paragraphs.slice(0, 2).join('');
+    const remaining = paragraphs.slice(2).join('');
+
+    return (
+        <div className={`article-content text-gray-800 leading-[2.2] mb-6 text-xl md:text-2xl ${fontClass}`}>
+            <div dangerouslySetInnerHTML={{ __html: firstHalf }} />
+            <div className="my-10">
+                <AdBlock placement="between_news" className="!my-0" label="ان-آرٹیکل اشتہار" />
+            </div>
+            <div dangerouslySetInnerHTML={{ __html: remaining }} />
+        </div>
+    );
+};
+
 const ArticleDetail: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const [article, setArticle] = useState<NewsArticle | null>(null);
@@ -230,10 +258,7 @@ const ArticleDetail: React.FC = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
                     <div className="lg:col-span-12">
                         <div className="prose prose-lg max-w-none text-right">
-                            <div
-                                className={`article-content text-gray-800 leading-[2.2] mb-6 text-xl md:text-2xl ${article.contentFont || 'font-serif'}`}
-                                dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(article.content) }}
-                            />
+                            {renderContentWithAds(article.content, article.contentFont || 'font-serif')}
                         </div>
 
                         {/* Social Share Section (Dynamic) */}

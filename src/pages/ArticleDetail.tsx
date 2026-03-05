@@ -24,7 +24,7 @@ const getCategoryPath = (category: string) => {
 import { AdBlock } from '../components/home/AdBlock';
 
 // Helper to render content with ads between paragraphs (Urdu optimized)
-const renderContentWithAds = (content: string, fontClass: string) => {
+const renderContentWithAds = (content: string, fontClass: string, postAdImageUrl?: string, postAdLink?: string) => {
     if (!content) return null;
 
     const sanitized = DOMPurify.sanitize(content);
@@ -42,7 +42,17 @@ const renderContentWithAds = (content: string, fontClass: string) => {
         <div className={`article-content text-gray-800 leading-[2.2] mb-6 text-xl md:text-2xl ${fontClass}`}>
             <div dangerouslySetInnerHTML={{ __html: firstHalf }} />
             <div className="my-10">
-                <AdBlock placement="between_news" className="!my-0" label="ان-آرٹیکل اشتہار" />
+                {postAdImageUrl ? (
+                    <AdBlock
+                        placement="custom"
+                        customImage={postAdImageUrl}
+                        customLink={postAdLink}
+                        className="!my-0"
+                        label="ہمارے اسپانسر"
+                    />
+                ) : (
+                    <AdBlock placement="between_news" className="!my-0" label="ان-آرٹیکل اشتہار" />
+                )}
             </div>
             <div dangerouslySetInnerHTML={{ __html: remaining }} />
         </div>
@@ -258,7 +268,7 @@ const ArticleDetail: React.FC = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
                     <div className="lg:col-span-12">
                         <div className="prose prose-lg max-w-none text-right">
-                            {renderContentWithAds(article.content, article.contentFont || 'font-serif')}
+                            {renderContentWithAds(article.content, article.contentFont || 'font-serif', article.postAdImageUrl, article.postAdLink)}
                         </div>
 
                         {/* Social Share Section (Dynamic) */}

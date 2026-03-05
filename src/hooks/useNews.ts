@@ -20,6 +20,8 @@ export interface NewsArticle {
     showInLive?: boolean;
     titleFont?: string;
     contentFont?: string;
+    postAdImageUrl?: string;
+    postAdLink?: string;
 }
 
 export const useNews = (category?: string, maxItems: number = 20, subCategory?: string) => {

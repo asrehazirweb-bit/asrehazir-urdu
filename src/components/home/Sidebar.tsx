@@ -102,7 +102,7 @@ export function Sidebar({ offbeatItems = [], topStories = [] }: SidebarProps) {
                     </a>
                 </div>
 
-                <AdBlock placement="sidebar" className="h-[250px] !my-0" label="سائیڈ بار اشتہار" />
+                <AdBlock placement="sidebar" className="!my-0" label="سائیڈ بار اشتہار" />
 
                 <div className="border border-gray-100 bg-white p-6 text-right">
                     <h3 className="text-secondary font-serif font-bold text-lg mb-6 border-b border-gray-100 pb-2">مزید جانیے</h3>

@@ -187,7 +187,7 @@ export function Home() {
 
                     {/* 3. Latest News (Moved DOWN) */}
                     <div className="mb-12">
-                        <AdBlock placement="between_news" className="h-24 md:hidden mb-12" label="بریکنگ نیوز اشتہار" />
+                        <AdBlock placement="between_news" className="md:hidden mb-12" label="بریکنگ نیوز اشتہار" />
                         <LatestNewsSection items={latestNewsItems} />
                     </div>
 
@@ -209,7 +209,7 @@ export function Home() {
                         formatTime={formatTime}
                     />
 
-                    <AdBlock placement="between_news" className="h-32 md:hidden mb-12" label="خصوصی اشتہار" />
+                    <AdBlock placement="between_news" className="md:hidden mb-12" label="خصوصی اشتہار" />
 
                 </div>
 
@@ -230,7 +230,7 @@ export function Home() {
             </div>
 
             {/* === AD BLOCK === */}
-            <AdBlock className="h-40 mb-12" label="پریمیم بینر اشتہار" />
+            <AdBlock className="mb-12" label="پریمیم بینر اشتہار" />
 
             {worldNews.length > 0 && (
                 <div className="w-full mx-auto px-4 mb-12">

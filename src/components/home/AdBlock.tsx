@@ -31,8 +31,8 @@ export function AdBlock({ className = "min-h-[120px]", label = "اشتہار", p
             rel="noopener noreferrer"
             className={`block w-full overflow-hidden rounded-xl ${className} my-8 border border-gray-100 hover:opacity-95 transition-all shadow-md hover:shadow-lg !h-auto`}
         >
-            <div className="relative w-full h-full flex items-center justify-center bg-gray-50">
-                <img src={ad.imageUrl} alt="Advertisement" className="w-full h-auto object-contain block" />
+            <div className="relative w-full h-full flex items-center justify-center bg-gray-50 p-2">
+                <img src={ad.imageUrl} alt="Advertisement" className="max-w-full max-h-full h-auto w-auto object-contain block" />
                 <div className="absolute top-2 right-2 bg-black/40 backdrop-blur-md px-2 py-0.5 rounded text-[10px] text-white font-bold tracking-widest">اشتہار</div>
             </div>
         </a>

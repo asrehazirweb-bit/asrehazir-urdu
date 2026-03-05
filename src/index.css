@@ -231,10 +231,6 @@
     width: max-content;
   }
 
-  .animate-ticker:hover,
-  .animate-ticker-rtl:hover {
-    animation-play-state: paused;
-  }
 }
 
 /* Quill Premium Styling */

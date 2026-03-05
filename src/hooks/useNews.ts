@@ -17,6 +17,7 @@ export interface NewsArticle {
     section?: string;
     videoUrl?: string;
     isLive?: boolean;
+    showInLive?: boolean;
     titleFont?: string;
     contentFont?: string;
 }

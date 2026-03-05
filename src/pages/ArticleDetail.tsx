@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { db } from '../lib/firebase';
-import { doc, getDoc, collection, query, where, limit, getDocs } from 'firebase/firestore';
+import { doc, getDoc, collection, query, where, limit, getDocs, onSnapshot } from 'firebase/firestore';
 import { Calendar, Share2, Facebook, Link2, ArrowLeft, Clock } from 'lucide-react';
 import type { NewsArticle } from '../hooks/useNews';
 import Toast from '../components/ui/Toast';
@@ -28,6 +28,17 @@ const ArticleDetail: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+    const [livePageEnabled, setLivePageEnabled] = useState(true);
+
+    useEffect(() => {
+        const unsubscribe = onSnapshot(doc(db, 'settings', 'live_config'), (snap) => {
+            if (snap.exists()) {
+                setLivePageEnabled(snap.data().livePageEnabled ?? true);
+            }
+        });
+        return () => unsubscribe();
+    }, []);
+
     useEffect(() => {
         const fetchArticle = async () => {
             if (!id) return;
@@ -153,7 +164,7 @@ const ArticleDetail: React.FC = () => {
                 </div>
 
                 {/* LIVE Badge */}
-                {article.isLive && (
+                {livePageEnabled && (article.showInLive || article.isLive) && (
                     <div className="flex flex-row items-center gap-2 mb-4">
                         <span className="inline-flex flex-row-reverse items-center gap-2 bg-red-600 text-white px-4 py-1.5 rounded-full text-[11px] font-black uppercase tracking-[0.3em] shadow-lg shadow-red-600/30 animate-pulse">
                             <span className="w-2 h-2 rounded-full bg-white animate-ping"></span>

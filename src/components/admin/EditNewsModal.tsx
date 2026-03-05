@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { db, storage } from '../../lib/firebase';
 import { doc, updateDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { X, Save, Image as ImageIcon, Layout, Type, FileText, Tag, Loader2 } from 'lucide-react';
+import { X, Save, Image as ImageIcon, Layout, Type, FileText, Tag, Loader2, List, Activity, Hash } from 'lucide-react';
 import { type NewsArticle } from '../../hooks/useNews';
 import Toast from '../../components/ui/Toast';
 
@@ -30,6 +30,9 @@ const EditNewsModal: React.FC<EditNewsModalProps> = ({ article, onClose, onSucce
     const [imagePreview, setImagePreview] = useState<string | null>(article.imageUrl);
     const [loading, setLoading] = useState(false);
     const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+    const [showInLive, setShowInLive] = useState(article.showInLive || article.isLive || false);
+    const [subHeadline, setSubHeadline] = useState((article as any).subHeadline || '');
+    const [hashtags, setHashtags] = useState((article as any).hashtags?.join(', ') || '');
 
     const handleCategoryChange = (val: string) => {
         setCategory(val);
@@ -75,6 +78,10 @@ const EditNewsModal: React.FC<EditNewsModalProps> = ({ article, onClose, onSucce
                 content,
                 category,
                 subCategory,
+                subHeadline,
+                hashtags: hashtags.split(',').map((s: string) => s.trim()).filter(Boolean),
+                showInLive,
+                isLive: showInLive,
                 imageUrl,
                 updatedAt: new Date()
             });
@@ -128,6 +135,51 @@ const EditNewsModal: React.FC<EditNewsModalProps> = ({ article, onClose, onSucce
                             className="w-full text-2xl md:text-4xl font-serif font-black border-b-2 border-gray-100 bg-transparent py-4 focus:border-primary outline-none transition-all text-right"
                             required
                         />
+                    </div>
+                    {/* Sub-Headline */}
+                    <div className="space-y-4">
+                        <label className="flex flex-row-reverse items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">
+                            <List className="w-3.5 h-3.5 text-primary" /> ذیلی سرخی
+                        </label>
+                        <input
+                            type="text"
+                            value={subHeadline}
+                            onChange={(e) => setSubHeadline(e.target.value)}
+                            className="w-full text-xl font-bold border-b border-gray-100 bg-transparent py-2 focus:border-primary outline-none transition-all text-gray-600 text-right"
+                            placeholder="ذیلی سرخی درج کریں..."
+                        />
+                    </div>
+
+                    {/* Hashtags & Live Toggle */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-6 bg-zinc-50 rounded-3xl border border-gray-100">
+                        <div className="space-y-4 text-right">
+                            <label className="flex flex-row-reverse items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">
+                                <Hash className="w-3.5 h-3.5 text-primary" /> ہیش ٹیگز (کوما سے الگ کریں)
+                            </label>
+                            <input
+                                type="text"
+                                value={hashtags}
+                                onChange={(e) => setHashtags(e.target.value)}
+                                className="w-full p-3 rounded-xl border border-gray-100 bg-white focus:ring-4 focus:ring-primary/10 outline-none text-xs font-bold h-12 text-right"
+                                placeholder="#politics, #hyderabad..."
+                            />
+                        </div>
+                        <div className="space-y-4 flex flex-col justify-center">
+                            <label className="flex flex-row-reverse items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-2">
+                                <Activity className="w-3.5 h-3.5 text-primary" /> براڈکاسٹنگ آپشنز
+                            </label>
+                            <div className="flex flex-row-reverse items-center justify-between gap-4 p-3 bg-white rounded-xl border border-gray-100 h-12">
+                                <span className="font-bold text-xs text-gray-600">لائیو نیوز میں دکھائیں</span>
+                                <div className="flex items-center">
+                                    <input
+                                        type="checkbox"
+                                        checked={showInLive}
+                                        onChange={(e) => setShowInLive(e.target.checked)}
+                                        className="w-5 h-5 accent-primary cursor-pointer"
+                                    />
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     {/* Meta Selects */}
